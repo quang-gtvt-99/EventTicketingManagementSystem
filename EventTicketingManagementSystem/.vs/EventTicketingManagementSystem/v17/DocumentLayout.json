@@ -1,0 +1,122 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\nguye\\OneDrive\\Documents\\FastTrack_Dev3-Homework\\EventTicketingManagementSystem\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{F4BC225B-8AF5-4BE3-878D-F810A3BE8412}|EventTicketingManagementSystem\\EventTicketingManagementSystem.csproj|c:\\users\\nguye\\onedrive\\documents\\fasttrack_dev3-homework\\eventticketingmanagementsystem\\eventticketingmanagementsystem\\models\\booking.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F4BC225B-8AF5-4BE3-878D-F810A3BE8412}|EventTicketingManagementSystem\\EventTicketingManagementSystem.csproj|solutionrelative:eventticketingmanagementsystem\\models\\booking.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F4BC225B-8AF5-4BE3-878D-F810A3BE8412}|EventTicketingManagementSystem\\EventTicketingManagementSystem.csproj|c:\\users\\nguye\\onedrive\\documents\\fasttrack_dev3-homework\\eventticketingmanagementsystem\\eventticketingmanagementsystem\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F4BC225B-8AF5-4BE3-878D-F810A3BE8412}|EventTicketingManagementSystem\\EventTicketingManagementSystem.csproj|solutionrelative:eventticketingmanagementsystem\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F4BC225B-8AF5-4BE3-878D-F810A3BE8412}|EventTicketingManagementSystem\\EventTicketingManagementSystem.csproj|c:\\users\\nguye\\onedrive\\documents\\fasttrack_dev3-homework\\eventticketingmanagementsystem\\eventticketingmanagementsystem\\data\\repository\\iappdbservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F4BC225B-8AF5-4BE3-878D-F810A3BE8412}|EventTicketingManagementSystem\\EventTicketingManagementSystem.csproj|solutionrelative:eventticketingmanagementsystem\\data\\repository\\iappdbservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F4BC225B-8AF5-4BE3-878D-F810A3BE8412}|EventTicketingManagementSystem\\EventTicketingManagementSystem.csproj|c:\\users\\nguye\\onedrive\\documents\\fasttrack_dev3-homework\\eventticketingmanagementsystem\\eventticketingmanagementsystem\\controllers\\appcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F4BC225B-8AF5-4BE3-878D-F810A3BE8412}|EventTicketingManagementSystem\\EventTicketingManagementSystem.csproj|solutionrelative:eventticketingmanagementsystem\\controllers\\appcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F4BC225B-8AF5-4BE3-878D-F810A3BE8412}|EventTicketingManagementSystem\\EventTicketingManagementSystem.csproj|c:\\users\\nguye\\onedrive\\documents\\fasttrack_dev3-homework\\eventticketingmanagementsystem\\eventticketingmanagementsystem\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F4BC225B-8AF5-4BE3-878D-F810A3BE8412}|EventTicketingManagementSystem\\EventTicketingManagementSystem.csproj|solutionrelative:eventticketingmanagementsystem\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F4BC225B-8AF5-4BE3-878D-F810A3BE8412}|EventTicketingManagementSystem\\EventTicketingManagementSystem.csproj|c:\\users\\nguye\\onedrive\\documents\\fasttrack_dev3-homework\\eventticketingmanagementsystem\\eventticketingmanagementsystem\\services\\appdbservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F4BC225B-8AF5-4BE3-878D-F810A3BE8412}|EventTicketingManagementSystem\\EventTicketingManagementSystem.csproj|solutionrelative:eventticketingmanagementsystem\\services\\appdbservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Booking.cs",
+              "DocumentMoniker": "C:\\Users\\nguye\\OneDrive\\Documents\\FastTrack_Dev3-Homework\\EventTicketingManagementSystem\\EventTicketingManagementSystem\\Models\\Booking.cs",
+              "RelativeDocumentMoniker": "EventTicketingManagementSystem\\Models\\Booking.cs",
+              "ToolTip": "C:\\Users\\nguye\\OneDrive\\Documents\\FastTrack_Dev3-Homework\\EventTicketingManagementSystem\\EventTicketingManagementSystem\\Models\\Booking.cs",
+              "RelativeToolTip": "EventTicketingManagementSystem\\Models\\Booking.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAmAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-06T04:49:38.045Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "AppDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\nguye\\OneDrive\\Documents\\FastTrack_Dev3-Homework\\EventTicketingManagementSystem\\EventTicketingManagementSystem\\Data\\AppDbContext.cs",
+              "RelativeDocumentMoniker": "EventTicketingManagementSystem\\Data\\AppDbContext.cs",
+              "ToolTip": "C:\\Users\\nguye\\OneDrive\\Documents\\FastTrack_Dev3-Homework\\EventTicketingManagementSystem\\EventTicketingManagementSystem\\Data\\AppDbContext.cs",
+              "RelativeToolTip": "EventTicketingManagementSystem\\Data\\AppDbContext.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAA0AAAA6AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-06T04:49:27.455Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "IAppDbService.cs",
+              "DocumentMoniker": "C:\\Users\\nguye\\OneDrive\\Documents\\FastTrack_Dev3-Homework\\EventTicketingManagementSystem\\EventTicketingManagementSystem\\Data\\Repository\\IAppDbService.cs",
+              "RelativeDocumentMoniker": "EventTicketingManagementSystem\\Data\\Repository\\IAppDbService.cs",
+              "ToolTip": "C:\\Users\\nguye\\OneDrive\\Documents\\FastTrack_Dev3-Homework\\EventTicketingManagementSystem\\EventTicketingManagementSystem\\Data\\Repository\\IAppDbService.cs",
+              "RelativeToolTip": "EventTicketingManagementSystem\\Data\\Repository\\IAppDbService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAqwAYAAAAgAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-06T04:45:37.268Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "AppDbService.cs",
+              "DocumentMoniker": "C:\\Users\\nguye\\OneDrive\\Documents\\FastTrack_Dev3-Homework\\EventTicketingManagementSystem\\EventTicketingManagementSystem\\Services\\AppDbService.cs",
+              "RelativeDocumentMoniker": "EventTicketingManagementSystem\\Services\\AppDbService.cs",
+              "ToolTip": "C:\\Users\\nguye\\OneDrive\\Documents\\FastTrack_Dev3-Homework\\EventTicketingManagementSystem\\EventTicketingManagementSystem\\Services\\AppDbService.cs",
+              "RelativeToolTip": "EventTicketingManagementSystem\\Services\\AppDbService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-06T04:45:49.939Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "AppController.cs",
+              "DocumentMoniker": "C:\\Users\\nguye\\OneDrive\\Documents\\FastTrack_Dev3-Homework\\EventTicketingManagementSystem\\EventTicketingManagementSystem\\Controllers\\AppController.cs",
+              "RelativeDocumentMoniker": "EventTicketingManagementSystem\\Controllers\\AppController.cs",
+              "ToolTip": "C:\\Users\\nguye\\OneDrive\\Documents\\FastTrack_Dev3-Homework\\EventTicketingManagementSystem\\EventTicketingManagementSystem\\Controllers\\AppController.cs",
+              "RelativeToolTip": "EventTicketingManagementSystem\\Controllers\\AppController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-06T04:45:19.194Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\nguye\\OneDrive\\Documents\\FastTrack_Dev3-Homework\\EventTicketingManagementSystem\\EventTicketingManagementSystem\\Program.cs",
+              "RelativeDocumentMoniker": "EventTicketingManagementSystem\\Program.cs",
+              "ToolTip": "C:\\Users\\nguye\\OneDrive\\Documents\\FastTrack_Dev3-Homework\\EventTicketingManagementSystem\\EventTicketingManagementSystem\\Program.cs",
+              "RelativeToolTip": "EventTicketingManagementSystem\\Program.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAABsAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-06T04:44:40.017Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
