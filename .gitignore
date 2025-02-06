@@ -39,3 +39,4 @@ msbuild.wrn
 #Ignore folder car images
 **/car-images/**
 **/profile-images/**
+/EventTicketingManagementSystem/EventTicketingManagementSystem/appsettings.json
