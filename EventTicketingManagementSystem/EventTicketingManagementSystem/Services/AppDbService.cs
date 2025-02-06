@@ -36,11 +36,6 @@ namespace EventTicketingManagementSystem.Services
             return await _context.Events.ToListAsync();
         }
 
-        public async Task<IEnumerable<TicketType>> GetAllTicketTypesAsync()
-        {
-            return await _context.TicketTypes.ToListAsync();
-        }
-
         public async Task<IEnumerable<Ticket>> GetAllTicketsAsync()
         {
             return await _context.Tickets.ToListAsync();
@@ -49,11 +44,6 @@ namespace EventTicketingManagementSystem.Services
         public async Task<IEnumerable<Booking>> GetAllBookingsAsync()
         {
             return await _context.Bookings.ToListAsync();
-        }
-
-        public async Task<IEnumerable<BookingDetail>> GetAllBookingDetailsAsync()
-        {
-            return await _context.BookingDetails.ToListAsync();
         }
 
         public async Task<IEnumerable<Payment>> GetAllPaymentsAsync()

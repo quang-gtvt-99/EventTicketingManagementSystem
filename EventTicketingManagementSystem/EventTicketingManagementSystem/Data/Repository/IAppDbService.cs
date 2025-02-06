@@ -8,10 +8,8 @@ namespace EventTicketingManagementSystem.Data.Repository
         Task<IEnumerable<Role>> GetAllRolesAsync();
         Task<IEnumerable<UserRole>> GetAllUserRolesAsync();
         Task<IEnumerable<Event>> GetAllEventsAsync();
-        Task<IEnumerable<TicketType>> GetAllTicketTypesAsync();
         Task<IEnumerable<Ticket>> GetAllTicketsAsync();
         Task<IEnumerable<Booking>> GetAllBookingsAsync();
-        Task<IEnumerable<BookingDetail>> GetAllBookingDetailsAsync();
         Task<IEnumerable<Payment>> GetAllPaymentsAsync();
     }
 }

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventTicketingManagementSystem.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250206041537_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250206122447_InitialModels")]
+    partial class InitialModels
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,11 +27,11 @@ namespace EventTicketingManagementSystem.Migrations
 
             modelBuilder.Entity("EventTicketingManagementSystem.Models.Booking", b =>
                 {
-                    b.Property<int>("BookingId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BookingId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("BookingDate")
                         .HasColumnType("datetime2");
@@ -45,11 +45,20 @@ namespace EventTicketingManagementSystem.Migrations
                     b.Property<DateTime?>("ExpiryDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<decimal>("Subtotal")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("UnitPrice")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -58,7 +67,7 @@ namespace EventTicketingManagementSystem.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.HasKey("BookingId");
+                    b.HasKey("Id");
 
                     b.HasIndex("EventId");
 
@@ -67,45 +76,13 @@ namespace EventTicketingManagementSystem.Migrations
                     b.ToTable("Bookings");
                 });
 
-            modelBuilder.Entity("EventTicketingManagementSystem.Models.BookingDetail", b =>
-                {
-                    b.Property<int>("BookingDetailId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BookingDetailId"));
-
-                    b.Property<int>("BookingId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Subtotal")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("TicketTypeId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("UnitPrice")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("BookingDetailId");
-
-                    b.HasIndex("BookingId");
-
-                    b.HasIndex("TicketTypeId");
-
-                    b.ToTable("BookingDetails");
-                });
-
             modelBuilder.Entity("EventTicketingManagementSystem.Models.Event", b =>
                 {
-                    b.Property<int>("EventId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EventId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ArtistInfo")
                         .IsRequired()
@@ -152,9 +129,6 @@ namespace EventTicketingManagementSystem.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.Property<string>("VenueAddress")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -163,20 +137,20 @@ namespace EventTicketingManagementSystem.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("EventId");
+                    b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("CreatedBy");
 
                     b.ToTable("Events");
                 });
 
             modelBuilder.Entity("EventTicketingManagementSystem.Models.Payment", b =>
                 {
-                    b.Property<int>("PaymentId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PaymentId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
@@ -208,7 +182,7 @@ namespace EventTicketingManagementSystem.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("PaymentId");
+                    b.HasKey("Id");
 
                     b.HasIndex("BookingId");
 
@@ -217,11 +191,11 @@ namespace EventTicketingManagementSystem.Migrations
 
             modelBuilder.Entity("EventTicketingManagementSystem.Models.Role", b =>
                 {
-                    b.Property<int>("RoleId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RoleId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -237,18 +211,60 @@ namespace EventTicketingManagementSystem.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("RoleId");
+                    b.HasKey("Id");
 
                     b.ToTable("Roles");
                 });
 
-            modelBuilder.Entity("EventTicketingManagementSystem.Models.Ticket", b =>
+            modelBuilder.Entity("EventTicketingManagementSystem.Models.Seat", b =>
                 {
-                    b.Property<int>("TicketId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TicketId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("EventId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Number")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Row")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EventId");
+
+                    b.ToTable("Seats");
+                });
+
+            modelBuilder.Entity("EventTicketingManagementSystem.Models.Ticket", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("BookingId")
                         .HasColumnType("int");
@@ -262,6 +278,9 @@ namespace EventTicketingManagementSystem.Migrations
                     b.Property<DateTime?>("ReservedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("SeatId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -270,79 +289,26 @@ namespace EventTicketingManagementSystem.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TicketTypeId")
-                        .HasColumnType("int");
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.HasKey("TicketId");
+                    b.HasKey("Id");
 
                     b.HasIndex("BookingId");
 
-                    b.HasIndex("TicketTypeId");
+                    b.HasIndex("SeatId")
+                        .IsUnique();
 
                     b.ToTable("Tickets");
                 });
 
-            modelBuilder.Entity("EventTicketingManagementSystem.Models.TicketType", b =>
-                {
-                    b.Property<int>("TicketTypeId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TicketTypeId"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("EventId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MaxPerCustomer")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("RemainingQuantity")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("SaleEndDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("SaleStartDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TotalQuantity")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("TicketTypeId");
-
-                    b.HasIndex("EventId");
-
-                    b.ToTable("TicketTypes");
-                });
-
             modelBuilder.Entity("EventTicketingManagementSystem.Models.User", b =>
                 {
-                    b.Property<int>("UserId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -373,18 +339,18 @@ namespace EventTicketingManagementSystem.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("UserId");
+                    b.HasKey("Id");
 
                     b.ToTable("Users");
                 });
 
             modelBuilder.Entity("EventTicketingManagementSystem.Models.UserRole", b =>
                 {
-                    b.Property<int>("UserRoleId")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserRoleId"));
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("AssignedAt")
                         .HasColumnType("datetime2");
@@ -392,17 +358,12 @@ namespace EventTicketingManagementSystem.Migrations
                     b.Property<int?>("AssignedBy")
                         .HasColumnType("int");
 
-                    b.Property<int>("RoleId")
+                    b.Property<int>("Id")
                         .HasColumnType("int");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserRoleId");
+                    b.HasKey("UserId", "RoleId");
 
                     b.HasIndex("RoleId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("UserRoles");
                 });
@@ -418,7 +379,7 @@ namespace EventTicketingManagementSystem.Migrations
                     b.HasOne("EventTicketingManagementSystem.Models.User", "User")
                         .WithMany("Bookings")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Event");
@@ -426,30 +387,11 @@ namespace EventTicketingManagementSystem.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("EventTicketingManagementSystem.Models.BookingDetail", b =>
-                {
-                    b.HasOne("EventTicketingManagementSystem.Models.Booking", "Booking")
-                        .WithMany("BookingDetails")
-                        .HasForeignKey("BookingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EventTicketingManagementSystem.Models.TicketType", "TicketType")
-                        .WithMany("BookingDetails")
-                        .HasForeignKey("TicketTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Booking");
-
-                    b.Navigation("TicketType");
-                });
-
             modelBuilder.Entity("EventTicketingManagementSystem.Models.Event", b =>
                 {
                     b.HasOne("EventTicketingManagementSystem.Models.User", "User")
                         .WithMany("Events")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("CreatedBy")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -467,34 +409,34 @@ namespace EventTicketingManagementSystem.Migrations
                     b.Navigation("Booking");
                 });
 
-            modelBuilder.Entity("EventTicketingManagementSystem.Models.Ticket", b =>
-                {
-                    b.HasOne("EventTicketingManagementSystem.Models.Booking", "Booking")
-                        .WithMany("Tickets")
-                        .HasForeignKey("BookingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("EventTicketingManagementSystem.Models.TicketType", "TicketType")
-                        .WithMany("Tickets")
-                        .HasForeignKey("TicketTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Booking");
-
-                    b.Navigation("TicketType");
-                });
-
-            modelBuilder.Entity("EventTicketingManagementSystem.Models.TicketType", b =>
+            modelBuilder.Entity("EventTicketingManagementSystem.Models.Seat", b =>
                 {
                     b.HasOne("EventTicketingManagementSystem.Models.Event", "Event")
-                        .WithMany("TicketTypes")
+                        .WithMany("Seats")
                         .HasForeignKey("EventId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Event");
+                });
+
+            modelBuilder.Entity("EventTicketingManagementSystem.Models.Ticket", b =>
+                {
+                    b.HasOne("EventTicketingManagementSystem.Models.Booking", "Booking")
+                        .WithMany("Tickets")
+                        .HasForeignKey("BookingId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("EventTicketingManagementSystem.Models.Seat", "Seat")
+                        .WithOne("Ticket")
+                        .HasForeignKey("EventTicketingManagementSystem.Models.Ticket", "SeatId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Booking");
+
+                    b.Navigation("Seat");
                 });
 
             modelBuilder.Entity("EventTicketingManagementSystem.Models.UserRole", b =>
@@ -518,8 +460,6 @@ namespace EventTicketingManagementSystem.Migrations
 
             modelBuilder.Entity("EventTicketingManagementSystem.Models.Booking", b =>
                 {
-                    b.Navigation("BookingDetails");
-
                     b.Navigation("Payments");
 
                     b.Navigation("Tickets");
@@ -529,7 +469,7 @@ namespace EventTicketingManagementSystem.Migrations
                 {
                     b.Navigation("Bookings");
 
-                    b.Navigation("TicketTypes");
+                    b.Navigation("Seats");
                 });
 
             modelBuilder.Entity("EventTicketingManagementSystem.Models.Role", b =>
@@ -537,11 +477,9 @@ namespace EventTicketingManagementSystem.Migrations
                     b.Navigation("UserRoles");
                 });
 
-            modelBuilder.Entity("EventTicketingManagementSystem.Models.TicketType", b =>
+            modelBuilder.Entity("EventTicketingManagementSystem.Models.Seat", b =>
                 {
-                    b.Navigation("BookingDetails");
-
-                    b.Navigation("Tickets");
+                    b.Navigation("Ticket");
                 });
 
             modelBuilder.Entity("EventTicketingManagementSystem.Models.User", b =>
