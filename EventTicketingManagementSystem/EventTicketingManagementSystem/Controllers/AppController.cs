@@ -1,4 +1,5 @@
 ﻿using EventTicketingManagementSystem.Data.Repository;
+using EventTicketingManagementSystem.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventTicketingManagementSystem.Controllers
@@ -7,25 +8,18 @@ namespace EventTicketingManagementSystem.Controllers
     [Route("[controller]")]
     public class AppController : ControllerBase
     {
-        private readonly IAppDbService _appDataService;
+        private readonly IUserService _userService;
 
-        public AppController(IAppDbService appDataService)
+        public AppController(IUserService userService)
         {
-            _appDataService = appDataService;
+            _userService = userService;
         }
 
         [HttpGet("get-users")]
         public async Task<IActionResult> GetUsers()
         {
-            var users = await _appDataService.GetAllUsersAsync();
+            var users = await _userService.GetAllUsersAsync();
             return Ok(users);
-        }
-
-        [HttpGet("get-roles")]
-        public async Task<IActionResult> GetRoles()
-        {
-            var roles = await _appDataService.GetAllRolesAsync();
-            return Ok(roles);
         }
     }
 }

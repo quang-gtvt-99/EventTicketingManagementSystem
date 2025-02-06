@@ -1,8 +1,9 @@
-﻿namespace EventTicketingManagementSystem.Models
+﻿using EventTicketingManagementSystem.Models.BaseModels;
+
+namespace EventTicketingManagementSystem.Models
 {
-    public class UserRole
+    public class UserRole : EntityBase<int>
     {
-        public int UserRoleId { get; set; }
         public int UserId { get; set; }
         public int RoleId { get; set; }
         public DateTime AssignedAt { get; set; } = DateTime.UtcNow;

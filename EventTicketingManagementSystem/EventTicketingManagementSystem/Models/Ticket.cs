@@ -1,18 +1,18 @@
-﻿namespace EventTicketingManagementSystem.Models
+﻿using EventTicketingManagementSystem.Models.BaseModels;
+
+namespace EventTicketingManagementSystem.Models
 {
-    public class Ticket
+    public class Ticket : EntityAuditBase<int>
     {
-        public int TicketId { get; set; }
         public int BookingId { get; set; }
-        public int TicketTypeId { get; set; }
+        public int SeatId { get; set; }
         public string TicketNumber { get; set; }
-        public string Status { get; set; } = "Reserved";
+        public string Status { get; set; }
         public DateTime? ReservedAt { get; set; }
         public DateTime? ConfirmedAt { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         // Navigation properties
         public Booking Booking { get; set; }
-        public TicketType TicketType { get; set; }
+        public Seat Seat { get; set; }
     }
 }

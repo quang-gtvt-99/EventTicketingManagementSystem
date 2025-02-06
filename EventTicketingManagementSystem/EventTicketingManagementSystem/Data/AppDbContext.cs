@@ -1,4 +1,5 @@
 ﻿using EventTicketingManagementSystem.Models;
+using EventTicketingManagementSystem.Models.BaseModels;
 using Microsoft.EntityFrameworkCore;
 using System;
 
@@ -11,11 +12,10 @@ namespace EventTicketingManagementSystem.Data
         public DbSet<Role> Roles { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<Event> Events { get; set; }
-        public DbSet<TicketType> TicketTypes { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<Booking> Bookings { get; set; }
-        public DbSet<BookingDetail> BookingDetails { get; set; }
         public DbSet<Payment> Payments { get; set; }
+        public DbSet<Seat> Seats { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -38,45 +38,72 @@ namespace EventTicketingManagementSystem.Data
                 .WithMany(u => u.Events)
                 .HasForeignKey(e => e.CreatedBy);
 
-            modelBuilder.Entity<TicketType>()
-                .HasOne(tt => tt.Event)
-                .WithMany(e => e.TicketTypes)
-                .HasForeignKey(tt => tt.EventId);
-
-            modelBuilder.Entity<Ticket>()
-                .HasOne(t => t.Booking)
-                .WithMany(b => b.Tickets)
-                .HasForeignKey(t => t.BookingId);
-
-            modelBuilder.Entity<Ticket>()
-                .HasOne(t => t.TicketType)
-                .WithMany(tt => tt.Tickets)
-                .HasForeignKey(t => t.TicketTypeId);
-
-            modelBuilder.Entity<Booking>()
-                .HasOne(b => b.User)
-                .WithMany(u => u.Bookings)
-                .HasForeignKey(b => b.UserId);
-
-            modelBuilder.Entity<Booking>()
-                .HasOne(b => b.Event)
-                .WithMany(e => e.Bookings)
-                .HasForeignKey(b => b.EventId);
-
-            modelBuilder.Entity<BookingDetail>()
-                .HasOne(bd => bd.Booking)
-                .WithMany(b => b.BookingDetails)
-                .HasForeignKey(bd => bd.BookingId);
-
-            modelBuilder.Entity<BookingDetail>()
-                .HasOne(bd => bd.TicketType)
-                .WithMany(tt => tt.BookingDetails)
-                .HasForeignKey(bd => bd.TicketTypeId);
-
             modelBuilder.Entity<Payment>()
                 .HasOne(p => p.Booking)
                 .WithMany(b => b.Payments)
                 .HasForeignKey(p => p.BookingId);
+
+            modelBuilder.Entity<Booking>()
+                .HasOne(b => b.User)
+                .WithMany(u => u.Bookings)
+                .HasForeignKey(b => b.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Booking>()
+                .HasOne(b => b.Event)
+                .WithMany(e => e.Bookings)
+                .HasForeignKey(b => b.EventId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Ticket>()
+                .HasOne(t => t.Booking)
+                .WithMany(b => b.Tickets)
+                .HasForeignKey(t => t.BookingId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Ticket>()
+                .HasOne(t => t.Seat)
+                .WithOne(s => s.Ticket)
+                .HasForeignKey<Ticket>(t => t.SeatId)
+                .OnDelete(DeleteBehavior.Restrict);
+        }
+
+        public override int SaveChanges()
+        {
+            var entries = ChangeTracker.Entries()
+                .Where(e => e.Entity is EntityAuditBase<int> &&
+                            (e.State == EntityState.Added || e.State == EntityState.Modified));
+
+            foreach (var entry in entries)
+            {
+                var entity = (EntityAuditBase<int>)entry.Entity;
+                if (entry.State == EntityState.Added)
+                {
+                    entity.CreatedAt = DateTime.UtcNow;
+                }
+                entity.UpdatedAt = DateTime.UtcNow;
+            }
+
+            return base.SaveChanges();
+        }
+
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            var entries = ChangeTracker.Entries()
+                .Where(e => e.Entity is EntityAuditBase<int> &&
+                            (e.State == EntityState.Added || e.State == EntityState.Modified));
+
+            foreach (var entry in entries)
+            {
+                var entity = (EntityAuditBase<int>)entry.Entity;
+                if (entry.State == EntityState.Added)
+                {
+                    entity.CreatedAt = DateTime.UtcNow;
+                }
+                entity.UpdatedAt = DateTime.UtcNow;
+            }
+
+            return await base.SaveChangesAsync(cancellationToken);
         }
     }
 }
