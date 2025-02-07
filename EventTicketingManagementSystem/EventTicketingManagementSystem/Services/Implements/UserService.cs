@@ -9,7 +9,7 @@ namespace EventTicketingManagementSystem.Services.Implements
         private readonly IUserRepository _userRepository;
         private readonly IBookingRepository _bookingRepository;
 
-        public UserService(IUserRepository userRepository, IBookingRepository bookingRepository = null)
+        public UserService(IUserRepository userRepository, IBookingRepository bookingRepository)
         {
             _userRepository = userRepository;
             _bookingRepository = bookingRepository;
