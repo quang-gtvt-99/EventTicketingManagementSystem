@@ -1,12 +1,25 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using EventTicketingManagementSystem.Services;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace EventTicketingManagementSystem.Controllers
 {
-    public class UserController : Controller
+    [Route("api/user")]
+    [ApiController]
+    public class UserController : ControllerBase
     {
-        public IActionResult Index()
+        private readonly IUserService _userService;
+        public UserController(IUserService userService)
         {
-            return View();
+            _userService = userService;
+        }
+
+        [HttpGet]
+        [Route("profile")]
+        public async Task<IActionResult> Profile()
+        {
+            var result = await _userService.GetUserProfileAsync();
+            return Ok(result);
         }
     }
 }
