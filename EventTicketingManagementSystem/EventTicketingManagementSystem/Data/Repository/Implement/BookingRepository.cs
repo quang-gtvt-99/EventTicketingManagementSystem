@@ -13,6 +13,7 @@ namespace EventTicketingManagementSystem.Data.Repository.Implement
         public async Task<List<BookingInfoDto>> GetBookingInfosByUserIdAsync(int userId)
         {
             var bookingInfos = await _context.Bookings
+                .AsNoTracking()
                 .Include(b => b.Tickets)
                 .ThenInclude(t => t.Seat)
                 .Where(b => b.UserId == userId)
