@@ -1,8 +1,8 @@
 using EventTicketingManagementSystem.Data;
 using EventTicketingManagementSystem.Data.Repository;
 using EventTicketingManagementSystem.Data.Repository.Implement;
-using EventTicketingManagementSystem.Services;
 using EventTicketingManagementSystem.Services.Implements;
+using EventTicketingManagementSystem.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Repositories.Interfaces.Generic;
 
@@ -15,7 +15,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddScoped(typeof(IGenericRepository<,>), typeof(GenericRepository<,>));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IEventRepository, EventRepository>();
+builder.Services.AddScoped<IEventService, EventService>();
 
 
 // Add services to the container.
