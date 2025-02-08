@@ -1,5 +1,6 @@
 ﻿using EventTicketingManagementSystem.Data.Repository;
 using EventTicketingManagementSystem.Models;
+using EventTicketingManagementSystem.Services.Interfaces;
 
 namespace EventTicketingManagementSystem.Services.Implements
 {
