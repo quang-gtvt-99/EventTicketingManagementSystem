@@ -1,6 +1,8 @@
 ﻿using EventTicketingManagementSystem.Data.Repository;
 using EventTicketingManagementSystem.Dtos;
 using EventTicketingManagementSystem.Models;
+using EventTicketingManagementSystem.Request;
+using EventTicketingManagementSystem.Response;
 
 namespace EventTicketingManagementSystem.Services.Implements
 {
@@ -40,5 +42,35 @@ namespace EventTicketingManagementSystem.Services.Implements
                 FullName = user.FullName,
             };
         }
+
+        public async Task<RegisterResponse> RegisterAsync(RegisterRequest request)
+        {
+            var existingUser = await _userRepository.FindByEmailAsync(request.Email);
+            if (existingUser != null)
+            {
+                throw new Exception("Email already exists.");
+            }
+
+            var user = new User
+            {
+                Email = request.Email,
+                FullName = request.FullName,
+                PhoneNumber = request.PhoneNumber,
+                Status = "Active"
+            };
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
+
+            await _userRepository.AddAsync(user);
+
+            await _userRepository.AssignRoleAsync(user.Id, "User");
+
+            return new RegisterResponse
+            {
+                UserId = user.Id,
+                Email = user.Email,
+                FullName = user.FullName
+            };
+        }
+
     }
 }
