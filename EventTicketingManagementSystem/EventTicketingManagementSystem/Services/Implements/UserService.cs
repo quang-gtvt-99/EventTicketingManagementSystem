@@ -3,6 +3,7 @@ using EventTicketingManagementSystem.Dtos;
 using EventTicketingManagementSystem.Models;
 using EventTicketingManagementSystem.Request;
 using EventTicketingManagementSystem.Response;
+using EventTicketingManagementSystem.Services.Interfaces;
 
 namespace EventTicketingManagementSystem.Services.Implements
 {

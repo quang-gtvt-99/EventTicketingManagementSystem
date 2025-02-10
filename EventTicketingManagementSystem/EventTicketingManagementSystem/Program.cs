@@ -12,9 +12,13 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Load User Secrets and Environment Variables
+builder.Configuration.AddUserSecrets<Program>()
+                     .AddEnvironmentVariables();
 
+var connectionString = builder.Configuration["ConnectionString"];
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(connectionString));
 
 // Add repository.
 builder.Services.AddScoped(typeof(IGenericRepository<,>), typeof(GenericRepository<,>));
@@ -54,7 +58,7 @@ builder.Services.AddSwaggerGen(x =>
 });
 
 // Token-based authentication configuration
-var key = "KUJxXllbosn7PNVy01brsWJ9g7XfRXwk";
+var key = builder.Configuration["JwtKey"];
 builder.Services.AddAuthentication(x =>
 {
     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

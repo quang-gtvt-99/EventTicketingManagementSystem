@@ -1,5 +1,5 @@
 ﻿using EventTicketingManagementSystem.Request;
-using EventTicketingManagementSystem.Services;
+using EventTicketingManagementSystem.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventTicketingManagementSystem.Controllers
