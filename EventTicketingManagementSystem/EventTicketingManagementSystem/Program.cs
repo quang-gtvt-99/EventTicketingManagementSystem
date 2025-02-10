@@ -1,8 +1,8 @@
 using EventTicketingManagementSystem.Data;
 using EventTicketingManagementSystem.Data.Repository;
 using EventTicketingManagementSystem.Data.Repository.Implement;
-using EventTicketingManagementSystem.Services;
 using EventTicketingManagementSystem.Services.Implements;
+using EventTicketingManagementSystem.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -23,6 +23,8 @@ builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 
 // Add services.
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IEventRepository, EventRepository>();
+builder.Services.AddScoped<IEventService, EventService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
