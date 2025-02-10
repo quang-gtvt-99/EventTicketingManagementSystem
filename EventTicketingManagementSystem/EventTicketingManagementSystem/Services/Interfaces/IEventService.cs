@@ -1,4 +1,5 @@
-﻿using EventTicketingManagementSystem.Models;
+﻿using EventTicketingManagementSystem.Dtos;
+using EventTicketingManagementSystem.Models;
 
 namespace EventTicketingManagementSystem.Services.Interfaces
 {
@@ -14,5 +15,16 @@ namespace EventTicketingManagementSystem.Services.Interfaces
         Task<bool> UpdateEvent(Event eventItem);
 
         Task<bool> DeleteEvent(Event eventItem);
+
+        ///user///
+        Task<IEnumerable<Event>> GetAllEventAsync();
+        Task<Event?> GetEventDetailByIdAsync(int id);
+        Task<List<EventInfoDto>> GetEventInfoWithSeatAsync(int id);
+        Task<(string Message, int TotalSeats)> RegisterSeats(CreateSeatDto createSeatDto);
+        Task<bool> UpdateSeatAsync(int eventId, string row, int number, UpdateSeatDto updateSeatDto);
+        Task<bool> UpdateSeatAsync(int seatId, UpdateSeatDto updateSeatDto);
+
+        ///
+
     }
 }
