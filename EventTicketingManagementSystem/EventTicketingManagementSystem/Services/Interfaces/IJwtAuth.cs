@@ -1,4 +1,4 @@
-﻿namespace EventTicketingManagementSystem.Services
+﻿namespace EventTicketingManagementSystem.Services.Interfaces
 {
     public interface IJwtAuth
     {

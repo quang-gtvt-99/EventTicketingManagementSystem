@@ -1,8 +1,8 @@
 using EventTicketingManagementSystem.Data;
 using EventTicketingManagementSystem.Data.Repository;
 using EventTicketingManagementSystem.Data.Repository.Implement;
-using EventTicketingManagementSystem.Services;
 using EventTicketingManagementSystem.Services.Implements;
+using EventTicketingManagementSystem.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -12,9 +12,13 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Load User Secrets and Environment Variables
+builder.Configuration.AddUserSecrets<Program>()
+                     .AddEnvironmentVariables();
 
+var connectionString = builder.Configuration["ConnectionString"];
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(connectionString));
 
 // Add repository.
 builder.Services.AddScoped(typeof(IGenericRepository<,>), typeof(GenericRepository<,>));
@@ -23,6 +27,8 @@ builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 
 // Add services.
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IEventRepository, EventRepository>();
+builder.Services.AddScoped<IEventService, EventService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -52,7 +58,7 @@ builder.Services.AddSwaggerGen(x =>
 });
 
 // Token-based authentication configuration
-var key = "KUJxXllbosn7PNVy01brsWJ9g7XfRXwk";
+var key = builder.Configuration["JwtKey"];
 builder.Services.AddAuthentication(x =>
 {
     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

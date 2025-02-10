@@ -1,10 +1,9 @@
-﻿
-using EventTicketingManagementSystem.Dtos;
+﻿using EventTicketingManagementSystem.Dtos;
 using EventTicketingManagementSystem.Models;
 using EventTicketingManagementSystem.Request;
 using EventTicketingManagementSystem.Response;
 
-namespace EventTicketingManagementSystem.Services
+namespace EventTicketingManagementSystem.Services.Interfaces
 {
     public interface IUserService
     {

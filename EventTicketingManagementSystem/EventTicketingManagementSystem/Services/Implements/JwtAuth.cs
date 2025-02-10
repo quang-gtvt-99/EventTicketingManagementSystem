@@ -1,6 +1,7 @@
 ﻿using EventTicketingManagementSystem.Data.Repository;
 using EventTicketingManagementSystem.Models;
 using EventTicketingManagementSystem.Request;
+using EventTicketingManagementSystem.Services.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
