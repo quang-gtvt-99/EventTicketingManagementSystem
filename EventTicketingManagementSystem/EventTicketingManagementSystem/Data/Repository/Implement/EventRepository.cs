@@ -67,7 +67,7 @@ namespace EventTicketingManagementSystem.Data.Repository.Implement
             {
                 for (int number = CST_SEAT_NUM_START; number <= CST_SEAT_NUM_END; number++)
                 {
-                    bool isVip = "CDEFGH".Contains(row) && number >= CST_SEAT_NUM_START + 2 && number <= CST_SEAT_ROW_END - 2;
+                    bool isVip = "CDEFGH".Contains(row) && number >= CST_SEAT_NUM_START + 2 && number <= CST_SEAT_NUM_END - 2;
                     var seat = new Seat
                     {
                         EventId = createSeatDto.EventId,
