@@ -19,7 +19,7 @@ namespace EventTicketingManagementSystem.Services.Interfaces
         ///user///
         Task<IEnumerable<Event>> GetAllEventAsync();
         Task<Event?> GetEventDetailByIdAsync(int id);
-        Task<List<EventInfoDto>> GetEventInfoWithSeatAsync(int id);
+        Task<EventBookingInfoDto> GetEventInfoWithSeatAsync(int id);
         Task<(string Message, int TotalSeats)> RegisterSeats(CreateSeatDto createSeatDto);
         Task<bool> UpdateSeatAsync(int eventId, string row, int number, UpdateSeatDto updateSeatDto);
         Task<bool> UpdateSeatAsync(int seatId, UpdateSeatDto updateSeatDto);

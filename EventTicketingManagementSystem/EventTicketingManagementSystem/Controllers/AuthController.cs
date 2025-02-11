@@ -34,14 +34,14 @@ namespace EventTicketingManagementSystem.Controllers
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginRequest model)
         {
-            var token = _jwtAuth.Authentication(model.Email, model.Password);
+            var authResult = _jwtAuth.Authentication(model.Email, model.Password);
 
-            if (token == null)
+            if (authResult == null)
             {
                 return Unauthorized(); 
             }
 
-            return Ok(new { Token = token }); 
+            return Ok(authResult); 
         }
     }
 }
