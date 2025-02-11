@@ -30,7 +30,7 @@ namespace EventTicketingManagementSystem.Middlewares
                 {
                     Status = StatusCodes.Status500InternalServerError,
                     Title = "Server Error",
-                    Detail = "An unexpected error occurred. Please try again later."
+                    Detail = exception.Message
                 };
 
                 context.Response.StatusCode =

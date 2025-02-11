@@ -9,7 +9,7 @@ namespace EventTicketingManagementSystem.Middlewares
     {
         private readonly RequestDelegate _next;
         private readonly ILogger<RequestTimingMiddleware> _logger;
-        private const int ThresholdInSeconds = 2; // Set x to 2 seconds
+        private const int ThresholdInSeconds = 2;
 
         public RequestTimingMiddleware(RequestDelegate next, ILogger<RequestTimingMiddleware> logger)
         {
