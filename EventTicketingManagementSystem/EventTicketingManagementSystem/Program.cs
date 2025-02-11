@@ -26,6 +26,9 @@ builder.Services.AddScoped(typeof(IGenericRepository<,>), typeof(GenericReposito
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<IEventRepository, EventRepository>();
+builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
+builder.Services.AddScoped<ITicketRepository, TicketRepository>();
+
 
 // Add services.
 builder.Services.AddScoped<IUserService, UserService>();

@@ -10,5 +10,10 @@ namespace EventTicketingManagementSystem.Services.Interfaces
         Task<IEnumerable<User>> GetAllUsersAsync();
         Task<UserInfoDto> GetUserProfileAsync();
         Task<RegisterResponse> RegisterAsync(RegisterRequest request);
+        Task<Booking> CreateBookingAsync(CreateBookingDto bookingRequestDto, int loggedInUserId);
+        Task<Payment> UpdatePaymentStatusAsync(int paymentId, UpdatePaymentDto requestDto);
+        Task<bool> DeleteExpiredBookingAsync(int paymentId);
+        Task<List<Ticket>> CreateTicketsAsync(int bookingId);
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using EventTicketingManagementSystem.Data.Repository.Interfaces;
+﻿using EventTicketingManagementSystem.Data.Repository.Implement;
+using EventTicketingManagementSystem.Data.Repository.Interfaces;
 using EventTicketingManagementSystem.Dtos;
 using EventTicketingManagementSystem.Models;
 using EventTicketingManagementSystem.Request;
@@ -12,12 +13,16 @@ namespace EventTicketingManagementSystem.Services.Implements
         private readonly IUserRepository _userRepository;
         private readonly IBookingRepository _bookingRepository;
         private readonly ICurrentUserService _currentUserService;
+        private readonly IPaymentRepository _paymentRepository;
+        private readonly ITicketRepository _ticketRepository; 
 
-        public UserService(IUserRepository userRepository, IBookingRepository bookingRepository, ICurrentUserService currentUserService)
+        public UserService(IUserRepository userRepository, IBookingRepository bookingRepository, ICurrentUserService currentUserService, IPaymentRepository paymentRepository, ITicketRepository ticketRepository)
         {
             _userRepository = userRepository;
             _bookingRepository = bookingRepository;
             _currentUserService = currentUserService;
+            _paymentRepository = paymentRepository;
+            _ticketRepository = ticketRepository;
         }
         public async Task<IEnumerable<User>> GetAllUsersAsync()
         {
@@ -78,6 +83,21 @@ namespace EventTicketingManagementSystem.Services.Implements
                 FullName = user.FullName
             };
         }
-
+        public async Task<Booking> CreateBookingAsync(CreateBookingDto bookingRequestDto, int loggedInUserId)
+        {
+            return await _bookingRepository.CreateBookingAsync(bookingRequestDto, loggedInUserId);
+        }
+        public async Task<Payment> UpdatePaymentStatusAsync(int paymentId, UpdatePaymentDto requestDto)
+        {
+            return await _paymentRepository.UpdatePaymentStatusAsync(paymentId, requestDto);
+        }
+        public async Task<bool> DeleteExpiredBookingAsync(int paymentId)
+        {
+            return await _paymentRepository.DeleteExpiredBookingAsync(paymentId);
+        }
+        public async Task<List<Ticket>> CreateTicketsAsync(int bookingId)
+        {
+            return await _ticketRepository.CreateTicketsAsync(bookingId);
+        }
     }
 }
