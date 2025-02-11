@@ -1,13 +1,14 @@
 using EventTicketingManagementSystem.Data;
 using EventTicketingManagementSystem.Data.Repository;
 using EventTicketingManagementSystem.Data.Repository.Implement;
+using EventTicketingManagementSystem.Data.Repository.Interfaces;
+using EventTicketingManagementSystem.Middlewares;
 using EventTicketingManagementSystem.Services.Implements;
 using EventTicketingManagementSystem.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Persistence.Repositories.Interfaces.Generic;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,11 +25,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped(typeof(IGenericRepository<,>), typeof(GenericRepository<,>));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+builder.Services.AddScoped<IEventRepository, EventRepository>();
 
 // Add services.
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<IEventService, EventService>();
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 // Add External Services
 builder.Services.AddSingleton<IObjectStorageService, ObjectStorageService>();
@@ -112,6 +114,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseMiddleware<CurrentUserMiddleware>();
 
 app.MapControllers();
 

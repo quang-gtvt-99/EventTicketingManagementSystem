@@ -1,11 +1,10 @@
 ﻿using EventTicketingManagementSystem.Models;
-using Persistence.Repositories.Interfaces.Generic;
 
-namespace EventTicketingManagementSystem.Data.Repository
+namespace EventTicketingManagementSystem.Data.Repository.Interfaces
 {
     public interface IUserRepository : IGenericRepository<User, int>
     {
-        Task<User> FindByEmailAsync(string email);
+        Task<User?> FindByEmailAsync(string email);
 
         Task<List<string>> GetUserRolesAsync(int userId);
 

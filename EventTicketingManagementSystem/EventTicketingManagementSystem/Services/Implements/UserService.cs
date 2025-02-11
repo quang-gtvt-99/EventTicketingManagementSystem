@@ -1,4 +1,4 @@
-﻿using EventTicketingManagementSystem.Data.Repository;
+﻿using EventTicketingManagementSystem.Data.Repository.Interfaces;
 using EventTicketingManagementSystem.Dtos;
 using EventTicketingManagementSystem.Models;
 using EventTicketingManagementSystem.Request;
@@ -11,11 +11,13 @@ namespace EventTicketingManagementSystem.Services.Implements
     {
         private readonly IUserRepository _userRepository;
         private readonly IBookingRepository _bookingRepository;
+        private readonly ICurrentUserService _currentUserService;
 
-        public UserService(IUserRepository userRepository, IBookingRepository bookingRepository)
+        public UserService(IUserRepository userRepository, IBookingRepository bookingRepository, ICurrentUserService currentUserService)
         {
             _userRepository = userRepository;
             _bookingRepository = bookingRepository;
+            _currentUserService = currentUserService;
         }
         public async Task<IEnumerable<User>> GetAllUsersAsync()
         {
@@ -24,14 +26,18 @@ namespace EventTicketingManagementSystem.Services.Implements
 
         public async Task<UserInfoDto> GetUserProfileAsync()
         {
-            // TODO: Get current user
-            var user = new User()
+            if (string.IsNullOrEmpty(_currentUserService.Id)
+                || !int.TryParse(_currentUserService.Id, out int userId))
             {
-                Id = 1,
-                FullName = "John Doe",
-                Email = "test@email.com",
-                PhoneNumber = "1234567890",
-            };
+                throw new Exception("User id not found.");
+            }
+
+            var user = await _userRepository.GetByIdAsync(userId);
+
+            if (user == null)
+            {
+                throw new Exception("User not found.");
+            }
 
             var bookings = await _bookingRepository.GetBookingInfosByUserIdAsync(user.Id);
 

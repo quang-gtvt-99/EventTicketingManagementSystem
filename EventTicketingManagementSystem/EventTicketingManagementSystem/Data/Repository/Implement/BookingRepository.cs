@@ -1,4 +1,5 @@
-﻿using EventTicketingManagementSystem.Dtos;
+﻿using EventTicketingManagementSystem.Data.Repository.Interfaces;
+using EventTicketingManagementSystem.Dtos;
 using EventTicketingManagementSystem.Models;
 using Microsoft.EntityFrameworkCore;
 
