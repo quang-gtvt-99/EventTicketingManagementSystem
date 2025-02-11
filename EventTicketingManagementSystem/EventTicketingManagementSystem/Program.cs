@@ -113,6 +113,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseMiddleware<RequestTimingMiddleware>();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+
 app.UseAuthorization();
 
 app.UseMiddleware<CurrentUserMiddleware>();
