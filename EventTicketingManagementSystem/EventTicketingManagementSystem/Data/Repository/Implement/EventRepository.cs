@@ -48,7 +48,8 @@ namespace EventTicketingManagementSystem.Data.Repository.Implement
                 VenueName = e.VenueName,
                 VenueAddress = e.VenueAddress,
                 SeatInfos = e.Seats.Select(s => new SeatInfoDto
-                {
+                {   
+                    EventId = e.Id,
                     SeatId = s.Id,
                     Number = s.Number,
                     Row = s.Row,
