@@ -19,7 +19,7 @@ builder.Configuration.AddUserSecrets<Program>()
 
 var connectionString = builder.Configuration["ConnectionString"];
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseNpgsql(connectionString));
 
 // Add repository.
 builder.Services.AddScoped(typeof(IGenericRepository<,>), typeof(GenericRepository<,>));
@@ -126,6 +126,10 @@ if (app.Environment.IsDevelopment())
 app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
+
+app.UseMiddleware<RequestTimingMiddleware>();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseAuthorization();
 
