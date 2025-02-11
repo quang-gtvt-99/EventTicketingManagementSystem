@@ -1,4 +1,4 @@
-﻿using EventTicketingManagementSystem.Data.Repository;
+﻿using EventTicketingManagementSystem.Data.Repository.Interfaces;
 using EventTicketingManagementSystem.Models;
 using EventTicketingManagementSystem.Request;
 using EventTicketingManagementSystem.Services.Interfaces;

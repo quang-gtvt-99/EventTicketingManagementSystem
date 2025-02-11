@@ -1,8 +1,7 @@
 ﻿using EventTicketingManagementSystem.Dtos;
 using EventTicketingManagementSystem.Models;
-using Persistence.Repositories.Interfaces.Generic;
 
-namespace EventTicketingManagementSystem.Data.Repository
+namespace EventTicketingManagementSystem.Data.Repository.Interfaces
 {
     public interface IBookingRepository : IGenericRepository<Booking, int>
     {

@@ -1,6 +1,6 @@
-﻿using EventTicketingManagementSystem.Models.BaseModels;
+﻿using EventTicketingManagementSystem.Data.Repository.Interfaces;
+using EventTicketingManagementSystem.Models.BaseModels;
 using Microsoft.EntityFrameworkCore;
-using Persistence.Repositories.Interfaces.Generic;
 using System.Linq.Expressions;
 
 namespace EventTicketingManagementSystem.Data.Repository.Implement

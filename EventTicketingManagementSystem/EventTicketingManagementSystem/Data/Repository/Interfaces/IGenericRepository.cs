@@ -1,7 +1,7 @@
 ﻿using EventTicketingManagementSystem.Models.BaseModels;
 using System.Linq.Expressions;
 
-namespace Persistence.Repositories.Interfaces.Generic
+namespace EventTicketingManagementSystem.Data.Repository.Interfaces
 {
     public interface IGenericRepository<TEntity, in TKey> where TEntity : EntityBase<TKey> where TKey : struct
     {

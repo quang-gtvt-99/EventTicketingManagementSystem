@@ -1,6 +1,6 @@
-﻿using EventTicketingManagementSystem.Dtos;
+﻿using EventTicketingManagementSystem.Data.Repository.Interfaces;
+using EventTicketingManagementSystem.Dtos;
 using EventTicketingManagementSystem.Models;
-using Persistence.Repositories.Interfaces.Generic;
 
 namespace EventTicketingManagementSystem.Data.Repository
 {

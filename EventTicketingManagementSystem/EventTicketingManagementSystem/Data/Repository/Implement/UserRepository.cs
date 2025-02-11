@@ -1,4 +1,5 @@
-﻿using EventTicketingManagementSystem.Models;
+﻿using EventTicketingManagementSystem.Data.Repository.Interfaces;
+using EventTicketingManagementSystem.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace EventTicketingManagementSystem.Data.Repository.Implement
@@ -9,7 +10,7 @@ namespace EventTicketingManagementSystem.Data.Repository.Implement
         {
         }
 
-        public async Task<User> FindByEmailAsync(string email)
+        public async Task<User?> FindByEmailAsync(string email)
         {
             return await _dbSet.FirstOrDefaultAsync(u => u.Email == email);
         }
