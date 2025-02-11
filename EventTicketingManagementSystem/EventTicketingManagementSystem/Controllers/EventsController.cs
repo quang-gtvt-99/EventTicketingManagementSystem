@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using EventTicketingManagementSystem.Services.Interfaces;
 using EventTicketingManagementSystem.Models;
+using EventTicketingManagementSystem.Dtos;
 
 namespace EventTicketingManagementSystem.Controllers
 {
@@ -72,6 +73,61 @@ namespace EventTicketingManagementSystem.Controllers
             if (!deleted) return NotFound();
 
             return NoContent();
+        }
+
+        //User///////
+        [HttpGet("event-list")]
+        public async Task<IActionResult> GetEventList()
+        {
+            var result = await _eventService.GetAllEventAsync();
+            if (result == null || !result.Any()) return NoContent();
+            return Ok(result);
+        }
+
+        [HttpGet("event-detail/{id}")]
+        public async Task<IActionResult> GetEventDetail(int id)
+        {
+            var result = await _eventService.GetEventDetailByIdAsync(id);
+            if (result == null) return NotFound();
+            return Ok(result);
+        }
+
+        [HttpGet("event-booking/{id}")]
+        public async Task<IActionResult> GetEventBookingInfo(int id)
+        {
+            var result = await _eventService.GetEventInfoWithSeatAsync(id);
+            if (result == null) return NotFound();
+            return Ok(result);
+        }
+        [HttpPost("register-seat")]
+        public async Task<IActionResult> RegisterSeats([FromBody] CreateSeatDto createSeatDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _eventService.RegisterSeats(createSeatDto);
+
+            return Ok(new { Message = result.Message, TotalSeats = result.TotalSeats });
+        }
+        [HttpPut("update-seat")]
+        public async Task<IActionResult> UpdateSeat([FromBody] UpdateSeatDto updateSeatDto)
+        {
+            if (updateSeatDto == null)
+                return BadRequest("Seat information is required.");
+
+            if (updateSeatDto.SeatId != 0)
+            {
+                var result = await _eventService.UpdateSeatAsync(updateSeatDto.SeatId, updateSeatDto);
+                return result ? Ok("updated successfully.") : NotFound("not found.");
+            }
+            else if (updateSeatDto.EventId != 0 && !string.IsNullOrEmpty(updateSeatDto.Row) && updateSeatDto.Number != 0)
+            {
+                var result = await _eventService.UpdateSeatAsync(updateSeatDto.EventId, updateSeatDto.Row, updateSeatDto.Number, updateSeatDto);
+                return result ? Ok("updated successfully.") : NotFound("not found.");
+            }
+            return BadRequest("Invalid input parameters.");
         }
 
     }
