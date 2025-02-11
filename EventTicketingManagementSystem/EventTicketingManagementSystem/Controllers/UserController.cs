@@ -17,7 +17,6 @@ namespace EventTicketingManagementSystem.Controllers
 
         [HttpGet]
         [Route("profile")]
-        [Authorize(Roles = "User")]
         public async Task<IActionResult> Profile()
         {
             var result = await _userService.GetUserProfileAsync();

@@ -45,7 +45,7 @@ namespace EventTicketingManagementSystem.Services.Implements
         {
             return await _eventRepository.GetByIdAsync(id);
         }
-        public async Task<List<EventInfoDto>> GetEventInfoWithSeatAsync(int id)
+        public async Task<EventBookingInfoDto> GetEventInfoWithSeatAsync(int id)
         {
             return await _eventRepository.GetEventInfoWithSeatsByEventIDAsync(id);
         }

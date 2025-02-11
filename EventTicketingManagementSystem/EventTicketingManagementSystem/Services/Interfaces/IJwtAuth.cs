@@ -1,7 +1,9 @@
-﻿namespace EventTicketingManagementSystem.Services.Interfaces
+﻿using EventTicketingManagementSystem.Response;
+
+namespace EventTicketingManagementSystem.Services.Interfaces
 {
     public interface IJwtAuth
     {
-        string Authentication(string email, string password);
+        AuthResult Authentication(string email, string password);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using EventTicketingManagementSystem.Dtos;
 using EventTicketingManagementSystem.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace EventTicketingManagementSystem.Data.Repository.Implement
 {
@@ -36,31 +37,39 @@ namespace EventTicketingManagementSystem.Data.Repository.Implement
             return await query.ToListAsync();
         }
         ///////user
-        public async Task<List<EventInfoDto>> GetEventInfoWithSeatsByEventIDAsync(int eventId)
+        public async Task<EventBookingInfoDto> GetEventInfoWithSeatsByEventIDAsync(int eventId)
         {
             var eventInfo = await _context.Events
-            .Where(e => e.Id == eventId)
-            .Select(e => new EventInfoDto
-            {
-                EventID = e.Id,
-                EventName = e.Name,
-                StartDate = e.StartDate,
-                VenueName = e.VenueName,
-                VenueAddress = e.VenueAddress,
-                SeatInfos = e.Seats.Select(s => new SeatInfoDto
-                {   
-                    EventId = e.Id,
-                    SeatId = s.Id,
-                    Number = s.Number,
-                    Row = s.Row,
-                    Type = s.Type,
-                    Price = s.Price,
-                    Status = s.Status
-                }).ToList()
-            })
-            .ToListAsync();
-            return eventInfo ?? new List<EventInfoDto>();
+                .Where(e => e.Id == eventId)
+                .Select(e => new EventBookingInfoDto
+                {
+                    EventInfo = new EventInfoDto
+                    {
+                        EventID = e.Id,
+                        EventName = e.Name,
+                        Description = e.Description, 
+                        StartDate = e.StartDate,
+                        EndDate = e.EndDate, 
+                        VenueName = e.VenueName,
+                        VenueAddress = e.VenueAddress,
+                        ImageUrls = e.ImageUrls 
+                    },
+                    SeatInfos = e.Seats.Select(s => new SeatInfoDto
+                    {
+                        EventId = s.EventId,
+                        SeatId = s.Id,
+                        Number = s.Number,
+                        Row = s.Row,
+                        Type = s.Type,
+                        Price = s.Price,
+                        Status = s.Status
+                    }).ToList()
+                })
+                .FirstOrDefaultAsync();
+
+            return eventInfo ?? new EventBookingInfoDto();
         }
+
         public async Task<(string Message, int TotalSeats)> RegisterSeatsForEventAsync(CreateSeatDto createSeatDto)
         {
             var seats = new List<Seat>();

@@ -6,7 +6,7 @@ using EventTicketingManagementSystem.Dtos;
 namespace EventTicketingManagementSystem.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/event")]
     public class EventsController : ControllerBase
     {
         private readonly IEventService _eventService;

@@ -1,6 +1,7 @@
 ﻿using EventTicketingManagementSystem.Data.Repository.Interfaces;
 using EventTicketingManagementSystem.Models;
 using EventTicketingManagementSystem.Request;
+using EventTicketingManagementSystem.Response;
 using EventTicketingManagementSystem.Services.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -20,7 +21,7 @@ namespace EventTicketingManagementSystem.Services.Implements
             _secretKey = secretKey;
         }
 
-        public string Authentication(string email, string password)
+        public AuthResult Authentication(string email, string password)
         {
             var user = _userRepository.FindByEmailAsync(email).Result;
 
@@ -58,7 +59,14 @@ namespace EventTicketingManagementSystem.Services.Implements
             };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
+            var tokenString = tokenHandler.WriteToken(token);
+
+            return new AuthResult
+            {
+                Email = user.Email,
+                Roles = roles,
+                Token = tokenString
+            };
         }
 
         private bool VerifyPasswordHash(string password, string storedHash)
