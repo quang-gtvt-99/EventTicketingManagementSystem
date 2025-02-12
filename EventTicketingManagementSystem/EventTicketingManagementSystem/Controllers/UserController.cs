@@ -47,9 +47,9 @@ namespace EventTicketingManagementSystem.Controllers
                 }
 
                 int loggedInUserId = int.Parse(userIdClaim.Value);
-                var newBooking = await _userService.CreateBookingAsync(bookingRequestDto, loggedInUserId);
+                await _userService.CreateBookingAsync(bookingRequestDto, loggedInUserId);
 
-                return Ok(newBooking);
+                return Ok();
             }
             catch (UnauthorizedAccessException ex)
             {

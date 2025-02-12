@@ -54,7 +54,9 @@ namespace EventTicketingManagementSystem.Data.Repository.Implement
                         VenueAddress = e.VenueAddress,
                         ImageUrls = e.ImageUrls 
                     },
-                    SeatInfos = e.Seats.Select(s => new SeatInfoDto
+                    SeatInfos = e.Seats
+                    .OrderBy(s => s.Id) 
+                    .Select(s => new SeatInfoDto
                     {
                         EventId = s.EventId,
                         SeatId = s.Id,
@@ -63,7 +65,8 @@ namespace EventTicketingManagementSystem.Data.Repository.Implement
                         Type = s.Type,
                         Price = s.Price,
                         Status = s.Status
-                    }).ToList()
+                    })
+                    .ToList()
                 })
                 .FirstOrDefaultAsync();
 
