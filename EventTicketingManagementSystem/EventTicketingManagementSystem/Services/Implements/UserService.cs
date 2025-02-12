@@ -1,5 +1,4 @@
-﻿using EventTicketingManagementSystem.Data.Repository.Implement;
-using EventTicketingManagementSystem.Data.Repository.Interfaces;
+﻿using EventTicketingManagementSystem.Data.Repository.Interfaces;
 using EventTicketingManagementSystem.Dtos;
 using EventTicketingManagementSystem.Models;
 using EventTicketingManagementSystem.Request;
@@ -76,6 +75,8 @@ namespace EventTicketingManagementSystem.Services.Implements
 
             await _userRepository.AssignRoleAsync(user.Id, "User");
 
+            await _userRepository.SaveChangeAsync();
+
             return new RegisterResponse
             {
                 UserId = user.Id,
@@ -98,6 +99,55 @@ namespace EventTicketingManagementSystem.Services.Implements
         public async Task<List<Ticket>> CreateTicketsAsync(int bookingId)
         {
             return await _ticketRepository.CreateTicketsAsync(bookingId);
+        }
+        private void ChangePassword(ChangePasswordDto request)
+        {
+            var currentUser = request.User;
+            if (!BCrypt.Net.BCrypt.Verify(request.OldPassword, currentUser.PasswordHash))
+            {
+                throw new Exception("Old password is incorrect.");
+            }
+
+            if (request.NewPassword != request.ConfirmedNewPassword)
+            {
+                throw new Exception("New password and confirm password do not match.");
+            }
+
+            currentUser.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+        }
+
+        public async Task UpdateUserProfileAsync(UpdateUserProfileRequest request)
+        {
+            if (!int.TryParse(_currentUserService.Id, out int userId))
+            {
+                throw new Exception("User id not found.");
+            }
+
+            var currentUser = await _userRepository.GetByIdAsync(userId);
+
+            if (currentUser == null)
+            {
+                throw new Exception("User not found.");
+            }
+
+            currentUser.FullName = request.FullName;
+            currentUser.PhoneNumber = request.PhoneNumber;
+            currentUser.Email = request.Email;
+
+            if (request.AllowChangePassword)
+            {
+                var changePasswordRequest = new ChangePasswordDto
+                {
+                    OldPassword = request.OldPassword,
+                    NewPassword = request.NewPassword,
+                    ConfirmedNewPassword = request.ConfirmedNewPassword,
+                    User = currentUser
+                };
+                ChangePassword(changePasswordRequest);
+            }
+
+            _userRepository.Update(currentUser);
+            var result = await _userRepository.SaveChangeAsync();
         }
     }
 }

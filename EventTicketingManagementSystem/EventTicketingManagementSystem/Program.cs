@@ -5,6 +5,7 @@ using EventTicketingManagementSystem.Data.Repository.Interfaces;
 using EventTicketingManagementSystem.Middlewares;
 using EventTicketingManagementSystem.Services.Implements;
 using EventTicketingManagementSystem.Services.Interfaces;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -40,6 +41,11 @@ builder.Services.AddSingleton<IObjectStorageService, ObjectStorageService>();
 builder.Services.AddSingleton<ICacheService, CacheService>();
 
 builder.Services.AddControllers();
+
+// Add FluentValidation
+builder.Services
+    .AddFluentValidationAutoValidation()
+    .AddFluentValidationClientsideAdapters();
 
 // Add CORS services
 builder.Services.AddCors(options =>

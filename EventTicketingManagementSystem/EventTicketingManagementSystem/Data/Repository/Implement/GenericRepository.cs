@@ -34,22 +34,22 @@ namespace EventTicketingManagementSystem.Data.Repository.Implement
         public async Task<TEntity> AddAsync(TEntity entity)
         {
             await _dbSet.AddAsync(entity);
-            await _context.SaveChangesAsync();
 
             return entity;
         }
 
-        public async Task<bool> UpdateAsync(TEntity entity)
+        public void Update(TEntity entity)
         {
             _dbSet.Update(entity);
-            return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<bool> DeleteAsync(TEntity entity)
+        public void Delete(TEntity entity)
         {
             _dbSet.Remove(entity);
-
-            return await _context.SaveChangesAsync() > 0;
+        }
+        public async Task<int> SaveChangeAsync()
+        {
+            return await _context.SaveChangesAsync();
         }
     }
 }
