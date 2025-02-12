@@ -9,7 +9,8 @@ namespace EventTicketingManagementSystem.Data.Repository.Interfaces
         Task<IEnumerable<TEntity>> GetAllAsync();
         Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate);
         Task<TEntity> AddAsync(TEntity entity);
-        Task<bool> UpdateAsync(TEntity entity);
-        Task<bool> DeleteAsync(TEntity entity);
+        void Update(TEntity entity);
+        void Delete(TEntity entity);
+        Task<int> SaveChangeAsync();
     }
 }
