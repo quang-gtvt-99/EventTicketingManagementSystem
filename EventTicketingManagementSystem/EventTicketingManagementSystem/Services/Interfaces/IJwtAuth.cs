@@ -4,6 +4,6 @@ namespace EventTicketingManagementSystem.Services.Interfaces
 {
     public interface IJwtAuth
     {
-        AuthResult Authentication(string email, string password);
+        Task<AuthResult?> Authentication(string email, string password);
     }
 }

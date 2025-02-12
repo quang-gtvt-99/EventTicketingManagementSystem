@@ -32,16 +32,16 @@ namespace EventTicketingManagementSystem.Controllers
         }
 
         [HttpPost("login")]
-        public IActionResult Login([FromBody] LoginRequest model)
+        public async Task<IActionResult> Login([FromBody] LoginRequest model)
         {
-            var authResult = _jwtAuth.Authentication(model.Email, model.Password);
+            var authResult = await _jwtAuth.Authentication(model.Email, model.Password);
 
             if (authResult == null)
             {
-                return Unauthorized(); 
+                return Unauthorized();
             }
 
-            return Ok(authResult); 
+            return Ok(authResult);
         }
     }
 }

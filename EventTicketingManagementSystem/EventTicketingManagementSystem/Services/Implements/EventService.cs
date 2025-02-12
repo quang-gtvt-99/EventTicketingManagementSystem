@@ -25,14 +25,27 @@ namespace EventTicketingManagementSystem.Services.Implements
         public async Task<IEnumerable<Event>> GetEventsByFilter(string search, string category, string status) =>
             await _eventRepository.GetEventsByFilter(search, category, status);
 
-        public async Task<Event> CreateEvent(Event eventItem) => await _eventRepository.AddAsync(eventItem);
+        public async Task<Event> CreateEvent(Event eventItem)
+        {
+            var eventEntity = await _eventRepository.AddAsync(eventItem);
+            await _eventRepository.SaveChangeAsync();
+            return eventEntity;
+        }
 
-        public async Task<bool> UpdateEvent(Event eventItem) => await _eventRepository.UpdateAsync(eventItem);
+        public async Task<bool> UpdateEvent(Event eventItem)
+        {
+            _eventRepository.Update(eventItem);
+            return await _eventRepository.SaveChangeAsync() > 0;
+        }
 
-        public async Task<bool> DeleteEvent(Event eventItem) => await _eventRepository.DeleteAsync(eventItem);
+        public async Task<bool> DeleteEvent(Event eventItem)
+        {
+            _eventRepository.Delete(eventItem);
+            return await _eventRepository.SaveChangeAsync() > 0;
+        }
 
 
-        ///user
+        #region User Event
         public async Task<(string Message, int TotalSeats)> RegisterSeats(CreateSeatDto createSeatDto)
         {
             return await _eventRepository.RegisterSeatsForEventAsync(createSeatDto);
@@ -57,6 +70,6 @@ namespace EventTicketingManagementSystem.Services.Implements
         {
             return await _eventRepository.UpdateSeatBySeatIdAsync(seatId, updateSeatDto);
         }
-        ///
+        #endregion
     }
 }

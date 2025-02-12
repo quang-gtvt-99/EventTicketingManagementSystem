@@ -1,4 +1,5 @@
 ﻿using EventTicketingManagementSystem.Dtos;
+using EventTicketingManagementSystem.Request;
 using EventTicketingManagementSystem.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -25,6 +26,14 @@ namespace EventTicketingManagementSystem.Controllers
             var result = await _userService.GetUserProfileAsync();
             return Ok(result);
         }
+
+        [HttpPut("update-profile")]
+        public async Task<IActionResult> UpdateUserProfile([FromBody] UpdateUserProfileRequest request)
+        {
+            await _userService.UpdateUserProfileAsync(request);
+            return Ok();
+        }
+
         [HttpPost]
         [Route("booking")]
         public async Task<IActionResult> CreateBooking([FromBody] CreateBookingDto bookingRequestDto)
