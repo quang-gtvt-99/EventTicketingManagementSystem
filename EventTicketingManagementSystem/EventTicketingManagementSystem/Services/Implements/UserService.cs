@@ -1,4 +1,5 @@
-﻿using EventTicketingManagementSystem.Data.Repository.Implement;
+﻿using EventTicketingManagementSystem.Data.Repository;
+using EventTicketingManagementSystem.Data.Repository.Implement;
 using EventTicketingManagementSystem.Data.Repository.Interfaces;
 using EventTicketingManagementSystem.Dtos;
 using EventTicketingManagementSystem.Models;
