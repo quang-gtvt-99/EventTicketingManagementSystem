@@ -1,5 +1,5 @@
 
-name: .NET Build and Test
+name: Build and Test CI
 
 on:
   pull_request:
