@@ -1,5 +1,6 @@
-﻿using EventTicketingManagementSystem.Data.Repository.Interfaces;
+using EventTicketingManagementSystem.Data.Repository.Interfaces;
 using EventTicketingManagementSystem.Dtos;
+using EventTicketingManagementSystem.Enums;
 using EventTicketingManagementSystem.Models;
 using EventTicketingManagementSystem.Request;
 using EventTicketingManagementSystem.Response;
@@ -13,7 +14,7 @@ namespace EventTicketingManagementSystem.Services.Implements
         private readonly IBookingRepository _bookingRepository;
         private readonly ICurrentUserService _currentUserService;
         private readonly IPaymentRepository _paymentRepository;
-        private readonly ITicketRepository _ticketRepository; 
+        private readonly ITicketRepository _ticketRepository;
 
         public UserService(IUserRepository userRepository, IBookingRepository bookingRepository, ICurrentUserService currentUserService, IPaymentRepository paymentRepository, ITicketRepository ticketRepository)
         {
@@ -73,7 +74,7 @@ namespace EventTicketingManagementSystem.Services.Implements
 
             await _userRepository.AddAsync(user);
 
-            await _userRepository.AssignRoleAsync(user.Id, "User");
+            await _userRepository.AssignRoleAsync(user.Id, UserRoles.USER);
 
             await _userRepository.SaveChangeAsync();
 
