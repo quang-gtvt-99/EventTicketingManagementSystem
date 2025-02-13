@@ -11,7 +11,6 @@ namespace EventTicketingManagementSystem.Models
         public DateTime BookingDate { get; set; } = DateTime.UtcNow;
         public DateTime? ExpiryDate { get; set; }
         public int Quantity { get; set; }
-        public decimal UnitPrice { get; set; }
         public decimal Subtotal { get; set; }
 
         // Navigation properties
