@@ -22,15 +22,18 @@ namespace EventTicketingManagementSystem.Data.Repository.Implement
                 {
                     BookingId = b.Id,
                     EventId = b.EventId,
+                    Venue = b.Event.VenueAddress,
                     EventName = b.Event.Name,
                     EventDate = b.Event.StartDate.Date.ToString(),
                     EventTime = b.Event.StartDate.TimeOfDay.ToString(),
-                    TotalAmount = b.TotalAmount,
+                    TotalAmount = b.Subtotal,
                     Status = b.Status,
                     BookedAt = b.CreatedAt,
                     Tickets = b.Tickets.Select(t => new TicketInfoDto
                     {
                         TicketId = t.Id,
+                        Row = t.Seat.Row,
+                        Number = t.Seat.Number,
                         TicketNumber = t.TicketNumber,
                         Status = t.Status,
                         SeatType = t.Seat.Type,
