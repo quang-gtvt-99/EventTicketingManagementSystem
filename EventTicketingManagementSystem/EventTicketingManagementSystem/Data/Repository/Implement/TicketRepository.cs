@@ -1,6 +1,7 @@
 ﻿using EventTicketingManagementSystem.Data.Repository.Interfaces;
 using EventTicketingManagementSystem.Models;
 using Microsoft.EntityFrameworkCore;
+using EventTicketingManagementSystem.Constants;
 
 namespace EventTicketingManagementSystem.Data.Repository.Implement
 {
@@ -20,7 +21,7 @@ namespace EventTicketingManagementSystem.Data.Repository.Implement
             var seats = await _context.Seats
             .Include(s => s.Event)
             .Where(s => s.EventId == booking.EventId
-                      && s.Status == "available"
+                      && s.Status == CommConstants.CST_SEAT_STATUS_BOOKED
                       && s.Event.Bookings.Select(b => b.Id).Contains(booking.Id))
             .ToListAsync();
 
@@ -34,7 +35,7 @@ namespace EventTicketingManagementSystem.Data.Repository.Implement
                 BookingId = bookingId,
                 SeatId = seat.Id,
                 TicketNumber = GenerateTicketNumber(),
-                Status = "reserved",
+                Status = CommConstants.CST_SEAT_STATUS_RESERVED,
                 ReservedAt = DateTime.UtcNow
             }).ToList();
 

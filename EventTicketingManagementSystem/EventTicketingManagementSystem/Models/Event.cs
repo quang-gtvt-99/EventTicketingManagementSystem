@@ -13,6 +13,7 @@ namespace EventTicketingManagementSystem.Models
         public string Category { get; set; }
         public string ArtistInfo { get; set; }
         public string ImageUrls { get; set; }
+        public string TrailerUrls { get; set; }
         public int TotalTickets { get; set; }
         public int RemainingTickets { get; set; }
         public string Status { get; set; }

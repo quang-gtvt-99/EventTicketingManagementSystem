@@ -2,6 +2,7 @@
 using EventTicketingManagementSystem.Dtos;
 using EventTicketingManagementSystem.Models;
 using Microsoft.EntityFrameworkCore;
+using EventTicketingManagementSystem.Constants;
 
 namespace EventTicketingManagementSystem.Data.Repository.Implement
 {
@@ -61,12 +62,11 @@ namespace EventTicketingManagementSystem.Data.Repository.Implement
                     EventId = bookingRequestDto.EventId,
                     Subtotal = bookingRequestDto.SeatedInfos.Sum(s => s.Price),
                     Quantity = bookingRequestDto.SeatedInfos.Count,
-                    TotalAmount = bookingRequestDto.SeatedInfos.Sum(s => s.Price) * 0.3m, //include tax 3%
+                    TotalAmount = bookingRequestDto.SeatedInfos.Sum(s => s.Price) * 1.05m, //include tax 5%
                     BookingDate = DateTime.UtcNow,
                     ExpiryDate = DateTime.UtcNow.AddMinutes(30), //expriy after 30 minutes
                     //Status = "pending for payment",
-                    Status = "paid",
-                    UnitPrice = 0 // Unused
+                    Status = CommConstants.CST_PAY_STATUS_PAID
                 };
 
                 _context.Bookings.Add(newBooking);
@@ -95,7 +95,7 @@ namespace EventTicketingManagementSystem.Data.Repository.Implement
 
                     if (seat != null)
                     {
-                        seat.Status = "Booked";
+                        seat.Status = CommConstants.CST_SEAT_STATUS_BOOKED;
                         _context.Seats.Update(seat);
                     }
                 }
@@ -106,8 +106,8 @@ namespace EventTicketingManagementSystem.Data.Repository.Implement
                 {
                     BookingId = newBooking.Id,
                     SeatId = seat.SeatId,
-                    TicketNumber = GenerateTicketNumber(),
-                    Status = "reserved",
+                    TicketNumber = GenerateTicketNumber(seat.Row,seat.Number),
+                    Status = CommConstants.CST_SEAT_STATUS_RESERVED,
                     ReservedAt = DateTime.UtcNow
                 }).ToList();
 
@@ -126,9 +126,13 @@ namespace EventTicketingManagementSystem.Data.Repository.Implement
             
         }
 
-        private string GenerateTicketNumber()
+        private string GenerateTicketNumber(string row, int number)
         {
-            return $"TCK-{Guid.NewGuid().ToString("N").Substring(0, 8).ToUpper()}";
+            string dateNow = DateTime.UtcNow.ToString("yyyyMMdd");
+            string randomCode = Guid.NewGuid().ToString("N").Substring(0, 8).ToUpper();
+
+            return $"TICKET-{randomCode}-{dateNow}-{row}{number:D2}";
         }
+
     }
 }
