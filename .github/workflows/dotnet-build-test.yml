@@ -1,0 +1,29 @@
+
+name: .NET Build and Test
+
+on:
+  pull_request:
+    branches: [ "main" ]
+env:
+  DOTNET_VERSION: '8.0'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup .NET 📦
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Install dependencies 📂
+        run: dotnet restore ./EventTicketingManagementSystem/EventTicketingManagementSystem 
+
+      - name: Build 🧱
+        run: dotnet build ./EventTicketingManagementSystem/EventTicketingManagementSystem --configuration Release --no-restore
+
+      - name: Test 🧪
+        run: dotnet test ./EventTicketingManagementSystem/EventTicketingManagementSystem --configuration Release --no-build
