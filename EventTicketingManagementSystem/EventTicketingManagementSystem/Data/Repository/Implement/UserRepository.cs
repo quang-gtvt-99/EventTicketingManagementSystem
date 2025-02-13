@@ -1,4 +1,5 @@
 ﻿using EventTicketingManagementSystem.Data.Repository.Interfaces;
+using EventTicketingManagementSystem.Enums;
 using EventTicketingManagementSystem.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,18 +24,12 @@ namespace EventTicketingManagementSystem.Data.Repository.Implement
                 .ToListAsync();
         }
 
-        public async Task AssignRoleAsync(int userId, string roleName)
+        public async Task AssignRoleAsync(int userId, UserRoles roleId)
         {
-            var role = await _context.Roles.FirstOrDefaultAsync(r => r.Name == roleName);
-            if (role == null)
-            {
-                throw new Exception("Role not found.");
-            }
-
             var userRole = new UserRole
             {
                 UserId = userId,
-                RoleId = role.Id,
+                RoleId = (int)roleId,
                 AssignedAt = DateTime.UtcNow
             };
 
