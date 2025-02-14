@@ -29,7 +29,7 @@ builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 builder.Services.AddScoped<ITicketRepository, TicketRepository>();
-
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 
 // Add services.
 builder.Services.AddScoped<IUserService, UserService>();
