@@ -1,0 +1,29 @@
+name: Docker Image CD
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout master
+      uses: actions/checkout@main
+
+    - name: Install doctl
+      uses: digitalocean/action-doctl@v2
+      with:
+        token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+        
+    - name: Build the Docker image
+      run: docker build . --file EventTicketingManagementSystem/Dockerfile --tag registry.digitalocean.com/event-ticketing-system/event-ticketing:latest
+    
+    - name: Log in to DigitalOcean Container Registry with short-lived credentials
+      run: doctl registry login --expiry-seconds 1200
+    
+    - name: Push image to DigitalOcean Container Registry
+      run: docker push registry.digitalocean.com/event-ticketing-system/event-ticketing:latest
