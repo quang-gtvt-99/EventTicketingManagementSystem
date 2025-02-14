@@ -4,13 +4,12 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
 # Restore
-COPY ["EventTicketingManagementSystem/EventTicketingManagementSystem.csproj", "EventTicketingManagementSystem/"]
+COPY ["EventTicketingManagementSystem/EventTicketingManagementSystem/EventTicketingManagementSystem.csproj", "EventTicketingManagementSystem/"]
 RUN dotnet restore "EventTicketingManagementSystem/EventTicketingManagementSystem.csproj"
 
 # Build
-COPY EventTicketingManagementSystem/ EventTicketingManagementSystem/
+COPY ["EventTicketingManagementSystem/EventTicketingManagementSystem", "EventTicketingManagementSystem/"]
 RUN dotnet build "EventTicketingManagementSystem/EventTicketingManagementSystem.csproj" -c Release -o /app/build
-
 
 # Stage 2: Publish stage
 FROM build AS publish
