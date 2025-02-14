@@ -1,3 +1,4 @@
+using EventTicketingManagementSystem.Constants;
 using EventTicketingManagementSystem.Data.Repository.Interfaces;
 using EventTicketingManagementSystem.Dtos;
 using EventTicketingManagementSystem.Enums;
@@ -57,15 +58,15 @@ namespace EventTicketingManagementSystem.Services.Implements
 
         public async Task<RegisterResponse> RegisterAsync(RegisterRequest request)
         {
-            var existingUser = await _userRepository.FindByEmailAsync(request.Email);
-            if (existingUser != null)
+            var existingUser = await _userRepository.UserEmailExisted(request.Email);
+            if (existingUser == true)
             {
                 throw new Exception("Email already exists.");
             }
 
             var user = new User
             {
-                Email = request.Email,
+                Email = request.Email.ToLower(),
                 FullName = request.FullName,
                 PhoneNumber = request.PhoneNumber,
                 Status = "Active"
@@ -73,8 +74,12 @@ namespace EventTicketingManagementSystem.Services.Implements
             user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
             await _userRepository.AddAsync(user);
+            await _userRepository.SaveChangeAsync();
 
-            await _userRepository.AssignRoleAsync(user.Id, UserRoles.USER);
+            var userAdded = await _userRepository.FindByEmailAsync(user.Email);
+            if (userAdded == null) throw new Exception($"User not found with email {user.Email}.");
+
+            await _userRepository.AssignRoleAsync(userAdded.Id, RoleConsts.User);
 
             await _userRepository.SaveChangeAsync();
 

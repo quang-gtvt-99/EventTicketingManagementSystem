@@ -7,34 +7,52 @@ namespace EventTicketingManagementSystem.Data.Repository.Implement
 {
     public class UserRepository : GenericRepository<User, int>, IUserRepository 
     {
-        public UserRepository(AppDbContext context) : base(context)
+        private readonly IRoleRepository _roleRepository;
+        public UserRepository(AppDbContext context, IRoleRepository roleRepository) : base(context)
         {
+            _roleRepository = roleRepository;
         }
 
         public async Task<User?> FindByEmailAsync(string email)
         {
-            return await _dbSet.FirstOrDefaultAsync(u => u.Email == email);
+            return await _dbSet.FirstOrDefaultAsync(u => u.Email == email.ToLower());
+        }
+
+        public async Task<bool> UserEmailExisted(string email)
+        {
+            return await _dbSet.AnyAsync(u => u.Email == email.ToLower());
         }
 
         public async Task<List<string>> GetUserRolesAsync(int userId)
         {
-            return await _context.UserRoles
+            var roleIds = await _context.UserRoles
+                .AsNoTracking()
                 .Where(ur => ur.UserId == userId)
-                .Join(_context.Roles, ur => ur.RoleId, r => r.Id, (ur, r) => r.Name)
+                .Select(ur => ur.RoleId)
                 .ToListAsync();
+
+            var roles = await _roleRepository.GetRoleByIds(roleIds);
+
+            return roles.Select(x => x.Name).ToList();
         }
 
-        public async Task AssignRoleAsync(int userId, UserRoles roleId)
+        public async Task AssignRoleAsync(int userId, string roleName)
         {
+            var role = await _roleRepository.GetRoleByName(roleName);
+
+            if (role == null)
+            {
+                throw new Exception($"Role {roleName} not found.");
+            }
+
             var userRole = new UserRole
             {
                 UserId = userId,
-                RoleId = (int)roleId,
+                RoleId = role.Id,
                 AssignedAt = DateTime.UtcNow
             };
 
             await _context.UserRoles.AddAsync(userRole);
-            await _context.SaveChangesAsync();
         }
 
     }

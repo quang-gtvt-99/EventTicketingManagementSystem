@@ -41,11 +41,11 @@ namespace EventTicketingManagementSystem.Services.Implements
             return default;
         }
 
-        public async Task SetAsync<T>(string key, T value, int expirationSecond = 300)
+        public async Task<bool> SetAsync<T>(string key, T value, int expirationSecond = 300)
         {
             var expiration = new TimeSpan(0, 0, expirationSecond);
             var serializedValue = JsonSerializer.Serialize(value);
-            await db.StringSetAsync(key, serializedValue, expiration);
+            return await db.StringSetAsync(key, serializedValue, expiration);
         }
 
         public async Task ClearCacheAsync()
