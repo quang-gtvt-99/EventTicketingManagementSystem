@@ -1,0 +1,24 @@
+version: "3.8"
+
+services:
+  event-ticketing-system:
+    image: event-ticketing-management-system
+    build:
+      context: .
+    ports:
+      - "5001:5001"
+    environment:
+      - .env
+    networks:
+      - event-ticketing-network
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    networks:
+      - event-ticketing-network
+
+networks:
+  event-ticketing-network:
+    driver: bridge
