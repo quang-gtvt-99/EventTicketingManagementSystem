@@ -6,5 +6,6 @@ namespace EventTicketingManagementSystem.Data.Repository.Interfaces
     public interface IBookingRepository : IGenericRepository<Booking, int>
     {
         Task<List<BookingInfoDto>> GetBookingInfosByUserIdAsync(int userId);
+        Task<Booking> CreateBookingAsync(CreateBookingDto bookingRequestDto, int loggedInUserId);
     }
 }

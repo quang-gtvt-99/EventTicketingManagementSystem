@@ -21,9 +21,9 @@ namespace EventTicketingManagementSystem.Services.Implements
             _secretKey = secretKey;
         }
 
-        public AuthResult Authentication(string email, string password)
+        public async Task<AuthResult?> Authentication(string email, string password)
         {
-            var user = _userRepository.FindByEmailAsync(email).Result;
+            var user = await _userRepository.FindByEmailAsync(email);
 
             if (user == null)
             {
@@ -45,7 +45,7 @@ namespace EventTicketingManagementSystem.Services.Implements
                 new Claim(ClaimTypes.Name, user.FullName)
             };
 
-            var roles = _userRepository.GetUserRolesAsync(user.Id).Result;
+            var roles = await _userRepository.GetUserRolesAsync(user.Id);
             foreach (var role in roles)
             {
                 claims.Add(new Claim(ClaimTypes.Role, role));
@@ -60,6 +60,10 @@ namespace EventTicketingManagementSystem.Services.Implements
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var tokenString = tokenHandler.WriteToken(token);
+
+            user.LastLoginAt = DateTime.UtcNow;
+            _userRepository.Update(user);
+            await _userRepository.SaveChangeAsync();
 
             return new AuthResult
             {

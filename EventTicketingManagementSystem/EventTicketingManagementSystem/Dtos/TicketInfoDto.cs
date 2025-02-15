@@ -7,6 +7,8 @@
         public decimal TicketPrice { get; set; }
         public string? TicketNumber { get; set; }
         public string? SeatType { get; set; }
+        public string? Row { get; set; }
+        public int Number { get; set; }
         public string? Status { get; set; }
     }
 }

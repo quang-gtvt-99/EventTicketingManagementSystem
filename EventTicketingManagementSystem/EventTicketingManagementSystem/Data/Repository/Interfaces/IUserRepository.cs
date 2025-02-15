@@ -1,4 +1,5 @@
-﻿using EventTicketingManagementSystem.Models;
+﻿using EventTicketingManagementSystem.Enums;
+using EventTicketingManagementSystem.Models;
 
 namespace EventTicketingManagementSystem.Data.Repository.Interfaces
 {
@@ -9,5 +10,6 @@ namespace EventTicketingManagementSystem.Data.Repository.Interfaces
         Task<List<string>> GetUserRolesAsync(int userId);
 
         Task AssignRoleAsync(int userId, string roleName);
+        Task<bool> UserEmailExisted(string email);
     }
 }

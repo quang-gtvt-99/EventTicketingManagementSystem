@@ -3,6 +3,7 @@ using System;
 using EventTicketingManagementSystem.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EventTicketingManagementSystem.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250213134342_changeColEventandBooking")]
+    partial class changeColEventandBooking
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -79,43 +82,45 @@ namespace EventTicketingManagementSystem.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ArtistInfo")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Category")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int?>("CreatedBy")
+                    b.Property<int>("CreatedBy")
                         .HasColumnType("integer");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("ImageUrls")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("RemainingTickets")
+                    b.Property<int>("RemainingTickets")
                         .HasColumnType("integer");
-
-                    b.Property<decimal?>("SeatPrice")
-                        .HasColumnType("numeric");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Status")
+                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("TotalTickets")
+                    b.Property<int>("TotalTickets")
                         .HasColumnType("integer");
 
                     b.Property<string>("TrailerUrls")
@@ -126,9 +131,11 @@ namespace EventTicketingManagementSystem.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("VenueAddress")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("VenueName")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -385,7 +392,9 @@ namespace EventTicketingManagementSystem.Migrations
                 {
                     b.HasOne("EventTicketingManagementSystem.Models.User", "User")
                         .WithMany("Events")
-                        .HasForeignKey("CreatedBy");
+                        .HasForeignKey("CreatedBy")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });

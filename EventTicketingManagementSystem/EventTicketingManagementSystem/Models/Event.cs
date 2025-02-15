@@ -18,7 +18,7 @@ namespace EventTicketingManagementSystem.Models
         public string? Status { get; set; }
         public decimal? SeatPrice { get; set; }
         public int? CreatedBy { get; set; }
-
+        public string TrailerUrls { get; set; }
         // Navigation properties
         public User User { get; set; }
         public ICollection<Booking> Bookings { get; set; }

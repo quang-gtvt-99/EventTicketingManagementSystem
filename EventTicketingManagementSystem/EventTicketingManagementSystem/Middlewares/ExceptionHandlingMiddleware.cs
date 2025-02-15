@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using EventTicketingManagementSystem.Response;
+using Microsoft.AspNetCore.Mvc;
 
 namespace EventTicketingManagementSystem.Middlewares
 {
@@ -26,11 +27,13 @@ namespace EventTicketingManagementSystem.Middlewares
                 _logger.LogError(
                     exception, "Exception occurred: {Message}", exception.Message);
 
-                var problemDetails = new ProblemDetails
+                var problemDetails = new ExceptionResponse
                 {
-                    Status = StatusCodes.Status500InternalServerError,
+                    StatusCode = StatusCodes.Status500InternalServerError,
                     Title = "Server Error",
-                    Detail = exception.Message
+                    Message = exception.Message,
+                    StackTrace = exception.StackTrace,
+                    InnerExceptionMessage = exception.InnerException?.Message
                 };
 
                 context.Response.StatusCode =

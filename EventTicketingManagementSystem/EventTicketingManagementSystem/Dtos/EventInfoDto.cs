@@ -11,5 +11,6 @@
         public string? VenueName { get; set; }
         public string? VenueAddress { get; set; }
         public string? ImageUrls { get; set; }
+        public string? TrailerUrls { get; set; }
     }
 }

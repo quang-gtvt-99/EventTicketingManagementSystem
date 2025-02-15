@@ -2,17 +2,12 @@
 using EventTicketingManagementSystem.Models;
 using EventTicketingManagementSystem.Request;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+using EventTicketingManagementSystem.Constants;
 
 namespace EventTicketingManagementSystem.Data.Repository.Implement
 {
     public class EventRepository : GenericRepository<Event, int>, IEventRepository
     {
-        private const string CST_SEAT_STATUS_DEFAULT = "available";
-        private const int CST_SEAT_NUM_START = 1;
-        private const int CST_SEAT_NUM_END = 16;
-        private const char CST_SEAT_ROW_START = 'A';
-        private const char CST_SEAT_ROW_END = 'J';
         public EventRepository(AppDbContext context) : base(context)
         {
         }
@@ -90,9 +85,12 @@ namespace EventTicketingManagementSystem.Data.Repository.Implement
                         EndDate = e.EndDate, 
                         VenueName = e.VenueName,
                         VenueAddress = e.VenueAddress,
-                        ImageUrls = e.ImageUrls 
+                        ImageUrls = e.ImageUrls,
+                        TrailerUrls = e.TrailerUrls                       
                     },
-                    SeatInfos = e.Seats.Select(s => new SeatInfoDto
+                    SeatInfos = e.Seats
+                    .OrderBy(s => s.Id) 
+                    .Select(s => new SeatInfoDto
                     {
                         EventId = s.EventId,
                         SeatId = s.Id,
@@ -101,7 +99,8 @@ namespace EventTicketingManagementSystem.Data.Repository.Implement
                         Type = s.Type,
                         Price = s.Price,
                         Status = s.Status
-                    }).ToList()
+                    })
+                    .ToList()
                 })
                 .FirstOrDefaultAsync();
 
@@ -111,19 +110,19 @@ namespace EventTicketingManagementSystem.Data.Repository.Implement
         public async Task<(string Message, int TotalSeats)> RegisterSeatsForEventAsync(CreateSeatDto createSeatDto)
         {
             var seats = new List<Seat>();
-            for (char row = CST_SEAT_ROW_START; row <= CST_SEAT_ROW_END; row++)
+            for (char row = CommConstants.CST_SEAT_ROW_START; row <= CommConstants.CST_SEAT_ROW_END; row++)
             {
-                for (int number = CST_SEAT_NUM_START; number <= CST_SEAT_NUM_END; number++)
+                for (int number = CommConstants.CST_SEAT_NUM_START; number <= CommConstants.CST_SEAT_NUM_END; number++)
                 {
-                    bool isVip = "CDEFGH".Contains(row) && number >= CST_SEAT_NUM_START + 2 && number <= CST_SEAT_NUM_END - 2;
+                    bool isVip = "CDEFGH".Contains(row) && number >= CommConstants.CST_SEAT_NUM_START + 2 && number <= CommConstants.CST_SEAT_NUM_END - 2;
                     var seat = new Seat
                     {
                         EventId = createSeatDto.EventId,
                         Row = row.ToString(),
                         Number = number,
-                        Type = isVip ? "vip" : "normal",
+                        Type = isVip ? CommConstants.CST_SEAT_TYPE_VIP : CommConstants.CST_SEAT_TYPE_NOR,
                         Price = isVip ? createSeatDto.Price * 1.2m : createSeatDto.Price,
-                        Status = CST_SEAT_STATUS_DEFAULT
+                        Status = CommConstants.CST_SEAT_STATUS_DEFAULT
                     };
                     seats.Add(seat);
                 }
@@ -143,7 +142,7 @@ namespace EventTicketingManagementSystem.Data.Repository.Implement
             {
                 seat.Price = updateSeatDto.Price;
 
-                if (seat.Type?.ToLower() == "vip")
+                if (seat.Type?.ToLower() == CommConstants.CST_SEAT_TYPE_VIP)
                 {
                     seat.Price *= 1.2m;
                 }
@@ -171,7 +170,7 @@ namespace EventTicketingManagementSystem.Data.Repository.Implement
             {
                 seat.Price = updateSeatDto.Price;
 
-                if (seat.Type?.ToLower() == "vip")
+                if (seat.Type?.ToLower() == CommConstants.CST_SEAT_TYPE_VIP)
                 {
                     seat.Price *= 1.2m;
                 }
@@ -184,6 +183,5 @@ namespace EventTicketingManagementSystem.Data.Repository.Implement
             await _context.SaveChangesAsync();
             return true;
         }
-        ///
     }
 }

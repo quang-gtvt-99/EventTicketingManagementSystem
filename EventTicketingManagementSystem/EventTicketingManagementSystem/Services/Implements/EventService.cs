@@ -100,7 +100,11 @@ namespace EventTicketingManagementSystem.Services.Implements
             return isUpdated;
         }
 
-        public async Task<bool> DeleteEvent(Event eventItem) => await _eventRepository.DeleteAsync(eventItem);
+        public async Task<bool> DeleteEvent(Event eventItem)
+        {
+            _eventRepository.Delete(eventItem);
+            return await _eventRepository.SaveChangeAsync() > 0;
+        }
 
         public async Task<(IEnumerable<Event>, int)> GetFilteredPagedEventsAsync(EventSearchParamsRequest eventFilter)
         {
@@ -112,7 +116,7 @@ namespace EventTicketingManagementSystem.Services.Implements
 
 
 
-        ///user
+        #region User Event
         public async Task<(string Message, int TotalSeats)> RegisterSeats(CreateSeatDto createSeatDto)
         {
             return await _eventRepository.RegisterSeatsForEventAsync(createSeatDto);
@@ -137,6 +141,6 @@ namespace EventTicketingManagementSystem.Services.Implements
         {
             return await _eventRepository.UpdateSeatBySeatIdAsync(seatId, updateSeatDto);
         }
-        ///
+        #endregion
     }
 }
