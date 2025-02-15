@@ -37,6 +37,22 @@ namespace EventTicketingManagementSystem.Data.Repository.Implement
 
             return entity;
         }
+        public async Task<bool> UpdateAsync(TEntity entity)
+        {
+            try
+            {
+                _dbSet.Update(entity); // Marks the entity as modified
+                int affectedRows = await _context.SaveChangesAsync(); // Save changes to the database
+
+                // Return true if at least one row was affected, otherwise return false
+                return affectedRows > 0;
+            }
+            catch (Exception)
+            {
+                // Handle any exceptions (e.g., logging or other error handling)
+                return false;
+            }
+        }
 
         public void Update(TEntity entity)
         {
