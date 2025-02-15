@@ -7,6 +7,7 @@
         public string? Description { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
+        public int TicketPrice { get; set; }
         public string? VenueName { get; set; }
         public string? VenueAddress { get; set; }
         public string? ImageUrls { get; set; }

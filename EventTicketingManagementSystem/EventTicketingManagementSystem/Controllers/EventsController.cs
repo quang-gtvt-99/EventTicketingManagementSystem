@@ -2,6 +2,8 @@
 using EventTicketingManagementSystem.Services.Interfaces;
 using EventTicketingManagementSystem.Models;
 using EventTicketingManagementSystem.Dtos;
+using EventTicketingManagementSystem.Request;
+using EventTicketingManagementSystem.Response;
 
 namespace EventTicketingManagementSystem.Controllers
 {
@@ -33,35 +35,61 @@ namespace EventTicketingManagementSystem.Controllers
             return Ok(eventItem);
         }
 
-        // GET: api/events/filter?search=music&category=Concert&status=Active
+        // GET: api/events/filter?search=music&category=Concert&status=Active&pageNumber=1&pageSize=10
         [HttpGet("filter")]
-        public async Task<ActionResult<IEnumerable<Event>>> GetEventsByFilter(
-            [FromQuery] string search,
-            [FromQuery] string category,
-            [FromQuery] string status)
+        public async Task<IActionResult> GetEventsByFilter([FromQuery] EventSearchParamsRequest filterRequest)
         {
-            var events = await _eventService.GetEventsByFilter(search, category, status);
-            return Ok(events);
+            if (filterRequest.PageNumber < 1) filterRequest.PageNumber = 1;
+            if (filterRequest.PageSize < 1 || filterRequest.PageSize > 100) filterRequest.PageSize = 10;
+
+            var (events, countTotal) = await _eventService.GetFilteredPagedEventsAsync(filterRequest);
+
+            if (events == null || !events.Any())
+                return NoContent();
+
+            var eventDtos = events.Select(e => new EventInfoDto
+            {
+                EventID = e.Id,
+                EventName = e.Name,
+                Description = e.Description,
+                StartDate = e.StartDate,
+                EndDate = e.EndDate,
+                VenueName = e.VenueName,
+                VenueAddress = e.VenueAddress,
+                ImageUrls = e.ImageUrls
+            }).ToList();
+
+            var res = new EventListResponse
+            {
+                Events = eventDtos,
+                PageNumber = filterRequest.PageNumber,
+                PageSize = filterRequest.PageSize,
+                TotalCount = countTotal,
+                TotalPages = (int) Math.Ceiling((decimal)countTotal / filterRequest.PageSize)
+            };
+
+            return Ok(res);
         }
+
 
         // POST: api/events
         [HttpPost]
-        public async Task<ActionResult<int>> CreateEvent([FromBody] Event eventItem)
+        public async Task<ActionResult<int>> CreateEvent([FromForm] AddUpdateEventRequest eventItem)
         {
             var newEvent = await _eventService.CreateEvent(eventItem);
-            return CreatedAtAction(nameof(GetEventById), newEvent);
+            return Ok(newEvent.Id);
         }
 
         // PUT: api/events/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateEvent(int id, [FromBody] Event eventItem)
+        public async Task<IActionResult> UpdateEvent(int id, [FromBody] AddUpdateEventRequest eventItem)
         {
-            if (id != eventItem.Id) return BadRequest();
+            if (id != eventItem.ID) return BadRequest();
 
             var updated = await _eventService.UpdateEvent(eventItem);
             if (!updated) return NotFound();
 
-            return NoContent();
+            return Ok(true);
         }
 
         // DELETE: api/events/{id}

@@ -1,5 +1,6 @@
 ﻿using EventTicketingManagementSystem.Dtos;
 using EventTicketingManagementSystem.Models;
+using EventTicketingManagementSystem.Request;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -36,6 +37,43 @@ namespace EventTicketingManagementSystem.Data.Repository.Implement
 
             return await query.ToListAsync();
         }
+
+        public async Task<IEnumerable<Event>> GetFilteredPagedAsync(EventSearchParamsRequest eventFilter)
+        {
+            var query = _context.Events.AsQueryable();
+
+            if (!string.IsNullOrEmpty(eventFilter.Search))
+            {
+                query = query.Where(e => e.Name.ToLower().Contains(eventFilter.Search.ToLower()) || e.Description.ToLower().Contains(eventFilter.Search.ToLower()));
+            }
+
+            if (!string.IsNullOrEmpty(eventFilter.Category))
+            {
+                query = query.Where(e => e.Category == eventFilter.Category);
+            }
+
+            if (!string.IsNullOrEmpty(eventFilter.Status))
+            {
+                query = query.Where(e => e.Status == eventFilter.Status);
+            }
+
+            return await query
+                .Skip((eventFilter.PageNumber - 1) * eventFilter.PageSize)  // Skip the previous pages
+                .Take(eventFilter.PageSize)                     // Take the specified number of results
+                .ToListAsync();
+        }
+
+        public async Task<int> CountSearch(string search)
+        {
+            var query = _context.Events.AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(e => e.Name.ToLower().Contains(search.ToLower()) || e.Description.ToLower().Contains(search.ToLower()));
+            }
+            return await query.CountAsync();
+        }
+
         ///////user
         public async Task<EventBookingInfoDto> GetEventInfoWithSeatsByEventIDAsync(int eventId)
         {
