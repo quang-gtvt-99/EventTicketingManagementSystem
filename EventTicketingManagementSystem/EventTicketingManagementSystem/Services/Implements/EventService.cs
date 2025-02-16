@@ -4,8 +4,6 @@ using EventTicketingManagementSystem.Dtos;
 using EventTicketingManagementSystem.Models;
 using EventTicketingManagementSystem.Request;
 using EventTicketingManagementSystem.Services.Interfaces;
-using EventTicketingManagementSystem.Share;
-using Microsoft.AspNetCore.Components;
 
 namespace EventTicketingManagementSystem.Services.Implements
 {
