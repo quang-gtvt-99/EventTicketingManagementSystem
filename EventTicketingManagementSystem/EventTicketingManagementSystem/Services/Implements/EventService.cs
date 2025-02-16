@@ -63,7 +63,7 @@ namespace EventTicketingManagementSystem.Services.Implements
                 var eventCreated = await _eventRepository.AddAsync(eventObj);
                 await _eventRepository.SaveChangeAsync();
 
-                return eventCreated;
+                return eventCreated.Id;
             }
             catch (Exception ex)
             {
