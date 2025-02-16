@@ -36,5 +36,11 @@
         public static readonly string CST_PAY_STATUS_CANCEL = "Cancel payment";
 
         ///
+
+        ///S3 constants
+        
+        public static readonly string S3_BUCKET_NAME = "event-ticketing-management-system";
+
+        ///
     }
 }

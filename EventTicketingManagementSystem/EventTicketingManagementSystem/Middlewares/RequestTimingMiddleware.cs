@@ -1,7 +1,4 @@
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 using System.Diagnostics;
-using System.Threading.Tasks;
 
 namespace EventTicketingManagementSystem.Middlewares
 {

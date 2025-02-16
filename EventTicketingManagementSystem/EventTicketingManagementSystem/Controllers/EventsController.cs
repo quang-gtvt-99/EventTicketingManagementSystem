@@ -2,6 +2,7 @@
 using EventTicketingManagementSystem.Services.Interfaces;
 using EventTicketingManagementSystem.Models;
 using EventTicketingManagementSystem.Dtos;
+using EventTicketingManagementSystem.Request;
 
 namespace EventTicketingManagementSystem.Controllers
 {
@@ -33,46 +34,60 @@ namespace EventTicketingManagementSystem.Controllers
             return Ok(eventItem);
         }
 
-        // GET: api/events/filter?search=music&category=Concert&status=Active
+        // GET: api/events/filter?search=music&category=Concert&status=Active&pageNumber=1&pageSize=10
         [HttpGet("filter")]
-        public async Task<ActionResult<IEnumerable<Event>>> GetEventsByFilter(
-            [FromQuery] string search,
-            [FromQuery] string category,
-            [FromQuery] string status)
+        public async Task<IActionResult> GetEventsByFilter([FromQuery] EventSearchParamsRequest filterRequest)
         {
-            var events = await _eventService.GetEventsByFilter(search, category, status);
-            return Ok(events);
+            var events = await _eventService.GetFilteredPagedEventsAsync(filterRequest);
+
+            if (events == null || !events.Any())
+                return NoContent();
+
+            var eventDtos = events.Select(e => new EventInfoDto
+            {
+                EventID = e.Id,
+                EventName = e.Name,
+                Description = e.Description,
+                StartDate = e.StartDate,
+                EndDate = e.EndDate,
+                VenueName = e.VenueName,
+                VenueAddress = e.VenueAddress,
+                ImageUrls = e.ImageUrls
+            }).ToList();
+
+            return Ok(eventDtos);
         }
+
 
         // POST: api/events
         [HttpPost]
-        public async Task<ActionResult<int>> CreateEvent([FromBody] Event eventItem)
+        public async Task<ActionResult<int>> CreateEvent([FromForm] AddUpdateEventRequest eventItem)
         {
-            var newEvent = await _eventService.CreateEvent(eventItem);
-            return CreatedAtAction(nameof(GetEventById), newEvent);
+            var newEventID = await _eventService.CreateEvent(eventItem);
+            return Ok(newEventID);
         }
 
         // PUT: api/events/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateEvent(int id, [FromBody] Event eventItem)
+        public async Task<IActionResult> UpdateEvent(int id, [FromBody] AddUpdateEventRequest eventItem)
         {
-            if (id != eventItem.Id) return BadRequest();
+            if (id != eventItem.ID) return BadRequest();
 
             var updated = await _eventService.UpdateEvent(eventItem);
             if (!updated) return NotFound();
 
-            return NoContent();
+            return Ok(true);
         }
 
         // DELETE: api/events/{id}
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteEvent(int id, [FromBody] Event eventItem)
+        public async Task<IActionResult> DeleteEvent(int id)
         {
-            var deleted = await _eventService.DeleteEvent(eventItem);
+            var deleted = await _eventService.DeleteEvent(id);
 
             if (!deleted) return NotFound();
 
-            return NoContent();
+            return Ok(true);
         }
 
         //User///////

@@ -3,6 +3,7 @@ using System;
 using EventTicketingManagementSystem.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EventTicketingManagementSystem.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250215081835_ChangePropertyNullability")]
+    partial class ChangePropertyNullability
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -53,6 +56,9 @@ namespace EventTicketingManagementSystem.Migrations
                         .HasColumnType("numeric");
 
                     b.Property<decimal>("TotalAmount")
+                        .HasColumnType("numeric");
+
+                    b.Property<decimal>("UnitPrice")
                         .HasColumnType("numeric");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -103,11 +109,8 @@ namespace EventTicketingManagementSystem.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("RemainingTickets")
+                    b.Property<int>("RemainingTickets")
                         .HasColumnType("integer");
-
-                    b.Property<decimal?>("SeatPrice")
-                        .HasColumnType("numeric");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("timestamp with time zone");
@@ -115,16 +118,14 @@ namespace EventTicketingManagementSystem.Migrations
                     b.Property<string>("Status")
                         .HasColumnType("text");
 
-                    b.Property<int?>("TotalTickets")
+                    b.Property<int>("TotalTickets")
                         .HasColumnType("integer");
-
-                    b.Property<string>("TrailerUrls")
-                        .HasColumnType("text");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("VenueAddress")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("VenueName")

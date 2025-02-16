@@ -1,5 +1,6 @@
 ﻿using EventTicketingManagementSystem.Dtos;
 using EventTicketingManagementSystem.Models;
+using EventTicketingManagementSystem.Request;
 
 namespace EventTicketingManagementSystem.Services.Interfaces
 {
@@ -10,11 +11,12 @@ namespace EventTicketingManagementSystem.Services.Interfaces
 
         Task<IEnumerable<Event>> GetEventsByFilter(string search, string category, string status);
 
-        Task<Event> CreateEvent(Event eventItem);
+        Task<int> CreateEvent(AddUpdateEventRequest eventItem);
 
-        Task<bool> UpdateEvent(Event eventItem);
+        Task<bool> UpdateEvent(AddUpdateEventRequest eventItem);
 
-        Task<bool> DeleteEvent(Event eventItem);
+        Task<IEnumerable<Event>> GetFilteredPagedEventsAsync(EventSearchParamsRequest eventFilter);
+        Task<bool> DeleteEvent(int id);
 
         ///user///
         Task<IEnumerable<Event>> GetAllEventAsync();
