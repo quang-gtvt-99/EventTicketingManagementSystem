@@ -11,7 +11,7 @@ namespace EventTicketingManagementSystem.Services.Interfaces
 
         Task<IEnumerable<Event>> GetEventsByFilter(string search, string category, string status);
 
-        Task<Event> CreateEvent(AddUpdateEventRequest eventItem);
+        Task<int> CreateEvent(AddUpdateEventRequest eventItem);
 
         Task<bool> UpdateEvent(AddUpdateEventRequest eventItem);
 

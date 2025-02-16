@@ -1,4 +1,4 @@
-﻿namespace EventTicketingManagementSystem.Share
+﻿namespace EventTicketingManagementSystem.Enums
 {
     public enum CategoryEnum
     {

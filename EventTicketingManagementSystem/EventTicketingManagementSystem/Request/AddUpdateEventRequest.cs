@@ -1,4 +1,4 @@
-﻿using EventTicketingManagementSystem.Share;
+﻿using EventTicketingManagementSystem.Enums;
 
 namespace EventTicketingManagementSystem.Request
 {

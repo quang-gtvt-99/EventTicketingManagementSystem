@@ -64,8 +64,8 @@ namespace EventTicketingManagementSystem.Controllers
         [HttpPost]
         public async Task<ActionResult<int>> CreateEvent([FromForm] AddUpdateEventRequest eventItem)
         {
-            var newEvent = await _eventService.CreateEvent(eventItem);
-            return Ok(newEvent.Id);
+            var newEventID = await _eventService.CreateEvent(eventItem);
+            return Ok(newEventID);
         }
 
         // PUT: api/events/{id}

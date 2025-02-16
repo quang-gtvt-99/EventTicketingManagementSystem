@@ -1,4 +1,5 @@
-﻿using EventTicketingManagementSystem.Data.Repository;
+﻿using EventTicketingManagementSystem.Constants;
+using EventTicketingManagementSystem.Data.Repository;
 using EventTicketingManagementSystem.Dtos;
 using EventTicketingManagementSystem.Models;
 using EventTicketingManagementSystem.Request;
@@ -30,7 +31,7 @@ namespace EventTicketingManagementSystem.Services.Implements
         public async Task<IEnumerable<Event>> GetEventsByFilter(string search, string category, string status) =>
             await _eventRepository.GetEventsByFilter(search, category, status);
 
-        public async Task<Event> CreateEvent(AddUpdateEventRequest eventItem)
+        public async Task<int> CreateEvent(AddUpdateEventRequest eventItem)
         {
             try
             {
@@ -44,7 +45,7 @@ namespace EventTicketingManagementSystem.Services.Implements
                         var fileName = $"{Guid.NewGuid()}_{eventItem.Image.FileName}";
 
                         // Call the UploadFileAsync method
-                        imageUrl = await _objectStorageService.UploadFileAsync(fileStream, fileName, CommonConst.S3_BUCKET_NAME);
+                        imageUrl = await _objectStorageService.UploadFileAsync(fileStream, fileName, CommConstants.S3_BUCKET_NAME);
                     }
                 }
                 var eventObj = new Event
@@ -60,6 +61,7 @@ namespace EventTicketingManagementSystem.Services.Implements
                     SeatPrice = eventItem.SeatPrice
                 };
                 var eventCreated = await _eventRepository.AddAsync(eventObj);
+                await _eventRepository.SaveChangeAsync();
 
                 return eventCreated;
             }
@@ -77,7 +79,7 @@ namespace EventTicketingManagementSystem.Services.Implements
             var imageUrl = string.Empty;
             if (stream != null)
             {
-                imageUrl = await _objectStorageService.UploadFileAsync(stream, new Guid().ToString(), CommonConst.S3_BUCKET_NAME);
+                imageUrl = await _objectStorageService.UploadFileAsync(stream, new Guid().ToString(), CommConstants.S3_BUCKET_NAME);
             }
 
             var eventObj = await _eventRepository.GetByIdAsync(eventItem.ID);
@@ -96,7 +98,8 @@ namespace EventTicketingManagementSystem.Services.Implements
             eventObj.Category = eventItem.Category?.ToString() ?? string.Empty;
             eventObj.SeatPrice = eventItem.SeatPrice.GetValueOrDefault();
 
-            var isUpdated = await _eventRepository.UpdateAsync(eventObj);
+            _eventRepository.Update(eventObj);
+            var isUpdated = await _eventRepository.SaveChangeAsync() > 0;
 
             return isUpdated;
         }
