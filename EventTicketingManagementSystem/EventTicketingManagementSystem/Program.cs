@@ -39,6 +39,7 @@ builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 // Add External Services
 builder.Services.AddSingleton<IObjectStorageService, ObjectStorageService>();
 builder.Services.AddSingleton<ICacheService, CacheService>();
+builder.Services.AddSingleton<ISendMailService, SendMailService>();
 
 builder.Services.AddControllers();
 
