@@ -52,10 +52,7 @@ namespace EventTicketingManagementSystem.Data.Repository.Implement
                 query = query.Where(e => e.Status == eventFilter.Status);
             }
 
-            return await query
-                .Skip((eventFilter.PageNumber - 1) * eventFilter.PageSize)  // Skip the previous pages
-                .Take(eventFilter.PageSize)                     // Take the specified number of results
-                .ToListAsync();
+            return await query.ToListAsync();
         }
 
         public async Task<int> CountSearch(string search)

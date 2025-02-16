@@ -39,10 +39,7 @@ namespace EventTicketingManagementSystem.Controllers
         [HttpGet("filter")]
         public async Task<IActionResult> GetEventsByFilter([FromQuery] EventSearchParamsRequest filterRequest)
         {
-            if (filterRequest.PageNumber < 1) filterRequest.PageNumber = 1;
-            if (filterRequest.PageSize < 1 || filterRequest.PageSize > 100) filterRequest.PageSize = 10;
-
-            var (events, countTotal) = await _eventService.GetFilteredPagedEventsAsync(filterRequest);
+            var events = await _eventService.GetFilteredPagedEventsAsync(filterRequest);
 
             if (events == null || !events.Any())
                 return NoContent();
@@ -59,16 +56,7 @@ namespace EventTicketingManagementSystem.Controllers
                 ImageUrls = e.ImageUrls
             }).ToList();
 
-            var res = new EventListResponse
-            {
-                Events = eventDtos,
-                PageNumber = filterRequest.PageNumber,
-                PageSize = filterRequest.PageSize,
-                TotalCount = countTotal,
-                TotalPages = (int) Math.Ceiling((decimal)countTotal / filterRequest.PageSize)
-            };
-
-            return Ok(res);
+            return Ok(eventDtos);
         }
 
 
@@ -94,13 +82,13 @@ namespace EventTicketingManagementSystem.Controllers
 
         // DELETE: api/events/{id}
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteEvent(int id, [FromBody] Event eventItem)
+        public async Task<IActionResult> DeleteEvent(int id)
         {
-            var deleted = await _eventService.DeleteEvent(eventItem);
+            var deleted = await _eventService.DeleteEvent(id);
 
             if (!deleted) return NotFound();
 
-            return NoContent();
+            return Ok(true);
         }
 
         //User///////

@@ -34,6 +34,7 @@ namespace EventTicketingManagementSystem.Data.Repository.Implement
         public async Task<TEntity> AddAsync(TEntity entity)
         {
             await _dbSet.AddAsync(entity);
+            await _context.SaveChangesAsync();
 
             return entity;
         }

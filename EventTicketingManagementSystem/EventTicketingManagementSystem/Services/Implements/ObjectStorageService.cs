@@ -51,7 +51,7 @@ namespace EventTicketingManagementSystem.Services.Implements
                 if (response.HttpStatusCode == System.Net.HttpStatusCode.OK)
                 {
                     // Construct the file URL
-                    string fileUrl = $"{s3Client.Config.ServiceURL}/{bucketName}/{fileName}";
+                    string fileUrl = $"{s3Client.Config.ServiceURL}{bucketName}/{fileName}";
                     return fileUrl;
                 }
                 else

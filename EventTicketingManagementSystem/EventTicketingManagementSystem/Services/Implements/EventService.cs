@@ -10,13 +10,14 @@ namespace EventTicketingManagementSystem.Services.Implements
 {
     public class EventService : IEventService
     {
-        [Inject] IObjectStorageService objectStorageService { get; set; }
 
         private readonly IEventRepository _eventRepository;
+        private readonly IObjectStorageService _objectStorageService;
 
-        public EventService(IEventRepository eventRepository)
+        public EventService(IEventRepository eventRepository, IObjectStorageService objectStorageService)
         {
             _eventRepository = eventRepository;
+            _objectStorageService = objectStorageService;
         }
 
         public async Task<IEnumerable<Event>> GetAllEventsAsync()
@@ -43,7 +44,7 @@ namespace EventTicketingManagementSystem.Services.Implements
                         var fileName = $"{Guid.NewGuid()}_{eventItem.Image.FileName}";
 
                         // Call the UploadFileAsync method
-                        imageUrl = await objectStorageService.UploadFileAsync(fileStream, Guid.NewGuid().ToString(), CommonConst.S3_BUCKET_NAME);
+                        imageUrl = await _objectStorageService.UploadFileAsync(fileStream, fileName, CommonConst.S3_BUCKET_NAME);
                     }
                 }
                 var eventObj = new Event
@@ -64,7 +65,7 @@ namespace EventTicketingManagementSystem.Services.Implements
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.InnerException?.Message);
+                Console.WriteLine(ex.Message);
                 throw;
             }
 
@@ -76,7 +77,7 @@ namespace EventTicketingManagementSystem.Services.Implements
             var imageUrl = string.Empty;
             if (stream != null)
             {
-                imageUrl = await objectStorageService.UploadFileAsync(stream, new Guid().ToString(), CommonConst.S3_BUCKET_NAME);
+                imageUrl = await _objectStorageService.UploadFileAsync(stream, new Guid().ToString(), CommonConst.S3_BUCKET_NAME);
             }
 
             var eventObj = await _eventRepository.GetByIdAsync(eventItem.ID);
@@ -100,17 +101,24 @@ namespace EventTicketingManagementSystem.Services.Implements
             return isUpdated;
         }
 
-        public async Task<bool> DeleteEvent(Event eventItem)
+        public async Task<bool> DeleteEvent(int id)
         {
+            var eventItem = await _eventRepository.GetByIdAsync(id);
+            
+            if (eventItem == null)
+            {
+                return false;
+            }
+
             _eventRepository.Delete(eventItem);
             return await _eventRepository.SaveChangeAsync() > 0;
         }
 
-        public async Task<(IEnumerable<Event>, int)> GetFilteredPagedEventsAsync(EventSearchParamsRequest eventFilter)
+        public async Task<IEnumerable<Event>> GetFilteredPagedEventsAsync(EventSearchParamsRequest eventFilter)
         {
-            var countTotal = await _eventRepository.CountSearch(eventFilter.Search);
             var events = await _eventRepository.GetFilteredPagedAsync(eventFilter);
-            return (events, countTotal);
+
+            return events;
         }
 
 

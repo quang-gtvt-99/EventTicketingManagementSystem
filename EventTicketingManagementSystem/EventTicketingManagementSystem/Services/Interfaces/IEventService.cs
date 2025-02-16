@@ -15,8 +15,8 @@ namespace EventTicketingManagementSystem.Services.Interfaces
 
         Task<bool> UpdateEvent(AddUpdateEventRequest eventItem);
 
-        Task<(IEnumerable<Event>, int)> GetFilteredPagedEventsAsync(EventSearchParamsRequest eventFilter);
-        Task<bool> DeleteEvent(Event eventItem);
+        Task<IEnumerable<Event>> GetFilteredPagedEventsAsync(EventSearchParamsRequest eventFilter);
+        Task<bool> DeleteEvent(int id);
 
         ///user///
         Task<IEnumerable<Event>> GetAllEventAsync();
