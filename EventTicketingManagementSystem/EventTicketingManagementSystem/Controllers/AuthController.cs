@@ -1,4 +1,5 @@
 ﻿using EventTicketingManagementSystem.Request;
+using EventTicketingManagementSystem.Services.Implements;
 using EventTicketingManagementSystem.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -42,6 +43,14 @@ namespace EventTicketingManagementSystem.Controllers
             }
 
             return Ok(authResult);
+        }
+
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
+        {
+            var response = await _userService.ResetPasswordAsync(request);
+
+            return Ok(response);
         }
     }
 }

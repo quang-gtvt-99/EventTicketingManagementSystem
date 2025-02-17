@@ -1,4 +1,4 @@
-using EventTicketingManagementSystem.Constants;
+﻿using EventTicketingManagementSystem.Constants;
 using EventTicketingManagementSystem.Data.Repository.Interfaces;
 using EventTicketingManagementSystem.Dtos;
 using EventTicketingManagementSystem.Enums;
@@ -6,6 +6,7 @@ using EventTicketingManagementSystem.Models;
 using EventTicketingManagementSystem.Request;
 using EventTicketingManagementSystem.Response;
 using EventTicketingManagementSystem.Services.Interfaces;
+using System.Text;
 
 namespace EventTicketingManagementSystem.Services.Implements
 {
@@ -16,14 +17,18 @@ namespace EventTicketingManagementSystem.Services.Implements
         private readonly ICurrentUserService _currentUserService;
         private readonly IPaymentRepository _paymentRepository;
         private readonly ITicketRepository _ticketRepository;
+        private readonly ISendMailService _sendEmailService;
+        private readonly ICacheService _cacheService;
 
-        public UserService(IUserRepository userRepository, IBookingRepository bookingRepository, ICurrentUserService currentUserService, IPaymentRepository paymentRepository, ITicketRepository ticketRepository)
+        public UserService(IUserRepository userRepository, IBookingRepository bookingRepository, ICurrentUserService currentUserService, IPaymentRepository paymentRepository, ITicketRepository ticketRepository, ISendMailService sendEmailService, ICacheService cacheService)
         {
             _userRepository = userRepository;
             _bookingRepository = bookingRepository;
             _currentUserService = currentUserService;
             _paymentRepository = paymentRepository;
             _ticketRepository = ticketRepository;
+            _sendEmailService = sendEmailService;
+            _cacheService = cacheService;
         }
         public async Task<IEnumerable<User>> GetAllUsersAsync()
         {
@@ -106,34 +111,55 @@ namespace EventTicketingManagementSystem.Services.Implements
         {
             return await _ticketRepository.CreateTicketsAsync(bookingId);
         }
-        private void ChangePassword(ChangePasswordDto request)
+        private CommonMessageResponse ChangePassword(ChangePasswordDto request)
         {
             var currentUser = request.User;
             if (!BCrypt.Net.BCrypt.Verify(request.OldPassword, currentUser.PasswordHash))
             {
-                throw new Exception("Old password is incorrect.");
+                return new CommonMessageResponse
+                {
+                    IsSuccess = false,
+                    Message = "Mật khẩu cũ không đúng."
+                };
             }
 
             if (request.NewPassword != request.ConfirmedNewPassword)
             {
-                throw new Exception("New password and confirm password do not match.");
+                return new CommonMessageResponse
+                {
+                    IsSuccess = false,
+                    Message = "Mật khẩu mới và xác nhận mật khẩu không khớp."
+                };
             }
 
             currentUser.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+            return new CommonMessageResponse
+            {
+                IsSuccess = true,
+                Message = "Đổi mật khẩu thành công."
+            };
         }
 
-        public async Task UpdateUserProfileAsync(UpdateUserProfileRequest request)
+        public async Task<CommonMessageResponse> UpdateUserProfileAsync(UpdateUserProfileRequest request)
         {
             if (!int.TryParse(_currentUserService.Id, out int userId))
             {
-                throw new Exception("User id not found.");
+                return new CommonMessageResponse
+                {
+                    IsSuccess = false,
+                    Message = "Không tìm thấy ID người dùng."
+                };
             }
 
             var currentUser = await _userRepository.GetByIdAsync(userId);
 
             if (currentUser == null)
             {
-                throw new Exception("User not found.");
+                return new CommonMessageResponse
+                {
+                    IsSuccess = false,
+                    Message = "Không tìm thấy người dùng."
+                };
             }
 
             currentUser.FullName = request.FullName;
@@ -149,11 +175,83 @@ namespace EventTicketingManagementSystem.Services.Implements
                     ConfirmedNewPassword = request.ConfirmedNewPassword,
                     User = currentUser
                 };
-                ChangePassword(changePasswordRequest);
+                var changePasswordResponse = ChangePassword(changePasswordRequest);
+                if (!changePasswordResponse.IsSuccess)
+                {
+                    return changePasswordResponse;
+                }
             }
 
             _userRepository.Update(currentUser);
-            var result = await _userRepository.SaveChangeAsync();
+            await _userRepository.SaveChangeAsync();
+
+            return new CommonMessageResponse
+            {
+                IsSuccess = true,
+                Message = "Cập nhật hồ sơ người dùng thành công!"
+            };
+        }
+
+        public async Task<CommonMessageResponse> ResetPasswordAsync(ResetPasswordRequest request)
+        {
+            var isUserExist = await _userRepository.UserEmailExisted(request.Email);
+
+            if (isUserExist == false)
+            {
+                return new CommonMessageResponse
+                {
+                    Message = "Email không tồn tại trong hệ thống!",
+                    IsSuccess = false
+                };
+            }
+
+            var (otp, hashedOtp) = GeneratePassword();
+
+            var emailBody = $@"
+                <html>
+                <body>
+                    <h2>Yêu cầu đặt lại mật khẩu</h2>
+                    <p>Chúng tôi đã nhận được yêu cầu đặt lại mật khẩu của bạn.</p>
+                    <p>Mật khẩu dùng một lần (OTP) của bạn là: <strong>{otp}</strong></p>
+                    <p>Vui lòng sử dụng OTP này để đăng nhập trong vòng 30 phút kể từ khi nhận được email này. Sau khi đăng nhập, vui lòng thay đổi mật khẩu của bạn trong phần 'Hồ sơ cá nhân'.</p>
+                    <p>Nếu mật khẩu không hoạt động, vui lòng thực hiện lại quy trình đặt lại mật khẩu để đảm bảo tính bảo mật của ứng dụng.</p>
+                </body>
+                </html>";
+
+            await _sendEmailService.SendEmailAsync(
+                request.Email,
+                "Đặt lại mật khẩu",
+                emailBody,
+                true // Set isHtml to true
+            );
+
+            await _cacheService.SetAsync(
+                $"{CacheKeyConsts.OneTimePassword}:{request.Email}",
+                hashedOtp,
+                30 * 60);
+
+            return new CommonMessageResponse
+            {
+                Message = "OTP đã được gửi đến email của bạn!",
+                IsSuccess = true
+            };
+        }
+
+        private (string Password, string HashedPassword) GeneratePassword(int length = 12)
+        {
+            const string validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+            var random = new Random();
+            var password = new StringBuilder();
+
+            for (int i = 0; i < length; i++)
+            {
+                password.Append(validChars[random.Next(validChars.Length)]);
+            }
+
+            var plainPassword = password.ToString();
+            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(plainPassword);
+
+            return (plainPassword, hashedPassword);
         }
     }
 }

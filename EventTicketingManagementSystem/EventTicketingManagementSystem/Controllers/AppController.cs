@@ -9,10 +9,12 @@ namespace EventTicketingManagementSystem.Controllers
     public class AppController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly ISendMailService _sendMailService;
 
-        public AppController(IUserService userService)
+        public AppController(IUserService userService, ISendMailService sendMailService)
         {
             _userService = userService;
+            _sendMailService = sendMailService;
         }
 
         [HttpGet("get-users")]
@@ -21,5 +23,7 @@ namespace EventTicketingManagementSystem.Controllers
             var users = await _userService.GetAllUsersAsync();
             return Ok(users);
         }
+
+
     }
 }

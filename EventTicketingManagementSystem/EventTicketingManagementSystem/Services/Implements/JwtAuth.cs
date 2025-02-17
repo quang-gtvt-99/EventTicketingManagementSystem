@@ -1,4 +1,5 @@
-﻿using EventTicketingManagementSystem.Data.Repository.Interfaces;
+﻿using EventTicketingManagementSystem.Constants;
+using EventTicketingManagementSystem.Data.Repository.Interfaces;
 using EventTicketingManagementSystem.Models;
 using EventTicketingManagementSystem.Request;
 using EventTicketingManagementSystem.Response;
@@ -14,11 +15,13 @@ namespace EventTicketingManagementSystem.Services.Implements
     {
         private readonly string _secretKey;
         private readonly IUserRepository _userRepository;
+        private readonly ICacheService _cacheService;
 
-        public JwtAuth(string secretKey, IUserRepository userRepository)
+        public JwtAuth(string secretKey, IUserRepository userRepository, ICacheService cacheService)
         {
             _userRepository = userRepository;
             _secretKey = secretKey;
+            _cacheService = cacheService;
         }
 
         public async Task<AuthResult?> Authentication(string email, string password)
@@ -30,9 +33,24 @@ namespace EventTicketingManagementSystem.Services.Implements
                 return null;
             }
 
-            if (!VerifyPasswordHash(password, user.PasswordHash))
+            string? otpCache = null;
+            if (await _cacheService.IsCacheKeyExistAsync($"{CacheKeyConsts.OneTimePassword}:{email}"))
+            {
+                otpCache = await _cacheService.GetAsync<string>($"{CacheKeyConsts.OneTimePassword}:{email}");
+            }
+
+            bool isPasswordValid = VerifyPasswordHash(password, user.PasswordHash);
+            bool isOtpValid = otpCache != null && VerifyPasswordHash(password, otpCache);
+
+            if (!isPasswordValid && !isOtpValid)
             {
                 return null;
+            }
+
+            if (isOtpValid)
+            {
+                // Invalidate the OTP cache
+                await _cacheService.InvalidCacheAsync($"{CacheKeyConsts.OneTimePassword}:{email}");
             }
 
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -54,7 +72,7 @@ namespace EventTicketingManagementSystem.Services.Implements
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddHours(1), 
+                Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 

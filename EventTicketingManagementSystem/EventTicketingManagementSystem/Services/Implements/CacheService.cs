@@ -64,6 +64,8 @@ namespace EventTicketingManagementSystem.Services.Implements
 
         public async Task<bool> InvalidCacheAsync(string key) => await db.KeyDeleteAsync(key);
 
+        public async Task<bool> IsCacheKeyExistAsync(string key) => await db.KeyExistsAsync(key);
+
         protected virtual void Dispose(bool disposing)
         {
             if (!disposed)

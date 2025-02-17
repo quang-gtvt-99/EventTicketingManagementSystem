@@ -14,6 +14,7 @@ namespace EventTicketingManagementSystem.Services.Interfaces
         Task<Payment> UpdatePaymentStatusAsync(int paymentId, UpdatePaymentDto requestDto);
         Task<bool> DeleteExpiredBookingAsync(int paymentId);
         Task<List<Ticket>> CreateTicketsAsync(int bookingId);
-        Task UpdateUserProfileAsync(UpdateUserProfileRequest request);
+        Task<CommonMessageResponse> UpdateUserProfileAsync(UpdateUserProfileRequest request);
+        Task<CommonMessageResponse> ResetPasswordAsync(ResetPasswordRequest request);
     }
 }
