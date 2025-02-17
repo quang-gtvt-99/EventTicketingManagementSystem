@@ -25,7 +25,7 @@ namespace EventTicketingManagementSystem.Data.Repository.Implement
                     EventId = b.EventId,
                     Venue = b.Event.VenueAddress,
                     EventName = b.Event.Name,
-                    EventDate = $"{b.Event.StartDate.Date.ToString("dd/MM/YYYY")} - {b.Event.EndDate.Date.ToString("dd/MM/YYYY")}",
+                    EventDate = $"{b.Event.StartDate.Date.ToString("dd/MM/yyyy")} - {b.Event.EndDate.Date.ToString("dd/MM/yyyy")}",
                     EventTime = b.Event.StartDate.TimeOfDay.ToString(),
                     TotalAmount = b.Subtotal,
                     Status = b.Status,
