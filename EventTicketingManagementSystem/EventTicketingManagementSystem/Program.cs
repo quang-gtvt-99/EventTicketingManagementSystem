@@ -35,6 +35,7 @@ builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+builder.Services.AddScoped<IVNPayService, VnPayService>();
 
 // Add External Services
 builder.Services.AddSingleton<IObjectStorageService, ObjectStorageService>();
