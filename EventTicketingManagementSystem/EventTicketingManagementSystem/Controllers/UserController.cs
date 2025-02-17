@@ -1,4 +1,6 @@
-﻿using EventTicketingManagementSystem.Dtos;
+﻿using EventTicketingManagementSystem.Constants;
+using EventTicketingManagementSystem.Dtos;
+using EventTicketingManagementSystem.Models;
 using EventTicketingManagementSystem.Request;
 using EventTicketingManagementSystem.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -14,9 +16,11 @@ namespace EventTicketingManagementSystem.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-        public UserController(IUserService userService)
+        private readonly IVNPayService _vnPayService;
+        public UserController(IUserService userService, IVNPayService vnPayService)
         {
             _userService = userService;
+            _vnPayService = vnPayService;
         }
 
         [HttpGet]
@@ -47,9 +51,15 @@ namespace EventTicketingManagementSystem.Controllers
                 }
 
                 int loggedInUserId = int.Parse(userIdClaim.Value);
-                await _userService.CreateBookingAsync(bookingRequestDto, loggedInUserId);
+                var bookingResult = await _userService.CreateBookingAsync(bookingRequestDto, loggedInUserId);
 
-                return Ok();
+                return Ok(new
+                {
+                    success = true,
+                    message = "Booking successful.",
+                    bookingId = bookingResult.Id,
+                    totalAmount = bookingResult.TotalAmount
+                });
             }
             catch (UnauthorizedAccessException ex)
             {
@@ -123,6 +133,20 @@ namespace EventTicketingManagementSystem.Controllers
             {
                 return BadRequest(new { message = ex.Message });
             }
+        }
+        [HttpPost("create-payment")]
+        public IActionResult CreatePayment([FromBody] PaymentRequest request)
+        {
+            var booking = new Booking
+            {
+                Id = request.BookingId,
+                TotalAmount = request.Amount,
+                Status = CommConstants.CST_PAY_STATUS_PENDING,
+                BookingDate = DateTime.Now
+            };
+
+            var paymentUrl = _vnPayService.CreatePaymentUrl(booking, request.Locale, request.BankCode, request.OrderType);
+            return Ok(new { PaymentUrl = paymentUrl });
         }
     }
 }
