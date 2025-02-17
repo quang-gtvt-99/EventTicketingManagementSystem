@@ -5,6 +5,8 @@ VisualStudioVersion = 17.11.35312.102
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventTicketingManagementSystem", "EventTicketingManagementSystem\EventTicketingManagementSystem.csproj", "{F4BC225B-8AF5-4BE3-878D-F810A3BE8412}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventTicketingManagementSystemTests", "EventTicketingManagementSystemTests\EventTicketingManagementSystemTests.csproj", "{9ACF4214-E143-46E2-AB4D-A9955C8B99E1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{F4BC225B-8AF5-4BE3-878D-F810A3BE8412}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F4BC225B-8AF5-4BE3-878D-F810A3BE8412}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F4BC225B-8AF5-4BE3-878D-F810A3BE8412}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9ACF4214-E143-46E2-AB4D-A9955C8B99E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9ACF4214-E143-46E2-AB4D-A9955C8B99E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9ACF4214-E143-46E2-AB4D-A9955C8B99E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9ACF4214-E143-46E2-AB4D-A9955C8B99E1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
