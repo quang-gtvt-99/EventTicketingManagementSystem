@@ -1,12 +1,10 @@
 ﻿using EventTicketingManagementSystem.Constants;
 using EventTicketingManagementSystem.Data.Repository.Interfaces;
 using EventTicketingManagementSystem.Dtos;
-using EventTicketingManagementSystem.Enums;
 using EventTicketingManagementSystem.Models;
 using EventTicketingManagementSystem.Request;
 using EventTicketingManagementSystem.Response;
 using EventTicketingManagementSystem.Services.Interfaces;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using System.Text;
 
 namespace EventTicketingManagementSystem.Services.Implements
