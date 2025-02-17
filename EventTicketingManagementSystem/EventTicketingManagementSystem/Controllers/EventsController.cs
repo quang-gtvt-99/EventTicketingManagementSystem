@@ -69,7 +69,7 @@ namespace EventTicketingManagementSystem.Controllers
 
         // PUT: api/events/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateEvent(int id, [FromBody] AddUpdateEventRequest eventItem)
+        public async Task<IActionResult> UpdateEvent(int id, [FromForm] AddUpdateEventRequest eventItem)
         {
             if (id != eventItem.ID) return BadRequest();
 
