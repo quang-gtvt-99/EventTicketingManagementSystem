@@ -47,12 +47,6 @@ namespace EventTicketingManagementSystem.Services.Implements
                 return null;
             }
 
-            if (isOtpValid)
-            {
-                // Invalidate the OTP cache
-                await _cacheService.InvalidCacheAsync($"{CacheKeyConsts.OneTimePassword}:{email}");
-            }
-
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_secretKey);
 

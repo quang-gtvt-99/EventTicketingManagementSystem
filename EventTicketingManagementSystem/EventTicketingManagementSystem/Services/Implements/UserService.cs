@@ -6,6 +6,7 @@ using EventTicketingManagementSystem.Models;
 using EventTicketingManagementSystem.Request;
 using EventTicketingManagementSystem.Response;
 using EventTicketingManagementSystem.Services.Interfaces;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using System.Text;
 
 namespace EventTicketingManagementSystem.Services.Implements
@@ -111,16 +112,32 @@ namespace EventTicketingManagementSystem.Services.Implements
         {
             return await _ticketRepository.CreateTicketsAsync(bookingId);
         }
-        private CommonMessageResponse ChangePassword(ChangePasswordDto request)
+        private async Task<CommonMessageResponse> ChangePassword(ChangePasswordDto request)
         {
             var currentUser = request.User;
-            if (!BCrypt.Net.BCrypt.Verify(request.OldPassword, currentUser.PasswordHash))
+
+            string? otpCache = null;
+            if (await _cacheService.IsCacheKeyExistAsync($"{CacheKeyConsts.OneTimePassword}:{currentUser.Email}"))
+            {
+                otpCache = await _cacheService.GetAsync<string>($"{CacheKeyConsts.OneTimePassword}:{currentUser.Email}");
+            }
+
+            bool isPasswordValid = VerifyPasswordHash(request.OldPassword, currentUser.PasswordHash);
+            bool isOtpValid = otpCache != null && VerifyPasswordHash(request.OldPassword, otpCache);
+
+            if (!isPasswordValid && !isOtpValid)
             {
                 return new CommonMessageResponse
                 {
                     IsSuccess = false,
                     Message = "Mật khẩu cũ không đúng."
                 };
+            }
+
+            if (isOtpValid)
+            {
+                // Invalidate the OTP cache
+                await _cacheService.InvalidCacheAsync($"{CacheKeyConsts.OneTimePassword}:{currentUser.Email}");
             }
 
             if (request.NewPassword != request.ConfirmedNewPassword)
@@ -175,7 +192,7 @@ namespace EventTicketingManagementSystem.Services.Implements
                     ConfirmedNewPassword = request.ConfirmedNewPassword,
                     User = currentUser
                 };
-                var changePasswordResponse = ChangePassword(changePasswordRequest);
+                var changePasswordResponse = await ChangePassword(changePasswordRequest);
                 if (!changePasswordResponse.IsSuccess)
                 {
                     return changePasswordResponse;
@@ -252,6 +269,11 @@ namespace EventTicketingManagementSystem.Services.Implements
             var hashedPassword = BCrypt.Net.BCrypt.HashPassword(plainPassword);
 
             return (plainPassword, hashedPassword);
+        }
+
+        private bool VerifyPasswordHash(string password, string storedHash)
+        {
+            return BCrypt.Net.BCrypt.Verify(password, storedHash);
         }
     }
 }
