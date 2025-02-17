@@ -108,7 +108,8 @@ builder.Services.AddAuthentication(x =>
 builder.Services.AddScoped<IJwtAuth>(provider =>
 {
     var userRepository = provider.GetRequiredService<IUserRepository>();
-    return new JwtAuth(key, userRepository);
+    var cacheService = provider.GetRequiredService<ICacheService>();
+    return new JwtAuth(key, userRepository, cacheService);
 });
 
 builder.Services.AddAuthorization(options =>

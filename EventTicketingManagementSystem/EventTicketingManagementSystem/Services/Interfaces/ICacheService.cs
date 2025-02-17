@@ -6,6 +6,7 @@ namespace EventTicketingManagementSystem.Services.Interfaces
         Task ClearCacheAsync();
         Task<T?> GetAsync<T>(string key);
         Task<bool> InvalidCacheAsync(string key);
+        Task<bool> IsCacheKeyExistAsync(string key);
         Task<bool> SetAsync<T>(string key, T value, int expirationSecond = 300);
     }
 }

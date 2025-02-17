@@ -30,8 +30,8 @@ namespace EventTicketingManagementSystem.Controllers
         [HttpPut("update-profile")]
         public async Task<IActionResult> UpdateUserProfile([FromBody] UpdateUserProfileRequest request)
         {
-            await _userService.UpdateUserProfileAsync(request);
-            return Ok();
+            var response = await _userService.UpdateUserProfileAsync(request);
+            return Ok(response);
         }
 
         [HttpPost]
