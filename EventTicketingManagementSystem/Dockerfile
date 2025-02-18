@@ -9,6 +9,10 @@ RUN dotnet restore "EventTicketingManagementSystem/EventTicketingManagementSyste
 
 # Build
 COPY ["EventTicketingManagementSystem/EventTicketingManagementSystem", "EventTicketingManagementSystem/"]
+COPY ["EventTicketingManagementSystem/EventTicketingManagementSystem.Data", "EventTicketingManagementSystem/"]
+COPY ["EventTicketingManagementSystem/EventTicketingManagementSystem.Services", "EventTicketingManagementSystem/"]
+COPY ["EventTicketingManagementSystem/EventTicketingMananagementSystem.Core", "EventTicketingManagementSystem/"]
+
 RUN dotnet build "EventTicketingManagementSystem/EventTicketingManagementSystem.API.csproj" -c Release -o /app/build
 
 # Stage 2: Publish stage
