@@ -29,4 +29,4 @@ ENV ASPNETCORE_HTTP_PORTS=5001
 EXPOSE 5001
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT [ "dotnet", "EventTicketingManagementSystem.dll" ]
+ENTRYPOINT [ "dotnet", "EventTicketingManagementSystem.API.dll" ]
