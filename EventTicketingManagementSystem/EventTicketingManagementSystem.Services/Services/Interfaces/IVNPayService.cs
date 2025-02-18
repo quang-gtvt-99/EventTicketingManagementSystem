@@ -1,6 +1,9 @@
-﻿using EventTicketingMananagementSystem.Core.Models;
+﻿using EventTicketingManagementSystem.Response;
+using EventTicketingMananagementSystem.Core.Models;
+using Microsoft.AspNetCore.Http;
 
 public interface IVNPayService
 {
-    string CreatePaymentUrl(Booking booking, string locale, string bankCode, string orderType);
+    Task<string> CreatePaymentUrl(Booking booking, string locale, string bankCode, string orderType);
+    Task<PaymentResponse> ProcessVnPayReturn(IQueryCollection query);
 }

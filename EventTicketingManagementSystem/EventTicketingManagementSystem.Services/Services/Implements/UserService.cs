@@ -1,10 +1,12 @@
 ﻿using EventTicketingManagementSystem.API.Request;
 using EventTicketingManagementSystem.API.Response;
 using EventTicketingManagementSystem.Data.Data.Repository.Interfaces;
+using EventTicketingManagementSystem.Response;
 using EventTicketingManagementSystem.Services.Services.Interfaces;
 using EventTicketingMananagementSystem.Core.Constants;
 using EventTicketingMananagementSystem.Core.Dtos;
 using EventTicketingMananagementSystem.Core.Models;
+using System.Globalization;
 using System.Text;
 
 namespace EventTicketingManagementSystem.Services.Services.Implements
@@ -273,5 +275,60 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
         {
             return BCrypt.Net.BCrypt.Verify(password, storedHash);
         }
+        public async Task SendEmailToId(PaymentResponse response, int userId)
+        {
+            var toEmail = _userRepository.GetEmailByIdAsync(userId);
+
+            if (string.IsNullOrEmpty(toEmail))
+            {
+                throw new Exception($"Không tìm thấy email cho người dùng có ID: {userId}");
+            }
+
+            var body = $@"
+                    <html>
+                    <body>
+                        <h2>Thông tin giao dịch</h2>
+                        <table border='1' cellpadding='5' cellspacing='0'>
+                            <tr>
+                                <td><strong>Mã đặt chỗ</strong></td>
+                                <td>{response.BookingId}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Mã giao dịch VNPAY</strong></td>
+                                <td>{response.VnPayTranId}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Thời gian thanh toán</strong></td>
+                                <td>{response.PayDate}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Trạng thái giao dịch</strong></td>
+                                <td>{response.TransactionStatus}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Số tiền</strong></td>
+                                <td>{response.Amount.ToString("C", new CultureInfo("vi-VN"))}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Ngân hàng thanh toán</strong></td>
+                                <td>{response.BankCode}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Thông báo</strong></td>
+                                <td>{response.Message}</td>
+                            </tr>
+                        </table>
+                        <br/>
+                        <p>Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi.</p>
+                    </body>
+                    </html>";
+
+            await _sendEmailService.SendEmailAsync(
+                    toEmail,
+                    $"Finiko - Đơn hàng mới: {response.BookingId}",
+                    body,
+                    true // Set isHtml to true
+                );
+            }
+        }
     }
-}

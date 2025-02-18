@@ -134,7 +134,7 @@ namespace EventTicketingManagementSystem.API.Controllers
             }
         }
         [HttpPost("create-payment")]
-        public IActionResult CreatePayment([FromBody] PaymentRequest request)
+        public async Task<IActionResult> CreatePayment([FromBody] PaymentRequest request)
         {
             var booking = new Booking
             {
@@ -144,8 +144,24 @@ namespace EventTicketingManagementSystem.API.Controllers
                 BookingDate = DateTime.Now
             };
 
-            var paymentUrl = _vnPayService.CreatePaymentUrl(booking, request.Locale, request.BankCode, request.OrderType);
+            var paymentUrl = await _vnPayService.CreatePaymentUrl(booking, request.Locale, request.BankCode, request.OrderType);
             return Ok(new { PaymentUrl = paymentUrl });
+        }
+        [HttpGet("vnpay-return")]
+        public async Task<IActionResult> VnPayReturn()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            var query = HttpContext.Request.Query;
+            var result = await _vnPayService.ProcessVnPayReturn(query);
+            if (result.ResponseCode == "00" && result.TransactionStatus == "00")
+            {
+                if (userIdClaim != null)
+                {
+                    int loggedInUserId = int.Parse(userIdClaim.Value);
+                    _userService.SendEmailToId(result,loggedInUserId);
+                }
+            }
+            return Ok(result);
         }
     }
 }
