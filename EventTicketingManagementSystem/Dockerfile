@@ -17,13 +17,13 @@ COPY ["EventTicketingManagementSystem/EventTicketingManagementSystem.Data", "Eve
 COPY ["EventTicketingManagementSystem/EventTicketingManagementSystem.Services", "EventTicketingManagementSystem/EventTicketingManagementSystem.Services"]
 COPY ["EventTicketingManagementSystem/EventTicketingMananagementSystem.Core", "EventTicketingManagementSystem/EventTicketingMananagementSystem.Core"]
 
-RUN dotnet build "EventTicketingMananagementSystem/EventTicketingManagementSystem/EventTicketingManagementSystem.API.csproj" -c Release -o /app/build
+RUN dotnet build "EventTicketingManagementSystem/EventTicketingManagementSystem/EventTicketingManagementSystem.API.csproj" -c Release -o /app/build
 
 # Stage 2: Publish stage
 FROM build AS publish
-RUN dotnet publish "EventTicketingMananagementSystem/EventTicketingManagementSystem/EventTicketingManagementSystem.API.csproj" -c Release -o /app/publish
+RUN dotnet publish "EventTicketingManagementSystem/EventTicketingManagementSystem/EventTicketingManagementSystem.API.csproj" -c Release -o /app/publish
 
-# Stage 3: Run stage
+# Stage 3: Run stage (giữ nguyên)
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 ENV ASPNETCORE_HTTP_PORTS=5001
 EXPOSE 5001
