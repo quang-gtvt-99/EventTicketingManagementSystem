@@ -27,7 +27,7 @@ namespace EventTicketingManagementSystem.Services.Implements
 
             var vnpay = new VnPayLibrary();
 
-            vnpay.AddRequestData("vnp_Version", "2.1.1");
+            vnpay.AddRequestData("vnp_Version", "2.1.0");
             vnpay.AddRequestData("vnp_Command", "pay");
             vnpay.AddRequestData("vnp_TmnCode", vnp_TmnCode);
             vnpay.AddRequestData("vnp_Amount", (booking.TotalAmount * 100).ToString());
