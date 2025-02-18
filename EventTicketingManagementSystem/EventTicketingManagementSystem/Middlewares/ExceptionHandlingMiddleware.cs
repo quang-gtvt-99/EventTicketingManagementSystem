@@ -1,7 +1,6 @@
-﻿using EventTicketingManagementSystem.Response;
-using Microsoft.AspNetCore.Mvc;
+﻿using EventTicketingManagementSystem.API.Response;
 
-namespace EventTicketingManagementSystem.Middlewares
+namespace EventTicketingManagementSystem.API.Middlewares
 {
     public class ExceptionHandlingMiddleware
     {

@@ -1,7 +1,7 @@
-﻿using EventTicketingManagementSystem.Services.Interfaces;
+﻿using EventTicketingManagementSystem.Services.Services.Interfaces;
 using System.Security.Claims;
 
-namespace EventTicketingManagementSystem.Middlewares
+namespace EventTicketingManagementSystem.API.Middlewares
 {
     public class CurrentUserMiddleware
     {

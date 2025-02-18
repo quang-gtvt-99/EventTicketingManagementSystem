@@ -1,9 +1,8 @@
-﻿using EventTicketingManagementSystem.Request;
-using EventTicketingManagementSystem.Services.Implements;
-using EventTicketingManagementSystem.Services.Interfaces;
+﻿using EventTicketingManagementSystem.API.Request;
+using EventTicketingManagementSystem.Services.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
-namespace EventTicketingManagementSystem.Controllers
+namespace EventTicketingManagementSystem.API.Controllers
 {
     [Route("api/user")]
     [ApiController]

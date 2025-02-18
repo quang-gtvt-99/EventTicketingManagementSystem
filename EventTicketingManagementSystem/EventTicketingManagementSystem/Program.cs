@@ -1,10 +1,7 @@
+using EventTicketingManagementSystem.API.Middlewares;
 using EventTicketingManagementSystem.Data;
-using EventTicketingManagementSystem.Data.Repository;
-using EventTicketingManagementSystem.Data.Repository.Implement;
-using EventTicketingManagementSystem.Data.Repository.Interfaces;
-using EventTicketingManagementSystem.Middlewares;
-using EventTicketingManagementSystem.Services.Implements;
-using EventTicketingManagementSystem.Services.Interfaces;
+using EventTicketingManagementSystem.Data.Data;
+using EventTicketingManagementSystem.Services;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -18,29 +15,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddUserSecrets<Program>()
                      .AddEnvironmentVariables();
 
-var connectionString = builder.Configuration["ConnectionString"];
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(connectionString));
+var connectionString = builder.Configuration["ConnectionString"] ?? throw new Exception("Cannot get Connection String");
 
 // Add repository.
-builder.Services.AddScoped(typeof(IGenericRepository<,>), typeof(GenericRepository<,>));
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IBookingRepository, BookingRepository>();
-builder.Services.AddScoped<IEventRepository, EventRepository>();
-builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
-builder.Services.AddScoped<ITicketRepository, TicketRepository>();
-builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddDataServices(connectionString);
 
 // Add services.
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IEventService, EventService>();
-builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
-builder.Services.AddScoped<IVNPayService, VnPayService>();
-
-// Add External Services
-builder.Services.AddSingleton<IObjectStorageService, ObjectStorageService>();
-builder.Services.AddSingleton<ICacheService, CacheService>();
-builder.Services.AddSingleton<ISendMailService, SendMailService>();
+builder.Services.AddServiceLayer();
 
 builder.Services.AddControllers();
 
@@ -87,7 +68,7 @@ builder.Services.AddSwaggerGen(x =>
 });
 
 // Token-based authentication configuration
-var key = builder.Configuration["JwtKey"];
+string key = builder.Configuration["JwtKey"] ?? throw new Exception("Cannot get JwtKey");
 builder.Services.AddAuthentication(x =>
 {
     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -104,13 +85,6 @@ builder.Services.AddAuthentication(x =>
         ValidateAudience = false,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(key))
     };
-});
-
-builder.Services.AddScoped<IJwtAuth>(provider =>
-{
-    var userRepository = provider.GetRequiredService<IUserRepository>();
-    var cacheService = provider.GetRequiredService<ICacheService>();
-    return new JwtAuth(key, userRepository, cacheService);
 });
 
 builder.Services.AddAuthorization(options =>

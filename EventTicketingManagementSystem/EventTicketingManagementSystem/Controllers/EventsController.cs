@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using EventTicketingManagementSystem.Services.Interfaces;
-using EventTicketingManagementSystem.Models;
-using EventTicketingManagementSystem.Dtos;
-using EventTicketingManagementSystem.Request;
+﻿using EventTicketingManagementSystem.API.Request;
+using EventTicketingManagementSystem.Services.Services.Interfaces;
+using EventTicketingMananagementSystem.Core.Dtos;
+using EventTicketingMananagementSystem.Core.Models;
+using Microsoft.AspNetCore.Mvc;
 
-namespace EventTicketingManagementSystem.Controllers
+namespace EventTicketingManagementSystem.API.Controllers
 {
     [ApiController]
     [Route("api/event")]
@@ -124,7 +124,7 @@ namespace EventTicketingManagementSystem.Controllers
 
             var result = await _eventService.RegisterSeats(createSeatDto);
 
-            return Ok(new { Message = result.Message, TotalSeats = result.TotalSeats });
+            return Ok(new { result.Message, result.TotalSeats });
         }
         [HttpPut("update-seat")]
         public async Task<IActionResult> UpdateSeat([FromBody] UpdateSeatDto updateSeatDto)

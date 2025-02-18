@@ -1,7 +1,7 @@
-﻿using EventTicketingManagementSystem.Data.Repository.Implement;
-using EventTicketingManagementSystem.Data.Repository.Interfaces;
-using EventTicketingManagementSystem.Dtos;
-using EventTicketingManagementSystem.Models;
+﻿using EventTicketingManagementSystem.Data.Data.Repository.Implement;
+using EventTicketingManagementSystem.Data.Data.Repository.Interfaces;
+using EventTicketingMananagementSystem.Core.Dtos;
+using EventTicketingMananagementSystem.Core.Models;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 

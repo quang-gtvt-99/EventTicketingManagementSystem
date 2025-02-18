@@ -1,14 +1,13 @@
-﻿using EventTicketingManagementSystem.Constants;
-using EventTicketingManagementSystem.Dtos;
-using EventTicketingManagementSystem.Models;
-using EventTicketingManagementSystem.Request;
-using EventTicketingManagementSystem.Services.Interfaces;
+﻿using EventTicketingManagementSystem.API.Request;
+using EventTicketingManagementSystem.Services.Services.Interfaces;
+using EventTicketingMananagementSystem.Core.Constants;
+using EventTicketingMananagementSystem.Core.Dtos;
+using EventTicketingMananagementSystem.Core.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
-namespace EventTicketingManagementSystem.Controllers
+namespace EventTicketingManagementSystem.API.Controllers
 {
     [Route("api/user")]
     [ApiController]
