@@ -4,6 +4,7 @@ using EventTicketingManagementSystem.Dtos;
 using EventTicketingManagementSystem.Models;
 using EventTicketingManagementSystem.Request;
 using EventTicketingManagementSystem.Services.Interfaces;
+using System.IO;
 
 namespace EventTicketingManagementSystem.Services.Implements
 {
@@ -33,7 +34,6 @@ namespace EventTicketingManagementSystem.Services.Implements
         {
             try
             {
-
                 var imageUrl = string.Empty;
                 if (eventItem.Image != null)
                 {
@@ -41,9 +41,15 @@ namespace EventTicketingManagementSystem.Services.Implements
                     {
                         // Generate the file name for S3 (you can modify this to meet your needs)
                         var fileName = $"{Guid.NewGuid()}_{eventItem.Image.FileName}";
-
-                        // Call the UploadFileAsync method
-                        imageUrl = await _objectStorageService.UploadFileAsync(fileStream, fileName, CommConstants.S3_BUCKET_NAME);
+                        try
+                        {
+                            // Call the UploadFileAsync method
+                            imageUrl = await _objectStorageService.UploadFileAsync(fileStream, fileName, CommConstants.S3_BUCKET_NAME);
+                        }
+                        catch (Exception)
+                        {
+                            imageUrl = string.Empty;
+                        }
                     }
                 }
                 var eventObj = new Event
@@ -73,11 +79,29 @@ namespace EventTicketingManagementSystem.Services.Implements
 
         public async Task<bool> UpdateEvent(AddUpdateEventRequest eventItem)
         {
-            using var stream = eventItem.Image?.OpenReadStream();
-            var imageUrl = string.Empty;
-            if (stream != null)
+            var currentEventItem = await _eventRepository.GetByIdAsync(eventItem.ID);
+            
+            if (currentEventItem == null)
             {
-                imageUrl = await _objectStorageService.UploadFileAsync(stream, new Guid().ToString(), CommConstants.S3_BUCKET_NAME);
+                return false;
+            }
+
+            using var fileStream = eventItem.Image?.OpenReadStream();
+            
+            var imageUrl = currentEventItem.ImageUrls;
+            
+            if (fileStream != null)
+            {
+                try
+                {
+                    // Call the UploadFileAsync method
+                    var fileName = $"{Guid.NewGuid()}_{eventItem.Image.FileName}";
+                    imageUrl = await _objectStorageService.UploadFileAsync(fileStream, fileName, CommConstants.S3_BUCKET_NAME);
+                }
+                catch (Exception)
+                {
+                    imageUrl = currentEventItem.ImageUrls;
+                }
             }
 
             var eventObj = await _eventRepository.GetByIdAsync(eventItem.ID);
@@ -105,7 +129,7 @@ namespace EventTicketingManagementSystem.Services.Implements
         public async Task<bool> DeleteEvent(int id)
         {
             var eventItem = await _eventRepository.GetByIdAsync(id);
-            
+
             if (eventItem == null)
             {
                 return false;
