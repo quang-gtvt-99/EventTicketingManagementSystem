@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace EventTicketingManagementSystem.Middlewares
+namespace EventTicketingManagementSystem.API.Middlewares
 {
     public class RequestTimingMiddleware
     {

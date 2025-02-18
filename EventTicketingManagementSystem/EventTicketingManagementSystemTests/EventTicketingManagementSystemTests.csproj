@@ -19,7 +19,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EventTicketingManagementSystem\EventTicketingManagementSystem.csproj" />
+    <ProjectReference Include="..\EventTicketingManagementSystem.Data\EventTicketingManagementSystem.Data.csproj" />
+    <ProjectReference Include="..\EventTicketingManagementSystem.Services\EventTicketingManagementSystem.Services.csproj" />
+    <ProjectReference Include="..\EventTicketingManagementSystem\EventTicketingManagementSystem.API.csproj" />
   </ItemGroup>
 
   <ItemGroup>

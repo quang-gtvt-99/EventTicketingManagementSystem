@@ -1,8 +1,7 @@
-﻿using EventTicketingManagementSystem.Data.Repository;
-using EventTicketingManagementSystem.Services.Interfaces;
+﻿using EventTicketingManagementSystem.Services.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
-namespace EventTicketingManagementSystem.Controllers
+namespace EventTicketingManagementSystem.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]

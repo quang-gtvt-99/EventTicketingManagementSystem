@@ -1,4 +1,4 @@
-﻿using EventTicketingManagementSystem.Data;
+﻿using EventTicketingManagementSystem.Data.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace EventTicketingManagementSystemTests.Data

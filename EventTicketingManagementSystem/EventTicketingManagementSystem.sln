@@ -3,9 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35312.102
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventTicketingManagementSystem", "EventTicketingManagementSystem\EventTicketingManagementSystem.csproj", "{F4BC225B-8AF5-4BE3-878D-F810A3BE8412}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventTicketingManagementSystem.API", "EventTicketingManagementSystem\EventTicketingManagementSystem.API.csproj", "{F4BC225B-8AF5-4BE3-878D-F810A3BE8412}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventTicketingManagementSystemTests", "EventTicketingManagementSystemTests\EventTicketingManagementSystemTests.csproj", "{9ACF4214-E143-46E2-AB4D-A9955C8B99E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventTicketingMananagementSystem.Core", "EventTicketingMananagementSystem.Core\EventTicketingMananagementSystem.Core.csproj", "{50951481-08BD-4487-995C-AA2CDA8818C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventTicketingManagementSystem.Data", "EventTicketingManagementSystem.Data\EventTicketingManagementSystem.Data.csproj", "{E32A5E30-91C8-43AD-B5DA-5416837AA59D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventTicketingManagementSystem.Services", "EventTicketingManagementSystem.Services\EventTicketingManagementSystem.Services.csproj", "{8CA4F8BC-5E0F-45DD-AFD7-BA044F9358D9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +27,18 @@ Global
 		{9ACF4214-E143-46E2-AB4D-A9955C8B99E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9ACF4214-E143-46E2-AB4D-A9955C8B99E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9ACF4214-E143-46E2-AB4D-A9955C8B99E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50951481-08BD-4487-995C-AA2CDA8818C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50951481-08BD-4487-995C-AA2CDA8818C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50951481-08BD-4487-995C-AA2CDA8818C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50951481-08BD-4487-995C-AA2CDA8818C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E32A5E30-91C8-43AD-B5DA-5416837AA59D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E32A5E30-91C8-43AD-B5DA-5416837AA59D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E32A5E30-91C8-43AD-B5DA-5416837AA59D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E32A5E30-91C8-43AD-B5DA-5416837AA59D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CA4F8BC-5E0F-45DD-AFD7-BA044F9358D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CA4F8BC-5E0F-45DD-AFD7-BA044F9358D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CA4F8BC-5E0F-45DD-AFD7-BA044F9358D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CA4F8BC-5E0F-45DD-AFD7-BA044F9358D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
