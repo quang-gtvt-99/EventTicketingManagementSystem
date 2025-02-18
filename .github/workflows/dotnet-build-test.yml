@@ -1,29 +1,49 @@
-
 name: Build and Test CI
-
 on:
   pull_request:
     branches: [ "main" ]
 env:
   DOTNET_VERSION: '8.0'
-
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: read
+      pull-requests: write
     steps:
-      - uses: actions/checkout@v3
-
+      - name: Checkout
+        uses: actions/checkout@v3
+      
       - name: Setup .NET 📦
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
-
+          
       - name: Install dependencies 📂
-        run: dotnet restore ./EventTicketingManagementSystem/EventTicketingManagementSystem 
+        run: dotnet restore ./EventTicketingManagementSystem/EventTicketingManagementSystem.sln
 
       - name: Build 🧱
-        run: dotnet build ./EventTicketingManagementSystem/EventTicketingManagementSystem --configuration Release --no-restore
+        run: dotnet build ./EventTicketingManagementSystem/EventTicketingManagementSystem.sln --configuration Release --no-restore
 
       - name: Test 🧪
-        run: dotnet test ./EventTicketingManagementSystem/EventTicketingManagementSystem --configuration Release --no-build
+        run: dotnet test ./EventTicketingManagementSystem/EventTicketingManagementSystemTests --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger trx --results-directory coverage
+
+      - name: Copy Coverage To Predictable Location
+        run: cp coverage/*/coverage.cobertura.xml coverage/coverage.cobertura.xml
+
+      - name: Code Coverage Summary Report
+        uses: joshjohanning/CodeCoverageSummary@v1.0.2
+        with:
+          filename: coverage/coverage.cobertura.xml
+          badge: true
+          format: 'markdown'
+          output: 'both'
+
+      - name: Add Coverage PR Comment
+        uses: marocchino/sticky-pull-request-comment@v2
+        if: github.event_name == 'pull_request'
+        with:
+          recreate: true
+          path: code-coverage-results.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
