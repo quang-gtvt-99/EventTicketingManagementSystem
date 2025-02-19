@@ -6,7 +6,7 @@ namespace EventTicketingManagementSystem.Worker.BackgroundServices
     {
         private readonly ILogger<BookingTaskService> _logger;
         private readonly IServiceProvider _serviceProvider;
-        private readonly TimeSpan _interval = TimeSpan.FromSeconds(60);
+        private readonly TimeSpan _interval = TimeSpan.FromSeconds(60 * 2);
 
         public BookingTaskService(ILogger<BookingTaskService> logger, IServiceProvider serviceProvider)
         {
