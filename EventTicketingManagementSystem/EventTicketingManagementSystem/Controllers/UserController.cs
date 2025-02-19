@@ -11,7 +11,7 @@ namespace EventTicketingManagementSystem.API.Controllers
 {
     [Route("api/user")]
     [ApiController]
-    [Authorize(Roles = "User, Admin")]
+    [Authorize(Roles = $"{RoleConsts.User}, {RoleConsts.Admin}")]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;

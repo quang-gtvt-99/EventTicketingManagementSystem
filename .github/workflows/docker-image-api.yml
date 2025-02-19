@@ -1,4 +1,4 @@
-name: Docker Image CD
+name: Docker Image API CD
 
 on:
   push:
@@ -20,7 +20,7 @@ jobs:
         token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
         
     - name: Build the Docker image
-      run: docker build . --file EventTicketingManagementSystem/Dockerfile --tag registry.digitalocean.com/event-ticketing-system/event-ticketing:latest
+      run: docker build . --file EventTicketingManagementSystem/EventTicketingManagementSystem/Dockerfile --tag registry.digitalocean.com/event-ticketing-system/event-ticketing:latest
     
     - name: Log in to DigitalOcean Container Registry with short-lived credentials
       run: doctl registry login --expiry-seconds 1200
