@@ -15,5 +15,6 @@ namespace EventTicketingManagementSystem.API.Request
         public IFormFile? Image { get; set; }
         public decimal? SeatPrice { get; set; }
         public CategoryEnum? Category { get; set; }
+        public string? TrailerUrls { get; set; }
     }
 }
