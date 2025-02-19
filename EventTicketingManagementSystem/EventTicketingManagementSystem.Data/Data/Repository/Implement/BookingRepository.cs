@@ -134,5 +134,16 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
             return $"TICKET-{randomCode}-{dateNow}-{row}{number:D2}";
         }
 
+        public async Task<IEnumerable<Booking>> GetPendingExpiredBookingsAsync()
+        {
+            return await _context.Bookings
+                .AsSplitQuery()
+                .Include(x => x.Payments)
+                .Include(x => x.Tickets)
+                .Include(x => x.Seats)
+                .Where(b => b.Status == CommConstants.CST_PAY_STATUS_PENDING 
+                    && b.ExpiryDate < DateTime.UtcNow)
+                .ToListAsync();
+        }
     }
 }

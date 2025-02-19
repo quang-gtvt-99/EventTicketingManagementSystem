@@ -21,6 +21,7 @@ namespace EventTicketingManagementSystem.Data
             services.AddScoped<IPaymentRepository, PaymentRepository>();
             services.AddScoped<ITicketRepository, TicketRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
+            services.AddScoped<ISeatRepository, SeatRepository>();
 
             return services;
         }

@@ -51,5 +51,15 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
         {
             return await _context.SaveChangesAsync();
         }
+
+        public void UpdateRange(IEnumerable<TEntity> entities)
+        {
+            _context.UpdateRange(entities);
+        }
+
+        public void DeleteRange(IEnumerable<TEntity> entities)
+        {
+            _context.RemoveRange(entities);
+        }
     }
 }

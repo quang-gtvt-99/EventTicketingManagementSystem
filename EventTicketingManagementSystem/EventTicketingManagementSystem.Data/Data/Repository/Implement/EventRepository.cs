@@ -181,5 +181,14 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public async Task<List<Event>> GetUpcomingEventsAsync()
+        {
+            return await _context.Events
+                .AsNoTracking()
+                .Where(e => e.StartDate > DateTime.UtcNow)
+                .OrderByDescending(e => e.StartDate)
+                .ToListAsync();
+        }
     }
 }

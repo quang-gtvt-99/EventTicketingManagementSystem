@@ -1,6 +1,4 @@
 ﻿using EventTicketingManagementSystem.Services.Services.Interfaces;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace EventTicketingManagementSystem.Worker.BackgroundServices
 {
@@ -20,7 +18,7 @@ namespace EventTicketingManagementSystem.Worker.BackgroundServices
             while (!stoppingToken.IsCancellationRequested)
             {
                 var now = DateTime.Now;
-                var nextRunTime = DateTime.Today.AddDays(1); // 0h ngày tiếp theo
+                var nextRunTime = DateTime.Today.AddDays(1); // 0h next day
                 var delay = nextRunTime - now;
 
                 _logger.LogInformation($"DailyTaskService is sleeping for {delay.TotalMilliseconds} milliseconds.");
