@@ -5,6 +5,7 @@ namespace EventTicketingMananagementSystem.Core.Models
     public class Seat : EntityAuditBase<int>
     {
         public int EventId { get; set; }
+        public int? BookingId { get; set; }
         public string Row { get; set; }
         public int Number { get; set; }
         public string Type { get; set; }
@@ -14,5 +15,6 @@ namespace EventTicketingMananagementSystem.Core.Models
         // Navigation properties
         public Event Event { get; set; }
         public Ticket? Ticket { get; set; }
+        public Booking? Booking { get; set; }
     }
 }

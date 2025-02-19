@@ -1,6 +1,4 @@
 ﻿using EventTicketingManagementSystem.Services.Services.Interfaces;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace EventTicketingManagementSystem.Worker.BackgroundServices
 {
@@ -20,15 +18,14 @@ namespace EventTicketingManagementSystem.Worker.BackgroundServices
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                _logger.LogInformation("BookingTaskService is running.");
+                _logger.LogInformation("Remove Pending Expired Bookings Task Is Running!");
 
                 try
                 {
                     using (var scope = _serviceProvider.CreateScope())
                     {
-                        var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
-                        // TODO: Change to revert booking when expired
-                        await userService.GetAllUsersAsync();
+                        var bookingService = scope.ServiceProvider.GetRequiredService<IBookingService>();
+                        await bookingService.RemovePendingExpiredBookings();
                     }
                 }
                 catch (Exception ex)

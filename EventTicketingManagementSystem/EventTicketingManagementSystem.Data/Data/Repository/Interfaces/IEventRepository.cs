@@ -14,5 +14,6 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Interfaces
         Task<(string Message, int TotalSeats)> RegisterSeatsForEventAsync(CreateSeatDto createSeatDto);
         Task<bool> UpdateSeatBySeatIdAsync(int seatId, UpdateSeatDto updateSeatDto);
         Task<bool> UpdateSeatByEventIdRowSeatNameAsync(int eventId, string row, int number, UpdateSeatDto updateSeatDto);
+        Task<List<Event>> GetUpcomingEventsAsync();
     }
 }

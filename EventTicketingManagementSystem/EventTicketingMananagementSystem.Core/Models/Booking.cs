@@ -18,5 +18,6 @@ namespace EventTicketingMananagementSystem.Core.Models
         public Event Event { get; set; }
         public ICollection<Ticket> Tickets { get; set; }
         public ICollection<Payment> Payments { get; set; }
+        public ICollection<Seat> Seats { get; set; }
     }
 }

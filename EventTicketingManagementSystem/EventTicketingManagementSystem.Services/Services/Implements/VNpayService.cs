@@ -12,13 +12,11 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
     {
         private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IBookingRepository _bookingRepository;
 
-        public VnPayService(IConfiguration configuration, IHttpContextAccessor httpContextAccessor, IBookingRepository bookingRepository)
+        public VnPayService(IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
         {
             _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
-            _bookingRepository = bookingRepository;
         }
         public async Task<string> CreatePaymentUrl(Booking booking, string locale, string bankCode, string orderType)
         {

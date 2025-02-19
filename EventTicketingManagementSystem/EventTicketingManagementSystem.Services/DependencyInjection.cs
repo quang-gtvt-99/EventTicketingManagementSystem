@@ -14,6 +14,7 @@ namespace EventTicketingManagementSystem.Services
             services.AddScoped<ICurrentUserService, CurrentUserService>();
             services.AddScoped<IVNPayService, VnPayService>();
             services.AddScoped<IJwtAuth, JwtAuth>();
+            services.AddScoped<IBookingService, BookingService>();
 
             // Add External Services
             services.AddSingleton<IObjectStorageService, ObjectStorageService>();

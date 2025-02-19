@@ -12,11 +12,13 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
 
         private readonly IEventRepository _eventRepository;
         private readonly IObjectStorageService _objectStorageService;
+        private readonly ICacheService _cacheService;
 
-        public EventService(IEventRepository eventRepository, IObjectStorageService objectStorageService)
+        public EventService(IEventRepository eventRepository, IObjectStorageService objectStorageService, ICacheService cacheService)
         {
             _eventRepository = eventRepository;
             _objectStorageService = objectStorageService;
+            _cacheService = cacheService;
         }
 
         public async Task<IEnumerable<Event>> GetAllEventsAsync()
@@ -140,9 +142,27 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
 
         public async Task<IEnumerable<Event>> GetFilteredPagedEventsAsync(EventSearchParamsRequest eventFilter)
         {
+            if (eventFilter.IsUpcoming)
+            {
+                return await GetUpcommingEvents();
+            }
+
             var events = await _eventRepository.GetFilteredPagedAsync(eventFilter);
 
             return events;
+        }
+
+        private async Task<IEnumerable<Event>> GetUpcommingEvents()
+        {
+            List<Event> upcomingEvents = await _cacheService.GetAsync<List<Event>>(CacheKeyConsts.UPCOMING_EVENTS) ?? new List<Event>();
+
+            if (upcomingEvents.Count == 0)
+            {
+                upcomingEvents = await _eventRepository.GetUpcomingEventsAsync();
+                await _cacheService.SetAsync(CacheKeyConsts.UPCOMING_EVENTS, upcomingEvents);
+            }
+
+            return upcomingEvents;
         }
 
 
