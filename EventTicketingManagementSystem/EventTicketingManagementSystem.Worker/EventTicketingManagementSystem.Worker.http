@@ -1,0 +1,6 @@
+@EventTicketingManagementSystem.Worker_HostAddress = http://localhost:5206
+
+GET {{EventTicketingManagementSystem.Worker_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
