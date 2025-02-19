@@ -64,7 +64,7 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
                     Quantity = bookingRequestDto.SeatedInfos.Count,
                     TotalAmount = bookingRequestDto.SeatedInfos.Sum(s => s.Price) * 1.05m, //include tax 5%
                     BookingDate = DateTime.UtcNow,
-                    ExpiryDate = DateTime.UtcNow.AddMinutes(30), //expriy after 30 minutes
+                    ExpiryDate = DateTime.UtcNow.AddMinutes(15), //expriy after 15 minutes
                     //Status = "pending for payment",
                     Status = CommConstants.CST_PAY_STATUS_PAID
                 };

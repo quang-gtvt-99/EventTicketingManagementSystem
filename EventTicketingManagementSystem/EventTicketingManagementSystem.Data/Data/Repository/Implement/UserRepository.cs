@@ -54,5 +54,13 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
             await _context.UserRoles.AddAsync(userRole);
         }
 
+        public string GetEmailByIdAsync(int userId)
+        {
+             var email =  _context.Users
+                .Where(e => e.Id == userId)
+                .Select(e => e.Email)
+                .FirstOrDefault();
+            return email;
+        }
     }
 }
