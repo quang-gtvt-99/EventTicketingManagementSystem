@@ -103,7 +103,7 @@ namespace EventTicketingManagementSystem.Controllers
         public async Task<IActionResult> GetEventDetail(int id)
         {
             var result = await _eventService.GetEventDetailByIdAsync(id);
-            if (result == null) return NotFound();
+            if (result == null) return NotFound(); 
             return Ok(result);
         }
 

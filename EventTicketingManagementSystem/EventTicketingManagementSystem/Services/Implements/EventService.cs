@@ -62,10 +62,18 @@ namespace EventTicketingManagementSystem.Services.Implements
                     VenueAddress = eventItem.VenueAddress,
                     ImageUrls = imageUrl,
                     Category = eventItem.Category?.ToString(),
-                    SeatPrice = eventItem.SeatPrice
+                    SeatPrice = eventItem.SeatPrice,
+                    TrailerUrls = eventItem.TrailerUrls
                 };
                 var eventCreated = await _eventRepository.AddAsync(eventObj);
                 await _eventRepository.SaveChangeAsync();
+
+                var createSeatDto = new CreateSeatDto
+                {
+                    EventId = eventCreated.Id,
+                    Price = eventItem.SeatPrice.GetValueOrDefault()
+                };
+                await RegisterSeats(createSeatDto);
 
                 return eventCreated.Id;
             }
@@ -119,6 +127,7 @@ namespace EventTicketingManagementSystem.Services.Implements
             eventObj.VenueAddress = eventItem.VenueAddress ?? string.Empty;
             eventObj.Category = eventItem.Category?.ToString() ?? string.Empty;
             eventObj.SeatPrice = eventItem.SeatPrice.GetValueOrDefault();
+            eventObj.TrailerUrls = eventItem.TrailerUrls ?? string.Empty;
 
             _eventRepository.Update(eventObj);
             var isUpdated = await _eventRepository.SaveChangeAsync() > 0;
