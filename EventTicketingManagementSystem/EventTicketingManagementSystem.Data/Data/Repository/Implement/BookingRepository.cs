@@ -137,6 +137,7 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
         public async Task<IEnumerable<Booking>> GetPendingExpiredBookingsAsync()
         {
             return await _context.Bookings
+                .AsSplitQuery()
                 .Include(x => x.Payments)
                 .Include(x => x.Tickets)
                 .Include(x => x.Seats)
