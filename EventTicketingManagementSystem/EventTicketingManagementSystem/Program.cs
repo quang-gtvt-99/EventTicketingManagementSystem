@@ -9,10 +9,9 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
-
+[ExcludeFromCodeCoverage]
 public class Program
 {
-    [ExcludeFromCodeCoverage]
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
