@@ -2,7 +2,7 @@
 {
     public class PaymentResponse
     {
-        public long BookingId { get; set; }
+        public int BookingId { get; set; }
         public long VnPayTranId { get; set; }
         public string ResponseCode { get; set; }
         public string TransactionStatus { get; set; }

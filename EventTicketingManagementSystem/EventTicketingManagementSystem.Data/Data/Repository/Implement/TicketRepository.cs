@@ -22,7 +22,7 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
             .Include(s => s.Event)
             .Where(s => s.EventId == booking.EventId
                       && s.Status == CommConstants.CST_SEAT_STATUS_BOOKED
-                      && s.Event.Bookings.Select(b => b.Id).Contains(booking.Id))
+                      && s.BookingId == bookingId)
             .ToListAsync();
 
             if (!seats.Any())
@@ -34,7 +34,7 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
             {
                 BookingId = bookingId,
                 SeatId = seat.Id,
-                TicketNumber = GenerateTicketNumber(),
+                TicketNumber = GenerateTicketNumber(seat.Row,seat.Number),
                 Status = CommConstants.CST_SEAT_STATUS_RESERVED,
                 ReservedAt = DateTime.UtcNow
             }).ToList();
@@ -44,9 +44,12 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
 
             return tickets;
         }
-        private string GenerateTicketNumber()
+        private string GenerateTicketNumber(string row, int number)
         {
-            return $"TCK-{Guid.NewGuid().ToString("N").Substring(0, 8).ToUpper()}";
+            string dateNow = DateTime.UtcNow.ToString("yyyyMMdd");
+            string randomCode = Guid.NewGuid().ToString("N").Substring(0, 8).ToUpper();
+
+            return $"TICKET-{randomCode}-{dateNow}-{row}{number:D2}";
         }
     }
 }

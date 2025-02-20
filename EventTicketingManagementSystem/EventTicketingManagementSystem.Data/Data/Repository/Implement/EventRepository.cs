@@ -66,8 +66,6 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
             }
             return await query.CountAsync();
         }
-
-        ///////user
         public async Task<EventBookingInfoDto> GetEventInfoWithSeatsByEventIDAsync(int eventId)
         {
             var eventInfo = await _context.Events
@@ -129,57 +127,6 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
             await _context.SaveChangesAsync();
 
             return ("registed successfully.", seats.Count);
-        }
-        public async Task<bool> UpdateSeatBySeatIdAsync(int seatId, UpdateSeatDto updateSeatDto)
-        {
-            var seat = await _context.Seats.FindAsync(seatId);
-            if (seat == null)
-                return false;
-
-            if (updateSeatDto.Price > 0)
-            {
-                seat.Price = updateSeatDto.Price;
-
-                if (seat.Type?.ToLower() == CommConstants.CST_SEAT_TYPE_VIP)
-                {
-                    seat.Price *= 1.2m;
-                }
-            }
-
-            if (!string.IsNullOrEmpty(updateSeatDto.Status))
-                seat.Status = updateSeatDto.Status;
-
-            _context.Seats.Update(seat);
-            await _context.SaveChangesAsync();
-            return true;
-        }
-
-        public async Task<bool> UpdateSeatByEventIdRowSeatNameAsync(int eventId, string row, int number, UpdateSeatDto updateSeatDto)
-        {
-            var seat = await _context.Seats.FirstOrDefaultAsync(s =>
-                s.EventId == eventId &&
-                s.Row == row &&
-                s.Number == number);
-
-            if (seat == null)
-                return false;
-
-            if (updateSeatDto.Price > 0)
-            {
-                seat.Price = updateSeatDto.Price;
-
-                if (seat.Type?.ToLower() == CommConstants.CST_SEAT_TYPE_VIP)
-                {
-                    seat.Price *= 1.2m;
-                }
-            }
-
-            if (!string.IsNullOrEmpty(updateSeatDto.Status))
-                seat.Status = updateSeatDto.Status;
-
-            _context.Seats.Update(seat);
-            await _context.SaveChangesAsync();
-            return true;
         }
 
         public async Task<List<Event>> GetUpcomingEventsAsync()

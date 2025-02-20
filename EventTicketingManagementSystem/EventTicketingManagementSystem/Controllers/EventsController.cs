@@ -126,24 +126,5 @@ namespace EventTicketingManagementSystem.API.Controllers
 
             return Ok(new { result.Message, result.TotalSeats });
         }
-        [HttpPut("update-seat")]
-        public async Task<IActionResult> UpdateSeat([FromBody] UpdateSeatDto updateSeatDto)
-        {
-            if (updateSeatDto == null)
-                return BadRequest("Seat information is required.");
-
-            if (updateSeatDto.SeatId != 0)
-            {
-                var result = await _eventService.UpdateSeatAsync(updateSeatDto.SeatId, updateSeatDto);
-                return result ? Ok("updated successfully.") : NotFound("not found.");
-            }
-            else if (updateSeatDto.EventId != 0 && !string.IsNullOrEmpty(updateSeatDto.Row) && updateSeatDto.Number != 0)
-            {
-                var result = await _eventService.UpdateSeatAsync(updateSeatDto.EventId, updateSeatDto.Row, updateSeatDto.Number, updateSeatDto);
-                return result ? Ok("updated successfully.") : NotFound("not found.");
-            }
-            return BadRequest("Invalid input parameters.");
-        }
-
     }
 }
