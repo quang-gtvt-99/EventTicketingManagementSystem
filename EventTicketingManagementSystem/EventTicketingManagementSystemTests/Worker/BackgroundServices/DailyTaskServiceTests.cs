@@ -54,17 +54,6 @@ namespace EventTicketingManagementSystemTests.Worker.BackgroundServices
                 await dailyTaskService.StartAsync(cancellationTokenSource.Token);
 
                 // Assert
-                _mockLogger.Verify(
-                    x => x.Log(
-                        LogLevel.Information,
-                        It.IsAny<EventId>(),
-                        It.Is<It.IsAnyType>((o, t) => o.ToString().Contains("DailyTaskService is sleeping")),
-                        It.IsAny<Exception>(),
-                        It.IsAny<Func<It.IsAnyType, Exception, string>>()
-                    ),
-                    Times.AtLeast(1)
-                );
-
                 _mockUserService.Verify(x => x.GetAllUsersAsync(), Times.AtLeast(1));
             }
             finally

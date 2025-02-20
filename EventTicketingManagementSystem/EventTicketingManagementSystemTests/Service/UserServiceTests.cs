@@ -303,7 +303,7 @@ namespace EventTicketingManagementSystemTests.Service
             var paymentResponse = new PaymentResponse { BookingId = 1 };
 
             _mockUserRepository.Setup(x => x.GetEmailByIdAsync(userId))
-                .Returns((string)null);
+                .Returns((string?)null);
 
             // Act & Assert
             var exception = await Assert.ThrowsAsync<Exception>(

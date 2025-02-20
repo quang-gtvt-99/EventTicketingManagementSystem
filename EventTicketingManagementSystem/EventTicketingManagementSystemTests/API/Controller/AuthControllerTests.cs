@@ -116,7 +116,7 @@ namespace EventTicketingManagementSystemTests.API.Controller
             };
 
             _mockJwtAuth.Setup(x => x.Authentication(request.Email, request.Password))
-                .ReturnsAsync((AuthResult)null);
+                .ReturnsAsync((AuthResult?)null);
 
             // Act
             var result = await _authController.Login(request);
