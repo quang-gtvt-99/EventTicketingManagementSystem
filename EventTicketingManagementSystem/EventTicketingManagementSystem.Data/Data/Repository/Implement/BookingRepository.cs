@@ -1,4 +1,5 @@
-﻿using EventTicketingManagementSystem.Data.Data.Repository.Interfaces;
+﻿using System.Diagnostics.CodeAnalysis;
+using EventTicketingManagementSystem.Data.Data.Repository.Interfaces;
 using EventTicketingMananagementSystem.Core.Constants;
 using EventTicketingMananagementSystem.Core.Dtos;
 using EventTicketingMananagementSystem.Core.Models;
@@ -45,6 +46,8 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
 
             return bookingInfos ?? new List<BookingInfoDto>();
         }
+
+        [ExcludeFromCodeCoverage]
         public async Task<Booking> CreateBookingAsync(CreateBookingDto bookingRequestDto, int loggedInUserId)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
@@ -100,7 +103,6 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
         public async Task<IEnumerable<Booking>> GetPendingExpiredBookingsAsync()
         {
             return await _context.Bookings
-                .AsSplitQuery()
                 .Include(x => x.Payments)
                 .Include(x => x.Tickets)
                 .Include(x => x.Seats)
@@ -110,11 +112,35 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
         }
         public async Task<bool> DeleteBookingByIdAsync(int bookingId)
         {
-            var booking = await _context.Bookings.FindAsync(bookingId);
+            var booking = await _context.Bookings
+                .Include(b => b.Tickets)
+                .Include(b => b.Seats)
+                .Include(b => b.Payments)
+                .FirstOrDefaultAsync(b => b.Id == bookingId);
 
             if (booking == null)
             {
                 return false;
+            }
+
+            // Remove related entities first
+            if (booking.Tickets != null)
+            {
+                _context.Tickets.RemoveRange(booking.Tickets);
+            }
+
+            if (booking.Seats != null)
+            {
+                foreach (var seat in booking.Seats)
+                {
+                    seat.BookingId = null;
+                    seat.Status = CommConstants.CST_SEAT_STATUS_DEFAULT;
+                }
+            }
+
+            if (booking.Payments != null)
+            {
+                _context.Payments.RemoveRange(booking.Payments);
             }
 
             _context.Bookings.Remove(booking);

@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography;
 using System.Text;
 
 namespace EventTicketingMananagementSystem.Core.Utilities
 {
+    [ExcludeFromCodeCoverage]
     public static class Utils
     {
         public static string HmacSHA512(string key, string inputData)

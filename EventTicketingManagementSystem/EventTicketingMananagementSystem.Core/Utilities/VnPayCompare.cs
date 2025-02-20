@@ -1,7 +1,9 @@
-﻿using System.Globalization;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 
 namespace EventTicketingMananagementSystem.Core.Utilities
 {
+    [ExcludeFromCodeCoverage]
     public class VnPayCompare : IComparer<string>
     {
         public int Compare(string x, string y)

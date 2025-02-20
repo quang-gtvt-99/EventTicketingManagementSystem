@@ -18,7 +18,7 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
 
             if (!string.IsNullOrEmpty(search))
             {
-                query = query.Where(e => e.Name.Contains(search) || e.Description.Contains(search));
+                query = query.Where(e => (e.Name != null && e.Name.Contains(search)) || (e.Description != null && e.Description.Contains(search)));
             }
 
             if (!string.IsNullOrEmpty(category))
@@ -40,7 +40,7 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
 
             if (!string.IsNullOrEmpty(eventFilter.Search))
             {
-                query = query.Where(e => e.Name.ToLower().Contains(eventFilter.Search.ToLower()) || e.Description.ToLower().Contains(eventFilter.Search.ToLower()));
+                query = query.Where(e => (e.Name != null && e.Name.ToLower().Contains(eventFilter.Search.ToLower())) || (e.Description != null && e.Description.ToLower().Contains(eventFilter.Search.ToLower())));
             }
 
             if (!string.IsNullOrEmpty(eventFilter.Category))
@@ -62,11 +62,11 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
 
             if (!string.IsNullOrEmpty(search))
             {
-                query = query.Where(e => e.Name.ToLower().Contains(search.ToLower()) || e.Description.ToLower().Contains(search.ToLower()));
+                query = query.Where(e => (e.Name != null && e.Name.ToLower().Contains(search.ToLower())) || (e.Description != null && e.Description.ToLower().Contains(search.ToLower())));
             }
             return await query.CountAsync();
         }
-        public async Task<EventBookingInfoDto> GetEventInfoWithSeatsByEventIDAsync(int eventId)
+        public async Task<EventBookingInfoDto?> GetEventInfoWithSeatsByEventIDAsync(int eventId)
         {
             var eventInfo = await _context.Events
                 .Where(e => e.Id == eventId)
@@ -100,7 +100,7 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
                 })
                 .FirstOrDefaultAsync();
 
-            return eventInfo ?? new EventBookingInfoDto();
+            return eventInfo;
         }
 
         public async Task<(string Message, int TotalSeats)> RegisterSeatsForEventAsync(CreateSeatDto createSeatDto)

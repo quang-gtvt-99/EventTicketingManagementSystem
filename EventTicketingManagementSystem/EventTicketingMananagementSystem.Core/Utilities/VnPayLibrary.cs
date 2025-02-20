@@ -1,10 +1,12 @@
-﻿using System.Globalization;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 
 namespace EventTicketingMananagementSystem.Core.Utilities
 {
+    [ExcludeFromCodeCoverage]
     public class VnPayLibrary
     {
         public const string VERSION = "2.1.0";

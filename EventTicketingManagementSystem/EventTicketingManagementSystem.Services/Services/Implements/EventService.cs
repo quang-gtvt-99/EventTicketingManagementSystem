@@ -26,7 +26,7 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
             return await _eventRepository.GetAllAsync();
         }
 
-        public async Task<Event> GetEventById(int id) => await _eventRepository.GetByIdAsync(id);
+        public async Task<Event?> GetEventById(int id) => await _eventRepository.GetByIdAsync(id);
 
         public async Task<IEnumerable<Event>> GetEventsByFilter(string search, string category, string status) =>
             await _eventRepository.GetEventsByFilter(search, category, status);
@@ -190,7 +190,7 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
         {
             return await _eventRepository.GetByIdAsync(id);
         }
-        public async Task<EventBookingInfoDto> GetEventInfoWithSeatAsync(int id)
+        public async Task<EventBookingInfoDto?> GetEventInfoWithSeatAsync(int id)
         {
             return await _eventRepository.GetEventInfoWithSeatsByEventIDAsync(id);
         }

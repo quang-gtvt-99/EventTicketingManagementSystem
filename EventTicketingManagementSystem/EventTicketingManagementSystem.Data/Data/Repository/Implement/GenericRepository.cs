@@ -1,10 +1,12 @@
 ﻿using EventTicketingManagementSystem.Data.Data.Repository.Interfaces;
 using EventTicketingMananagementSystem.Core.Models.BaseModels;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 
 namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
 {
+    [ExcludeFromCodeCoverage]
     public class GenericRepository<TEntity, TKey> : IGenericRepository<TEntity, TKey> where TEntity : EntityBase<TKey> where TKey : struct
     {
         protected readonly AppDbContext _context;

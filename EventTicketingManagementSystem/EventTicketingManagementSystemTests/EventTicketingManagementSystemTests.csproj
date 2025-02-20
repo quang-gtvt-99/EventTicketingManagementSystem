@@ -22,10 +22,18 @@
     <ProjectReference Include="..\EventTicketingManagementSystem.Data\EventTicketingManagementSystem.Data.csproj" />
     <ProjectReference Include="..\EventTicketingManagementSystem.Services\EventTicketingManagementSystem.Services.csproj" />
     <ProjectReference Include="..\EventTicketingManagementSystem\EventTicketingManagementSystem.API.csproj" />
+    <ProjectReference Include="..\EventTicketingMananagementSystem.Core\EventTicketingMananagementSystem.Core.csproj" />
+    <ProjectReference Include="..\EventTicketingManagementSystem.Worker\EventTicketingManagementSystem.Worker.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="API\Controller\" />
+    <Folder Include="Service\" />
+    <Folder Include="Worker\BackgroundServices\" />
   </ItemGroup>
 
 </Project>

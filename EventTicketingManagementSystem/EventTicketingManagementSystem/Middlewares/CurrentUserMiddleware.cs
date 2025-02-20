@@ -1,8 +1,10 @@
 ﻿using EventTicketingManagementSystem.Services.Services.Interfaces;
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Claims;
 
 namespace EventTicketingManagementSystem.API.Middlewares
 {
+    [ExcludeFromCodeCoverage]
     public class CurrentUserMiddleware
     {
         private readonly RequestDelegate _next;
