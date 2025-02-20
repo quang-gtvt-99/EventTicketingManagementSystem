@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using EventTicketingManagementSystem.Data.Data;
 using EventTicketingManagementSystem.Data.Data.Repository.Implement;
 using EventTicketingManagementSystem.Data.Data.Repository.Interfaces;
@@ -6,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace EventTicketingManagementSystem.Data
 {
+    [ExcludeFromCodeCoverage]
     public static class DependencyInjection
     {
         public static IServiceCollection AddDataServices(this IServiceCollection services, string connectionString)

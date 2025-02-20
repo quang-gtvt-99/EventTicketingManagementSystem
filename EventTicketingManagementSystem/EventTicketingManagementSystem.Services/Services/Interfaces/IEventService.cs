@@ -7,7 +7,7 @@ namespace EventTicketingManagementSystem.Services.Services.Interfaces
     public interface IEventService
     {
         Task<IEnumerable<Event>> GetAllEventsAsync();
-        Task<Event> GetEventById(int id);
+        Task<Event?> GetEventById(int id);
 
         Task<IEnumerable<Event>> GetEventsByFilter(string search, string category, string status);
 
@@ -19,7 +19,7 @@ namespace EventTicketingManagementSystem.Services.Services.Interfaces
         Task<bool> DeleteEvent(int id);
         Task<IEnumerable<Event>> GetAllEventAsync();
         Task<Event?> GetEventDetailByIdAsync(int id);
-        Task<EventBookingInfoDto> GetEventInfoWithSeatAsync(int id);
+        Task<EventBookingInfoDto?> GetEventInfoWithSeatAsync(int id);
         Task<(string Message, int TotalSeats)> RegisterSeats(CreateSeatDto createSeatDto);
     }
 }

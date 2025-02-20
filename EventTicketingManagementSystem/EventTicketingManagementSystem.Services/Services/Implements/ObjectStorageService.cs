@@ -1,4 +1,5 @@
-﻿using Amazon.S3;
+﻿using System.Diagnostics.CodeAnalysis;
+using Amazon.S3;
 using Amazon.S3.Model;
 using EventTicketingManagementSystem.Services.Services.Interfaces;
 using EventTicketingMananagementSystem.Core.Extensions;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace EventTicketingManagementSystem.Services.Services.Implements
 {
+    [ExcludeFromCodeCoverage]
     public class ObjectStorageService : IObjectStorageService
     {
         private readonly AmazonS3Client s3Client;

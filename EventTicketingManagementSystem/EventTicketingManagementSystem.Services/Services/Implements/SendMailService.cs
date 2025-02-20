@@ -1,10 +1,12 @@
-﻿using EventTicketingManagementSystem.Services.Services.Interfaces;
+﻿using System.Diagnostics.CodeAnalysis;
+using EventTicketingManagementSystem.Services.Services.Interfaces;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Configuration;
 using MimeKit;
 
 namespace EventTicketingManagementSystem.Services.Services.Implements
 {
+    [ExcludeFromCodeCoverage]
     public class SendMailService : ISendMailService
     {
         private readonly string _fromName;

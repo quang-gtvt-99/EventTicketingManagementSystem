@@ -134,5 +134,33 @@ namespace EventTicketingManagementSystemTests.Data.Repository
             Assert.Equal(userId, userRole.UserId);
             Assert.Equal(role.Id, userRole.RoleId);
         }
+
+        [Fact]
+        public void GetEmailByIdAsync_ShouldReturnEmail_WhenUserExists()
+        {
+            // Arrange
+            var userId = 1;
+            var expectedEmail = "user1@example.com";
+
+            // Act
+            var email = _userRepository.GetEmailByIdAsync(userId);
+
+            // Assert
+            Assert.NotNull(email);
+            Assert.Equal(expectedEmail, email);
+        }
+
+        [Fact]
+        public void GetEmailByIdAsync_ShouldReturnNull_WhenUserDoesNotExist()
+        {
+            // Arrange
+            var userId = 999; // Non-existent user ID
+
+            // Act
+            var email = _userRepository.GetEmailByIdAsync(userId);
+
+            // Assert
+            Assert.Null(email);
+        }
     }
 }

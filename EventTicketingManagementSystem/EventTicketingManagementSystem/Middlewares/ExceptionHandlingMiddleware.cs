@@ -1,7 +1,9 @@
-﻿using EventTicketingManagementSystem.API.Response;
+﻿using System.Diagnostics.CodeAnalysis;
+using EventTicketingManagementSystem.API.Response;
 
 namespace EventTicketingManagementSystem.API.Middlewares
 {
+    [ExcludeFromCodeCoverage]
     public class ExceptionHandlingMiddleware
     {
         private readonly RequestDelegate _next;

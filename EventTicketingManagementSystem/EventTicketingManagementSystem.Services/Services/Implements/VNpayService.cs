@@ -4,10 +4,12 @@ using EventTicketingMananagementSystem.Core.Models;
 using EventTicketingMananagementSystem.Core.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
 namespace EventTicketingManagementSystem.Services.Services.Implements
 {
+    [ExcludeFromCodeCoverage]
     public class VnPayService : IVNPayService
     {
         private readonly IConfiguration _configuration;

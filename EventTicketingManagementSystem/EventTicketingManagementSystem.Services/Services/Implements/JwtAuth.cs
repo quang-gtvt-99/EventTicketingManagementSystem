@@ -58,9 +58,12 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
             };
 
             var roles = await _userRepository.GetUserRolesAsync(user.Id);
-            foreach (var role in roles)
+            if (roles != null)
             {
-                claims.Add(new Claim(ClaimTypes.Role, role));
+                foreach (var role in roles)
+                {
+                    claims.Add(new Claim(ClaimTypes.Role, role));
+                }
             }
 
             var tokenDescriptor = new SecurityTokenDescriptor

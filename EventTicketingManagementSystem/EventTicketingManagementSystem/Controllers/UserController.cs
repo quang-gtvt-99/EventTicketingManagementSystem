@@ -159,7 +159,7 @@ namespace EventTicketingManagementSystem.API.Controllers
                 if (userIdClaim != null)
                 {
                     int loggedInUserId = int.Parse(userIdClaim.Value);
-                    _userService.SendEmailToId(result,loggedInUserId);
+                    await _userService.SendEmailToId(result,loggedInUserId);
                 }
             }
             return Ok(result);
