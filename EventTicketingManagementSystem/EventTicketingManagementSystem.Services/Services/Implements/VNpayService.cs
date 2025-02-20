@@ -84,7 +84,7 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
                 {
                     var model = new PaymentResponse
                     {
-                        BookingId = bookingId,
+                        BookingId = (int)bookingId,
                         VnPayTranId = vnpayTranId,
                         ResponseCode = vnp_ResponseCode,
                         TransactionStatus = vnp_TransactionStatus,

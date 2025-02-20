@@ -18,5 +18,7 @@ namespace EventTicketingManagementSystem.Services.Services.Interfaces
         Task<CommonMessageResponse> UpdateUserProfileAsync(UpdateUserProfileRequest request);
         Task<CommonMessageResponse> ResetPasswordAsync(ResetPasswordRequest request);
         Task SendEmailToId(PaymentResponse response,int userId);
+        Task ProcessSuccessfulTicketAndPaymentAsync(int bookingId, PaymentResponse paymentRequest);
+        Task ProcessFailBookingAndSeatsAsync(int bookingId);
     }
 }
