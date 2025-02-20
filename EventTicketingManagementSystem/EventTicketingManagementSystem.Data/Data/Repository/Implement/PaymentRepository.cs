@@ -1,6 +1,7 @@
 ﻿using EventTicketingManagementSystem.API.Request;
 using EventTicketingManagementSystem.Data.Data.Repository.Interfaces;
 using EventTicketingManagementSystem.Response;
+using EventTicketingMananagementSystem.Core.Constants;
 using EventTicketingMananagementSystem.Core.Dtos;
 using EventTicketingMananagementSystem.Core.Models;
 
@@ -69,7 +70,7 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
             {
                 BookingId = (int)request.BookingId,
                 Amount = request.Amount,
-                PaymentMethod = "VnPay",
+                PaymentMethod = CommConstants.CST_PAYMENT_METHOD_VNPAY,
                 Status = request.TransactionStatus == "00" ? "Success" : "Failed",
                 TransactionId = request.VnPayTranId.ToString(),
                 PaymentDate = DateTime.UtcNow

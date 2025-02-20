@@ -287,7 +287,7 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
 
                 await _paymentRepository.CreatePaymentAsync(paymentRequest);
             }
-            catch (Exception ex)
+            catch
             {
                 throw;
             }
@@ -301,7 +301,7 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
 
                 await _bookingRepository.DeleteBookingByIdAsync(bookingId);
             }
-            catch (Exception ex)
+            catch
             {
                 throw;
             }

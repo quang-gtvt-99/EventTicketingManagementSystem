@@ -21,6 +21,7 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
             _cacheService = cacheService;
         }
 
+        #region Admin Event
         public async Task<IEnumerable<Event>> GetAllEventsAsync()
         {
             return await _eventRepository.GetAllAsync();
@@ -41,7 +42,7 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
                     using (var fileStream = eventItem.Image.OpenReadStream())
                     {
                         // Generate the file name for S3 (you can modify this to meet your needs)
-                        var fileName = $"{Guid.NewGuid()}_{eventItem.Image.FileName}";
+                        var fileName = $"{Guid.NewGuid()}_{eventItem?.Image?.FileName}";
                         try
                         {
                             // Call the UploadFileAsync method
@@ -55,16 +56,16 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
                 }
                 var eventObj = new Event
                 {
-                    Name = eventItem.Name ?? string.Empty,
-                    Description = eventItem.Description ?? string.Empty,
-                    StartDate = eventItem.StartDate.GetValueOrDefault(),
-                    EndDate = eventItem.EndDate.GetValueOrDefault(),
-                    VenueName = eventItem.VenueName,
-                    VenueAddress = eventItem.VenueAddress,
+                    Name = eventItem?.Name ?? string.Empty,
+                    Description = eventItem?.Description ?? string.Empty,
+                    StartDate = eventItem?.StartDate ?? DateTime.UtcNow,
+                    EndDate = eventItem?.EndDate ?? DateTime.UtcNow,
+                    VenueName = eventItem?.VenueName,
+                    VenueAddress = eventItem?.VenueAddress,
                     ImageUrls = imageUrl,
-                    Category = eventItem.Category?.ToString(),
-                    SeatPrice = eventItem.SeatPrice,
-                    TrailerUrls = eventItem.TrailerUrls ?? string.Empty
+                    Category = eventItem?.Category?.ToString(),
+                    SeatPrice = eventItem?.SeatPrice,
+                    TrailerUrls = eventItem?.TrailerUrls ?? string.Empty
                 };
                 var eventCreated = await _eventRepository.AddAsync(eventObj);
                 await _eventRepository.SaveChangeAsync();
@@ -72,7 +73,7 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
                 var seatDto = new CreateSeatDto
                 {
                     EventId = eventCreated.Id,
-                    Price = eventItem.SeatPrice.GetValueOrDefault()
+                    Price = eventItem?.SeatPrice ?? 0,
                 };
                 await _eventRepository.RegisterSeatsForEventAsync(seatDto);
 
@@ -104,13 +105,18 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
                 try
                 {
                     // Call the UploadFileAsync method
-                    var fileName = $"{Guid.NewGuid()}_{eventItem.Image.FileName}";
+                    var fileName = $"{Guid.NewGuid()}_{eventItem?.Image?.FileName}";
                     imageUrl = await _objectStorageService.UploadFileAsync(fileStream, fileName, CommConstants.S3_BUCKET_NAME);
                 }
                 catch (Exception)
                 {
                     imageUrl = currentEventItem.ImageUrls;
                 }
+            }
+
+            if (eventItem == null)
+            {
+                throw new ArgumentNullException(nameof(eventItem));
             }
 
             var eventObj = await _eventRepository.GetByIdAsync(eventItem.ID);
@@ -173,9 +179,7 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
 
             return upcomingEvents;
         }
-
-
-
+        #endregion
 
         #region User Event
         public async Task<(string Message, int TotalSeats)> RegisterSeats(CreateSeatDto createSeatDto)

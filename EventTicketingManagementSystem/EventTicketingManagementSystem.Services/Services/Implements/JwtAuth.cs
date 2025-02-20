@@ -83,7 +83,7 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
             return new AuthResult
             {
                 Email = user.Email,
-                Roles = roles,
+                Roles = roles ?? new List<string>(),
                 Token = tokenString
             };
         }

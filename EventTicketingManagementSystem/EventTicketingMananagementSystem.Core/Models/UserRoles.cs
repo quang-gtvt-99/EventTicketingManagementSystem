@@ -10,7 +10,7 @@ namespace EventTicketingMananagementSystem.Core.Models
         public int? AssignedBy { get; set; }
 
         // Navigation properties
-        public User User { get; set; }
-        public Role Role { get; set; }
+        public User User { get; set; } = default!;
+        public Role Role { get; set; } = default!;
     }
 }

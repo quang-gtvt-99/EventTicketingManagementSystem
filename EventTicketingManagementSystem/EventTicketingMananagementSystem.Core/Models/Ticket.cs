@@ -6,13 +6,13 @@ namespace EventTicketingMananagementSystem.Core.Models
     {
         public int BookingId { get; set; }
         public int SeatId { get; set; }
-        public string TicketNumber { get; set; }
-        public string Status { get; set; }
+        public string TicketNumber { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
         public DateTime? ReservedAt { get; set; }
         public DateTime? ConfirmedAt { get; set; }
 
         // Navigation properties
-        public Booking Booking { get; set; }
-        public Seat Seat { get; set; }
+        public Booking Booking { get; set; } = default!;
+        public Seat Seat { get; set; } = default!;
     }
 }
