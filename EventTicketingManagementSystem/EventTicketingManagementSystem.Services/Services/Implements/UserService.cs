@@ -1,11 +1,14 @@
 ﻿using EventTicketingManagementSystem.API.Request;
 using EventTicketingManagementSystem.API.Response;
+using EventTicketingManagementSystem.Data.Data.Repository.Implement;
 using EventTicketingManagementSystem.Data.Data.Repository.Interfaces;
 using EventTicketingManagementSystem.Response;
 using EventTicketingManagementSystem.Services.Services.Interfaces;
 using EventTicketingMananagementSystem.Core.Constants;
 using EventTicketingMananagementSystem.Core.Dtos;
+using EventTicketingMananagementSystem.Core.Enums;
 using EventTicketingMananagementSystem.Core.Models;
+using Org.BouncyCastle.Asn1.Ocsp;
 using System.Globalization;
 using System.Text;
 
@@ -330,6 +333,115 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
                     body,
                     true // Set isHtml to true
                 );
+        }
+        public async Task<UserInfoDto> GetUserByIdAsync(int id)
+        {
+            var user = await _userRepository.GetByIdAsync(id);
+            if (user == null) return null;
+            var roles = await _userRepository.GetUserRolesAsync(user.Id);
+
+            return new UserInfoDto
+            {
+                Email = user.Email,
+                FullName = user.FullName,
+                PhoneNumber = user.PhoneNumber,
+                IsActive = user.Status == "Active",
+                Role = roles.FirstOrDefault() == RoleConsts.Admin ? UserRoles.ADMIN : UserRoles.USER
+            };
+        }
+
+        public async Task<IEnumerable<UserInfoDto>> GetFilteredPagedUsersAsync(string search)
+        {
+            var userList = await _userRepository.GetFilteredPagedAsync(search);
+
+            return userList.Select(u => new UserInfoDto
+            {
+                Id = u.Id,
+                Email = u.Email,
+                FullName = u.FullName,
+                PhoneNumber = u.PhoneNumber,
+                IsActive = u.Status == "Active"
+            });
+        }
+
+        public async Task<int> CreateUser(AddUpdateUserRequest userItem)
+        {
+            try
+            {
+                var userObj = new RegisterRequest
+                {
+                    FullName = userItem.FullName ?? string.Empty,
+                    Email = userItem.Email ?? string.Empty,
+                    PhoneNumber = userItem.PhoneNumber ?? string.Empty,
+                    Password = userItem.Password ?? string.Empty
+                };
+
+                var existingUser = await _userRepository.UserEmailExisted(userObj.Email);
+                if (existingUser == true)
+                {
+                    throw new Exception("Email already exists.");
+                }
+
+                var user = new User
+                {
+                    Email = userObj.Email.ToLower(),
+                    FullName = userObj.FullName,
+                    PhoneNumber = userObj.PhoneNumber,
+                    Status = "Active"
+                };
+                user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(userObj.Password);
+
+                await _userRepository.AddAsync(user);
+                await _userRepository.SaveChangeAsync();
+
+                var userAdded = await _userRepository.FindByEmailAsync(user.Email);
+                if (userAdded == null) throw new Exception($"User not found with email {user.Email}.");
+                // register role
+                await _userRepository.AssignRoleAsync(userAdded.Id, userItem.Role == UserRoles.ADMIN ? RoleConsts.Admin : RoleConsts.User);
+                await _userRepository.SaveChangeAsync();
+
+                return userAdded.Id;
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
+
+        }
+
+        public async Task<bool> UpdateUser(AddUpdateUserRequest userItem)
+        {
+            if (userItem.ID == null) return false;
+
+            var user = _userRepository.GetByIdAsync((int)userItem.ID).Result;
+            if (user == null) return false;
+
+            user.FullName = userItem.FullName ?? string.Empty;
+            user.Email = userItem.Email ?? string.Empty;
+            user.PhoneNumber = userItem.PhoneNumber ?? string.Empty;
+            user.Status = userItem.IsActive == true ? "Active" : "Inactive";
+            
+            _userRepository.Update(user);
+            var isUpdated = await _userRepository.SaveChangeAsync() > 0;
+            await _userRepository.AssignRoleAsync(user.Id, userItem.Role == UserRoles.ADMIN ? RoleConsts.Admin : RoleConsts.User);
+
+            return isUpdated;
+        }
+
+        public async Task<bool> DeleteUser(int id)
+        {
+            var userItem = await _userRepository.GetByIdAsync(id);
+
+            if (userItem == null)
+            {
+                return false;
+            }
+
+            _userRepository.Delete(userItem);
+            return await _userRepository.SaveChangeAsync() > 0;
         }
     }
+
+
+}

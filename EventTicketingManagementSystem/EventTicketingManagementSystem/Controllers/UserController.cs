@@ -1,4 +1,5 @@
 ﻿using EventTicketingManagementSystem.API.Request;
+using EventTicketingManagementSystem.Services.Services.Implements;
 using EventTicketingManagementSystem.Services.Services.Interfaces;
 using EventTicketingMananagementSystem.Core.Constants;
 using EventTicketingMananagementSystem.Core.Dtos;
@@ -158,10 +159,60 @@ namespace EventTicketingManagementSystem.API.Controllers
                 if (userIdClaim != null)
                 {
                     int loggedInUserId = int.Parse(userIdClaim.Value);
-                    _userService.SendEmailToId(result,loggedInUserId);
+                    _userService.SendEmailToId(result, loggedInUserId);
                 }
             }
             return Ok(result);
+        }
+
+        // GET: api/users/{id}
+        [HttpGet("{id}")]
+        public async Task<ActionResult<UserInfoDto>> GetUserById(int id)
+        {
+            var userItem = await _userService.GetUserByIdAsync(id);
+            if (userItem == null) return NotFound();
+            return Ok(userItem);
+        }
+
+        // GET: api/users/filter?search=music&category=Concert&status=Active&pageNumber=1&pageSize=10
+        [HttpGet("filter")]
+        public async Task<IActionResult> GetUsersByFilter([FromQuery] string? search)
+        {
+            var users = await _userService.GetFilteredPagedUsersAsync(search);
+
+            return Ok(users);
+        }
+
+
+        //// POST: api/users
+        [HttpPost]
+        public async Task<ActionResult<int>> CreateUser([FromBody] AddUpdateUserRequest userItem)
+        {
+            var newUserID = await _userService.CreateUser(userItem);
+            return Ok(newUserID);
+        }
+
+        // PUT: api/users/{id}
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] AddUpdateUserRequest userItem)
+        {
+            if (id != userItem.ID) return BadRequest();
+
+            var updated = await _userService.UpdateUser(userItem);
+            if (!updated) return NotFound();
+
+            return Ok(true);
+        }
+
+        // DELETE: api/users/{id}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            var deleted = await _userService.DeleteUser(id);
+
+            if (!deleted) return NotFound();
+
+            return Ok(true);
         }
     }
 }
