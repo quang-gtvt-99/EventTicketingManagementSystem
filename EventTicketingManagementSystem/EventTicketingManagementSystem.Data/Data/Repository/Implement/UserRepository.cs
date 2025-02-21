@@ -62,5 +62,17 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
                 .FirstOrDefault();
             return email;
         }
+
+        public async Task<IEnumerable<User>> GetFilteredPagedAsync(string search)
+        {
+            var query = _context.Users.AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(e => e.FullName.ToLower().Contains(search) || e.Email.ToLower().Contains(search));
+            }
+
+            return await query.ToListAsync();
+        }
     }
 }
