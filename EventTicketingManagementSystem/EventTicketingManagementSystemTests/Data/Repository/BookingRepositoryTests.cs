@@ -45,7 +45,6 @@ namespace EventTicketingManagementSystemTests.Data.Repository
                 Id = 1,
                 UserId = 1,
                 EventId = 1,
-                Status = CommConstants.CST_PAY_STATUS_PENDING,
                 BookingDate = DateTime.UtcNow,
                 ExpiryDate = DateTime.UtcNow.AddMinutes(15),
                 Subtotal = 100000,
@@ -153,7 +152,6 @@ namespace EventTicketingManagementSystemTests.Data.Repository
                 Id = 2,
                 UserId = 1,
                 EventId = 1,
-                Status = CommConstants.CST_PAY_STATUS_PENDING,
                 BookingDate = DateTime.UtcNow.AddHours(-1),
                 ExpiryDate = DateTime.UtcNow.AddMinutes(-30)
             };
@@ -167,7 +165,6 @@ namespace EventTicketingManagementSystemTests.Data.Repository
             Assert.NotNull(result);
             Assert.Single(result);
             var booking = result.First();
-            Assert.Equal(CommConstants.CST_PAY_STATUS_PENDING, booking.Status);
             Assert.True(booking.ExpiryDate < DateTime.UtcNow);
         }
 

@@ -103,7 +103,6 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
         }
         public async Task<Booking> CreateBookingAsync(CreateBookingDto bookingRequestDto, int loggedInUserId)
         {
-            await _cacheService.InvalidCacheAsync(CacheKeyConsts.UPCOMING_EVENTS);
             return await _bookingRepository.CreateBookingAsync(bookingRequestDto, loggedInUserId);
         }
         public async Task<Payment> UpdatePaymentStatusAsync(int paymentId, UpdatePaymentDto requestDto)

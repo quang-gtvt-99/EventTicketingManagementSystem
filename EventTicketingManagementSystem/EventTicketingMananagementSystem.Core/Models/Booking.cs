@@ -7,7 +7,6 @@ namespace EventTicketingMananagementSystem.Core.Models
         public int UserId { get; set; }
         public int EventId { get; set; }
         public decimal TotalAmount { get; set; }
-        public string Status { get; set; } = "Pending";
         public DateTime BookingDate { get; set; } = DateTime.UtcNow;
         public DateTime? ExpiryDate { get; set; }
         public int Quantity { get; set; }

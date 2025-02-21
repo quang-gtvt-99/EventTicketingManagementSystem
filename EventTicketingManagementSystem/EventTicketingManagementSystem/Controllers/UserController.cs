@@ -150,7 +150,6 @@ namespace EventTicketingManagementSystem.API.Controllers
             {
                 Id = request.BookingId,
                 TotalAmount = request.Amount,
-                Status = CommConstants.CST_PAY_STATUS_PENDING,
                 BookingDate = DateTime.Now
             };
 
