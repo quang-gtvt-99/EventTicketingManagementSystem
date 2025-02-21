@@ -2,6 +2,7 @@ using EventTicketingManagementSystem.API.Middlewares;
 using EventTicketingManagementSystem.Data;
 using EventTicketingManagementSystem.Data.Data;
 using EventTicketingManagementSystem.Services;
+using EventTicketingMananagementSystem.Core.Hubs;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -30,19 +31,28 @@ public class Program
 
         builder.Services.AddControllers();
 
+        // Add SignalR
+        builder.Services.AddSignalR();
+
+
         // Add FluentValidation
         builder.Services
             .AddFluentValidationAutoValidation()
             .AddFluentValidationClientsideAdapters();
 
+        var fullUrl = builder.Configuration["vnp_ReturnUrl"] ?? throw new Exception("Cannot get Connection String"); ;
+        Uri uri = new Uri(fullUrl.ToString());
+        string originUrl = uri.GetLeftPart(UriPartial.Authority);
+
         // Add CORS services
         builder.Services.AddCors(options =>
         {
-            options.AddPolicy("AllowAll", policy =>
+            options.AddPolicy("AllowFrontend", policy =>
             {
-                policy.AllowAnyOrigin()  // Allow any origin
-                      .AllowAnyMethod()  // Allow any HTTP method (GET, POST, etc.)
-                      .AllowAnyHeader(); // Allow any headers
+                policy.WithOrigins(originUrl)
+                      .AllowAnyMethod()                   // Allow any HTTP method (GET, POST, etc.)
+                      .AllowAnyHeader()                   // Allow any header
+                      .AllowCredentials();                // Allow credentials (cookies, authorization headers)
             });
         });
 
@@ -114,7 +124,7 @@ public class Program
             app.UseSwaggerUI();
         }
 
-        app.UseCors("AllowAll");
+        app.UseCors("AllowFrontend");
 
         app.UseHttpsRedirection();
 
@@ -125,6 +135,8 @@ public class Program
         app.UseAuthorization();
 
         app.UseMiddleware<CurrentUserMiddleware>();
+
+        app.MapHub<NotificationHub>("/notificationHub");
 
         app.MapControllers();
 

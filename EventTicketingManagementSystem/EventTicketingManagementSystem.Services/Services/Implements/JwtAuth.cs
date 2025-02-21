@@ -28,7 +28,7 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
         {
             var user = await _userRepository.FindByEmailAsync(email);
 
-            if (user == null)
+            if (user == null && user.Status.Equals(CommConstants.CST_USER_STATUS_INACTIVE))
             {
                 return null;
             }
