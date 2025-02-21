@@ -74,12 +74,12 @@ namespace EventTicketingManagementSystem.Data.Data
 
             // Indexes for Booking model
             modelBuilder.Entity<Booking>()
-                .HasIndex(b => b.Status)
-                .HasDatabaseName("IX_Bookings_Status");
-
-            modelBuilder.Entity<Booking>()
                 .HasIndex(b => b.ExpiryDate)
                 .HasDatabaseName("IX_Bookings_ExpiryDate");
+
+            modelBuilder.Entity<Booking>()
+                .HasIndex(b => b.UserId)
+                .HasDatabaseName("IX_Bookings_UserId");
 
             // Indexes for Event model
             modelBuilder.Entity<Event>()
@@ -100,9 +100,8 @@ namespace EventTicketingManagementSystem.Data.Data
 
             // Indexes for Payment model
             modelBuilder.Entity<Payment>()
-                .HasIndex(p => p.TransactionId)
-                .IsUnique()
-                .HasDatabaseName("IX_Payments_TransactionId");
+                .HasIndex(p => p.Status)
+                .HasDatabaseName("IX_Payments_Status");
 
             // Indexes for Seat model
             modelBuilder.Entity<Seat>()

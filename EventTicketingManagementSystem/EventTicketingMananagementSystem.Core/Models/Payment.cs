@@ -10,7 +10,6 @@ namespace EventTicketingMananagementSystem.Core.Models
         public string Status { get; set; } = "Pending";
         public string TransactionId { get; set; } = string.Empty;
         public DateTime? PaymentDate { get; set; }
-        public DateTime? RefundDate { get; set; }
 
         // Navigation properties
         public Booking Booking { get; set; } = default!;

@@ -19,6 +19,7 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
                 .AsNoTracking()
                 .Include(b => b.Tickets)
                 .ThenInclude(t => t.Seat)
+                .Include(x => x.Payments)
                 .Where(b => b.UserId == userId)
                 .Select(b => new BookingInfoDto
                 {
@@ -29,8 +30,10 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
                     EventDate = $"{b.Event.StartDate.Date.ToString("dd/MM/yyyy")} - {b.Event.EndDate.Date.ToString("dd/MM/yyyy")}",
                     EventTime = b.Event.StartDate.TimeOfDay.ToString(),
                     TotalAmount = b.Subtotal,
-                    Status = b.Status,
                     BookedAt = b.CreatedAt,
+                    Status = b.Payments.Any()
+                        ? b.Payments.First().Status 
+                        : CommConstants.CST_PAY_STATUS_PENDING,
                     Tickets = b.Tickets.Select(t => new TicketInfoDto
                     {
                         TicketId = t.Id,
@@ -68,7 +71,6 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
                     TotalAmount = bookingRequestDto.SeatedInfos.Sum(s => s.Price) * 1.05m, //include tax 5%
                     BookingDate = DateTime.UtcNow,
                     ExpiryDate = DateTime.UtcNow.AddMinutes(15), //expriy after 15 minutes
-                    Status = CommConstants.CST_PAY_STATUS_PAID
                 };
 
                 _context.Bookings.Add(newBooking);
@@ -106,8 +108,7 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
                 .Include(x => x.Payments)
                 .Include(x => x.Tickets)
                 .Include(x => x.Seats)
-                .Where(b => b.Status == CommConstants.CST_PAY_STATUS_PENDING 
-                    && b.ExpiryDate < DateTime.UtcNow)
+                .Where(b => !b.Payments.Any() && b.ExpiryDate < DateTime.UtcNow)
                 .ToListAsync();
         }
         public async Task<bool> DeleteBookingByIdAsync(int bookingId)
