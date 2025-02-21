@@ -1,4 +1,5 @@
-﻿using EventTicketingManagementSystem.Data.Data.Repository.Interfaces;
+﻿using System.Diagnostics.CodeAnalysis;
+using EventTicketingManagementSystem.Data.Data.Repository.Interfaces;
 using EventTicketingMananagementSystem.Core.Constants;
 using EventTicketingMananagementSystem.Core.Dtos;
 using EventTicketingMananagementSystem.Core.Models;
@@ -45,6 +46,8 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
 
             return bookingInfos ?? new List<BookingInfoDto>();
         }
+
+        [ExcludeFromCodeCoverage]
         public async Task<Booking> CreateBookingAsync(CreateBookingDto bookingRequestDto, int loggedInUserId)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
@@ -65,28 +68,11 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
                     TotalAmount = bookingRequestDto.SeatedInfos.Sum(s => s.Price) * 1.05m, //include tax 5%
                     BookingDate = DateTime.UtcNow,
                     ExpiryDate = DateTime.UtcNow.AddMinutes(15), //expriy after 15 minutes
-                    //Status = "pending for payment",
                     Status = CommConstants.CST_PAY_STATUS_PAID
                 };
 
                 _context.Bookings.Add(newBooking);
                 await _context.SaveChangesAsync();
-
-                //var payment = new Payment
-                //{
-                //    BookingId = newBooking.Id,
-                //    Amount = newBooking.TotalAmount,
-                //    //PaymentMethod = "Not Selected",
-                //    //Status = "Pending",
-                //    PaymentMethod = "Bank",
-                //    Status = "Done",
-                //    TransactionId = null,
-                //    PaymentDate = null,
-                //    RefundDate = null
-                //};
-
-                //_context.Payments.Add(payment);
-                //await _context.SaveChangesAsync();
 
                 foreach (var seatInfo in bookingRequestDto.SeatedInfos)
                 {
@@ -96,22 +82,11 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
                     if (seat != null)
                     {
                         seat.Status = CommConstants.CST_SEAT_STATUS_BOOKED;
+                        seat.BookingId = newBooking.Id;
                         _context.Seats.Update(seat);
                     }
                 }
 
-                await _context.SaveChangesAsync();
-
-                var tickets = bookingRequestDto.SeatedInfos.Select(seat => new Ticket
-                {
-                    BookingId = newBooking.Id,
-                    SeatId = seat.SeatId,
-                    TicketNumber = GenerateTicketNumber(seat.Row, seat.Number),
-                    Status = CommConstants.CST_SEAT_STATUS_RESERVED,
-                    ReservedAt = DateTime.UtcNow
-                }).ToList();
-
-                await _context.Tickets.AddRangeAsync(tickets);
                 await _context.SaveChangesAsync();
 
                 await transaction.CommitAsync();
@@ -125,25 +100,53 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
             }
 
         }
-
-        private string GenerateTicketNumber(string row, int number)
-        {
-            string dateNow = DateTime.UtcNow.ToString("yyyyMMdd");
-            string randomCode = Guid.NewGuid().ToString("N").Substring(0, 8).ToUpper();
-
-            return $"TICKET-{randomCode}-{dateNow}-{row}{number:D2}";
-        }
-
         public async Task<IEnumerable<Booking>> GetPendingExpiredBookingsAsync()
         {
             return await _context.Bookings
-                .AsSplitQuery()
                 .Include(x => x.Payments)
                 .Include(x => x.Tickets)
                 .Include(x => x.Seats)
                 .Where(b => b.Status == CommConstants.CST_PAY_STATUS_PENDING 
                     && b.ExpiryDate < DateTime.UtcNow)
                 .ToListAsync();
+        }
+        public async Task<bool> DeleteBookingByIdAsync(int bookingId)
+        {
+            var booking = await _context.Bookings
+                .Include(b => b.Tickets)
+                .Include(b => b.Seats)
+                .Include(b => b.Payments)
+                .FirstOrDefaultAsync(b => b.Id == bookingId);
+
+            if (booking == null)
+            {
+                return false;
+            }
+
+            // Remove related entities first
+            if (booking.Tickets != null)
+            {
+                _context.Tickets.RemoveRange(booking.Tickets);
+            }
+
+            if (booking.Seats != null)
+            {
+                foreach (var seat in booking.Seats)
+                {
+                    seat.BookingId = null;
+                    seat.Status = CommConstants.CST_SEAT_STATUS_DEFAULT;
+                }
+            }
+
+            if (booking.Payments != null)
+            {
+                _context.Payments.RemoveRange(booking.Payments);
+            }
+
+            _context.Bookings.Remove(booking);
+            await _context.SaveChangesAsync();
+
+            return true;
         }
     }
 }

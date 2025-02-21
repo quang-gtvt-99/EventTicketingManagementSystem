@@ -1,7 +1,9 @@
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace EventTicketingManagementSystem.API.Middlewares
 {
+    [ExcludeFromCodeCoverage]
     public class RequestTimingMiddleware
     {
         private readonly RequestDelegate _next;

@@ -2,9 +2,11 @@
 using EventTicketingManagementSystem.Services;
 using EventTicketingManagementSystem.Data;
 using EventTicketingManagementSystem.Worker.BackgroundServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace EventTicketingManagementSystem.Worker
 {
+    [ExcludeFromCodeCoverage]
     public class Program
     {
         public static void Main(string[] args)

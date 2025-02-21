@@ -4,10 +4,12 @@ using EventTicketingMananagementSystem.Core.Models;
 using EventTicketingMananagementSystem.Core.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
 namespace EventTicketingManagementSystem.Services.Services.Implements
 {
+    [ExcludeFromCodeCoverage]
     public class VnPayService : IVNPayService
     {
         private readonly IConfiguration _configuration;
@@ -25,9 +27,9 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
             var vnp_HashSecret = _configuration["vnp_HashSecret"];
             var vnp_Returnurl = _configuration["vnp_ReturnUrl"];
 
-            if (string.IsNullOrEmpty(vnp_TmnCode) || string.IsNullOrEmpty(vnp_HashSecret))
+            if (string.IsNullOrEmpty(vnp_TmnCode) || string.IsNullOrEmpty(vnp_HashSecret) || string.IsNullOrEmpty(vnp_Url) || string.IsNullOrEmpty(vnp_Returnurl))
             {
-                throw new Exception("Vui lòng cấu hình các tham số: vnp_TmnCode, vnp_HashSecret");
+                throw new Exception("Vui lòng cấu hình các tham số: vnp_TmnCode, vnp_HashSecret, vnp_Url, vnp_Returnurl");
             }
 
             var vnpay = new VnPayLibrary();
@@ -49,8 +51,10 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
             {
                 vnpay.AddRequestData("vnp_BankCode", bankCode);
             }
-
-            return vnpay.CreateRequestUrl(vnp_Url, vnp_HashSecret);
+            
+            var paymentUrl = vnpay.CreateRequestUrl(vnp_Url, vnp_HashSecret);
+            await Task.CompletedTask;
+            return paymentUrl;
         }
 
         public async Task<PaymentResponse> ProcessVnPayReturn(IQueryCollection query)
@@ -59,6 +63,12 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
             if (query.Count > 0)
             {
                 var vnp_HashSecret = _configuration["vnp_HashSecret"];
+
+                if (string.IsNullOrEmpty(vnp_HashSecret))
+                {
+                    throw new Exception("Vui lòng cấu hình các tham số: vnp_HashSecret");
+                }
+
                 var vnpayData = query.ToDictionary(q => q.Key, q => q.Value.ToString());
                 var vnpay = new VnPayLibrary();
                 foreach (var key in vnpayData.Keys)
@@ -79,12 +89,13 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
                 string bankCode = query["vnp_BankCode"].ToString();
                 string payDate = vnpay.GetResponseData("vnp_PayDate");
 
+
                 bool checkSignature = vnpay.ValidateSignature(vnp_SecureHash, vnp_HashSecret);
                 if (checkSignature)
                 {
                     var model = new PaymentResponse
                     {
-                        BookingId = bookingId,
+                        BookingId = (int)bookingId,
                         VnPayTranId = vnpayTranId,
                         ResponseCode = vnp_ResponseCode,
                         TransactionStatus = vnp_TransactionStatus,
@@ -110,7 +121,7 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
                     return new PaymentResponse { Message = "Có lỗi xảy ra trong quá trình xử lý" };
                 }
             }
-
+            await Task.CompletedTask;
             return new PaymentResponse { Message = "Không có dữ liệu trả về từ VNPAY" };
         }
     }

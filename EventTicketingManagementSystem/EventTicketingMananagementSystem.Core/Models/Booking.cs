@@ -14,10 +14,10 @@ namespace EventTicketingMananagementSystem.Core.Models
         public decimal Subtotal { get; set; }
 
         // Navigation properties
-        public User User { get; set; }
-        public Event Event { get; set; }
-        public ICollection<Ticket> Tickets { get; set; }
-        public ICollection<Payment> Payments { get; set; }
-        public ICollection<Seat> Seats { get; set; }
+        public User User { get; set; } = default!;
+        public Event Event { get; set; } = default!;
+        public ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
+        public ICollection<Payment> Payments { get; set; } = new List<Payment>();
+        public ICollection<Seat> Seats { get; set; } = new List<Seat>();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using EventTicketingManagementSystem.API.Request;
 using EventTicketingManagementSystem.Services.Services.Implements;
+using EventTicketingManagementSystem.Response;
 using EventTicketingManagementSystem.Services.Services.Interfaces;
 using EventTicketingMananagementSystem.Core.Constants;
 using EventTicketingMananagementSystem.Core.Dtos;
@@ -159,7 +160,7 @@ namespace EventTicketingManagementSystem.API.Controllers
                 if (userIdClaim != null)
                 {
                     int loggedInUserId = int.Parse(userIdClaim.Value);
-                    _userService.SendEmailToId(result, loggedInUserId);
+                    await _userService.SendEmailToId(result,loggedInUserId);
                 }
             }
             return Ok(result);
@@ -213,6 +214,27 @@ namespace EventTicketingManagementSystem.API.Controllers
             if (!deleted) return NotFound();
 
             return Ok(true);
+        }
+        [HttpPost("process-payment")]
+        public async Task<IActionResult> ProcessPayment([FromBody] PaymentResponse request)
+        {
+            try
+            {
+                if (request.ResponseCode != "00" || request.TransactionStatus != "00")
+                {
+                    await _userService.ProcessFailBookingAndSeatsAsync(request.BookingId);
+                    return Ok(new { message = "Payment fail. Delete booking and updated seats processed successfully" });
+                }
+                else
+                {
+                    await _userService.ProcessSuccessfulTicketAndPaymentAsync(request.BookingId, request);
+                    return Ok(new { Message = "Payment Successfully. Tickets created and payment processed successfully" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Error = ex.Message });
+            }
         }
     }
 }

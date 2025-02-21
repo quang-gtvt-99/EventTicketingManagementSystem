@@ -1,9 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
 using EventTicketingManagementSystem.Services.Services.Implements;
 using EventTicketingManagementSystem.Services.Services.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace EventTicketingManagementSystem.Services
 {
+    [ExcludeFromCodeCoverage]
     public static class DependencyInjection
     {
         public static IServiceCollection AddServiceLayer(this IServiceCollection services)

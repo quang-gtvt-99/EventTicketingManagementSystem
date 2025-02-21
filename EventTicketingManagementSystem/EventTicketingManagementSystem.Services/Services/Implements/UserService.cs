@@ -22,9 +22,10 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
         private readonly IPaymentRepository _paymentRepository;
         private readonly ITicketRepository _ticketRepository;
         private readonly ISendMailService _sendEmailService;
+        private readonly ISeatRepository _seatRepository;
         private readonly ICacheService _cacheService;
 
-        public UserService(IUserRepository userRepository, IBookingRepository bookingRepository, ICurrentUserService currentUserService, IPaymentRepository paymentRepository, ITicketRepository ticketRepository, ISendMailService sendEmailService, ICacheService cacheService)
+        public UserService(IUserRepository userRepository, IBookingRepository bookingRepository, ICurrentUserService currentUserService, IPaymentRepository paymentRepository, ITicketRepository ticketRepository, ISendMailService sendEmailService, ICacheService cacheService, ISeatRepository seatRepository)
         {
             _userRepository = userRepository;
             _bookingRepository = bookingRepository;
@@ -33,6 +34,7 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
             _ticketRepository = ticketRepository;
             _sendEmailService = sendEmailService;
             _cacheService = cacheService;
+            _seatRepository = seatRepository;
         }
         public async Task<IEnumerable<User>> GetAllUsersAsync()
         {
@@ -278,6 +280,33 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
         private bool VerifyPasswordHash(string password, string storedHash)
         {
             return BCrypt.Net.BCrypt.Verify(password, storedHash);
+        }
+        public async Task ProcessSuccessfulTicketAndPaymentAsync(int bookingId, PaymentResponse paymentRequest)
+        {
+            try
+            {
+                await _ticketRepository.CreateTicketsAsync(bookingId);
+
+                await _paymentRepository.CreatePaymentAsync(paymentRequest);
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public async Task ProcessFailBookingAndSeatsAsync(int bookingId)
+        {
+            try
+            {
+                await _seatRepository.UpdateSeatsByBookingIdAsync(bookingId, CommConstants.CST_SEAT_STATUS_DEFAULT);
+
+                await _bookingRepository.DeleteBookingByIdAsync(bookingId);
+            }
+            catch
+            {
+                throw;
+            }
         }
         public async Task SendEmailToId(PaymentResponse response, int userId)
         {

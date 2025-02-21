@@ -1,4 +1,7 @@
-﻿using EventTicketingManagementSystem.Data.Data.Repository.Interfaces;
+﻿using EventTicketingManagementSystem.API.Request;
+using EventTicketingManagementSystem.Data.Data.Repository.Interfaces;
+using EventTicketingManagementSystem.Response;
+using EventTicketingMananagementSystem.Core.Constants;
 using EventTicketingMananagementSystem.Core.Dtos;
 using EventTicketingMananagementSystem.Core.Models;
 
@@ -60,6 +63,22 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
             }
 
             return false;
+        }
+        public async Task<Payment> CreatePaymentAsync(PaymentResponse request)
+        {
+            var newPayment = new Payment
+            {
+                BookingId = (int)request.BookingId,
+                Amount = request.Amount,
+                PaymentMethod = CommConstants.CST_PAYMENT_METHOD_VNPAY,
+                Status = request.TransactionStatus == "00" ? "Success" : "Failed",
+                TransactionId = request.VnPayTranId.ToString(),
+                PaymentDate = DateTime.UtcNow
+            };
+            _context.Payments.Add(newPayment);
+            await _context.SaveChangesAsync();
+
+            return newPayment;
         }
     }
 }

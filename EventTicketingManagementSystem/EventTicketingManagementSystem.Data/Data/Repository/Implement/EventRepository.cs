@@ -18,7 +18,7 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
 
             if (!string.IsNullOrEmpty(search))
             {
-                query = query.Where(e => e.Name.Contains(search) || e.Description.Contains(search));
+                query = query.Where(e => (e.Name != null && e.Name.Contains(search)) || (e.Description != null && e.Description.Contains(search)));
             }
 
             if (!string.IsNullOrEmpty(category))
@@ -40,7 +40,7 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
 
             if (!string.IsNullOrEmpty(eventFilter.Search))
             {
-                query = query.Where(e => e.Name.ToLower().Contains(eventFilter.Search.ToLower()) || e.Description.ToLower().Contains(eventFilter.Search.ToLower()));
+                query = query.Where(e => (e.Name != null && e.Name.ToLower().Contains(eventFilter.Search.ToLower())) || (e.Description != null && e.Description.ToLower().Contains(eventFilter.Search.ToLower())));
             }
 
             if (!string.IsNullOrEmpty(eventFilter.Category))
@@ -62,13 +62,11 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
 
             if (!string.IsNullOrEmpty(search))
             {
-                query = query.Where(e => e.Name.ToLower().Contains(search.ToLower()) || e.Description.ToLower().Contains(search.ToLower()));
+                query = query.Where(e => (e.Name != null && e.Name.ToLower().Contains(search.ToLower())) || (e.Description != null && e.Description.ToLower().Contains(search.ToLower())));
             }
             return await query.CountAsync();
         }
-
-        ///////user
-        public async Task<EventBookingInfoDto> GetEventInfoWithSeatsByEventIDAsync(int eventId)
+        public async Task<EventBookingInfoDto?> GetEventInfoWithSeatsByEventIDAsync(int eventId)
         {
             var eventInfo = await _context.Events
                 .Where(e => e.Id == eventId)
@@ -102,7 +100,7 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
                 })
                 .FirstOrDefaultAsync();
 
-            return eventInfo ?? new EventBookingInfoDto();
+            return eventInfo;
         }
 
         public async Task<(string Message, int TotalSeats)> RegisterSeatsForEventAsync(CreateSeatDto createSeatDto)
@@ -129,57 +127,6 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
             await _context.SaveChangesAsync();
 
             return ("registed successfully.", seats.Count);
-        }
-        public async Task<bool> UpdateSeatBySeatIdAsync(int seatId, UpdateSeatDto updateSeatDto)
-        {
-            var seat = await _context.Seats.FindAsync(seatId);
-            if (seat == null)
-                return false;
-
-            if (updateSeatDto.Price > 0)
-            {
-                seat.Price = updateSeatDto.Price;
-
-                if (seat.Type?.ToLower() == CommConstants.CST_SEAT_TYPE_VIP)
-                {
-                    seat.Price *= 1.2m;
-                }
-            }
-
-            if (!string.IsNullOrEmpty(updateSeatDto.Status))
-                seat.Status = updateSeatDto.Status;
-
-            _context.Seats.Update(seat);
-            await _context.SaveChangesAsync();
-            return true;
-        }
-
-        public async Task<bool> UpdateSeatByEventIdRowSeatNameAsync(int eventId, string row, int number, UpdateSeatDto updateSeatDto)
-        {
-            var seat = await _context.Seats.FirstOrDefaultAsync(s =>
-                s.EventId == eventId &&
-                s.Row == row &&
-                s.Number == number);
-
-            if (seat == null)
-                return false;
-
-            if (updateSeatDto.Price > 0)
-            {
-                seat.Price = updateSeatDto.Price;
-
-                if (seat.Type?.ToLower() == CommConstants.CST_SEAT_TYPE_VIP)
-                {
-                    seat.Price *= 1.2m;
-                }
-            }
-
-            if (!string.IsNullOrEmpty(updateSeatDto.Status))
-                seat.Status = updateSeatDto.Status;
-
-            _context.Seats.Update(seat);
-            await _context.SaveChangesAsync();
-            return true;
         }
 
         public async Task<List<Event>> GetUpcomingEventsAsync()

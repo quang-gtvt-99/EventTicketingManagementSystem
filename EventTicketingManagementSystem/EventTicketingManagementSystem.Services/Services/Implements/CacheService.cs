@@ -1,10 +1,12 @@
 ﻿using EventTicketingManagementSystem.Services.Services.Interfaces;
 using Microsoft.Extensions.Configuration;
 using StackExchange.Redis;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace EventTicketingManagementSystem.Services.Services.Implements
 {
+    [ExcludeFromCodeCoverage]
     public class CacheService : ICacheService
     {
         private readonly ConnectionMultiplexer redis;

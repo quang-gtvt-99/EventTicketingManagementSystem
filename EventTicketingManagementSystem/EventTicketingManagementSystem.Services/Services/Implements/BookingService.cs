@@ -24,15 +24,23 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
             var expiredBookings = await bookingRepository.GetPendingExpiredBookingsAsync();
             foreach (var booking in expiredBookings)
             {
-                bookingRepository.Delete(booking);
-                paymentRepository.DeleteRange(booking.Payments);
-                ticketRepository.DeleteRange(booking.Tickets);
+                if (booking.Payments != null && booking.Payments.Count > 0)
+                    paymentRepository.DeleteRange(booking.Payments);
 
-                foreach (var seat in booking.Seats)
+                if (booking.Tickets != null && booking.Tickets.Count > 0)
+                    ticketRepository.DeleteRange(booking.Tickets);
+
+                if (booking.Seats != null && booking.Seats.Count > 0)
                 {
-                    seat.Status = CommConstants.CST_SEAT_STATUS_DEFAULT;
+                    foreach (var seat in booking.Seats)
+                    {
+                        seat.BookingId = null;
+                        seat.Status = CommConstants.CST_SEAT_STATUS_DEFAULT;
+                    }
+                    seatRepository.UpdateRange(booking.Seats);
                 }
-                seatRepository.UpdateRange(booking.Seats);
+
+                bookingRepository.Delete(booking);
             }
 
             await bookingRepository.SaveChangeAsync();

@@ -8,5 +8,6 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Interfaces
         Task<List<BookingInfoDto>> GetBookingInfosByUserIdAsync(int userId);
         Task<Booking> CreateBookingAsync(CreateBookingDto bookingRequestDto, int loggedInUserId);
         Task<IEnumerable<Booking>> GetPendingExpiredBookingsAsync();
+        Task<bool> DeleteBookingByIdAsync(int bookingId);
     }
 }

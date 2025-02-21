@@ -23,5 +23,7 @@ namespace EventTicketingManagementSystem.Services.Services.Interfaces
         Task<int> CreateUser(AddUpdateUserRequest userItem);
         Task<bool> UpdateUser(AddUpdateUserRequest userItem);
         Task<bool> DeleteUser(int id);
+        Task ProcessSuccessfulTicketAndPaymentAsync(int bookingId, PaymentResponse paymentRequest);
+        Task ProcessFailBookingAndSeatsAsync(int bookingId);
     }
 }

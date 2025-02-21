@@ -17,22 +17,13 @@ namespace EventTicketingManagementSystem.Worker.BackgroundServices
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                var now = DateTime.Now;
-                var nextRunTime = DateTime.Today.AddDays(1); // 0h next day
-                var delay = nextRunTime - now;
-
-                _logger.LogInformation($"DailyTaskService is sleeping for {delay.TotalMilliseconds} milliseconds.");
-
                 try
                 {
-                    await Task.Delay(delay, stoppingToken);
-
                     _logger.LogInformation("DailyTaskService is running.");
 
                     using (var scope = _serviceProvider.CreateScope())
                     {
                         var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
-                        // TODO: Change events status
                         await userService.GetAllUsersAsync();
                     }
                 }
@@ -40,6 +31,14 @@ namespace EventTicketingManagementSystem.Worker.BackgroundServices
                 {
                     _logger.LogError(ex, "An error occurred while executing the daily task.");
                 }
+
+                // Move delay outside try-catch block
+                var now = DateTime.Now;
+                var nextRunTime = DateTime.Today.AddDays(1); // 0h next day
+                var delay = nextRunTime - now;
+
+                _logger.LogInformation($"DailyTaskService is sleeping for {delay.TotalMilliseconds} milliseconds.");
+                await Task.Delay(delay, stoppingToken);
             }
         }
     }
