@@ -71,7 +71,9 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
                 BookingId = (int)request.BookingId,
                 Amount = request.Amount,
                 PaymentMethod = CommConstants.CST_PAYMENT_METHOD_VNPAY,
-                Status = request.TransactionStatus == "00" ? "Success" : "Failed",
+                Status = request.TransactionStatus == "00" 
+                    ? CommConstants.CST_PAY_STATUS_SUCCESS 
+                    : CommConstants.CST_PAY_STATUS_FAILED,
                 TransactionId = request.VnPayTranId.ToString(),
                 PaymentDate = DateTime.UtcNow
             };

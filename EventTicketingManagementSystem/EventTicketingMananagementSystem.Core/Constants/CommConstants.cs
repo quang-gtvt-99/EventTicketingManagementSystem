@@ -34,6 +34,8 @@
         public static readonly string CST_PAY_STATUS_PENDING = "Pending payment";
 
         public static readonly string CST_PAY_STATUS_CANCEL = "Cancel payment";
+        public static readonly string CST_PAY_STATUS_SUCCESS = "Success";
+        public static readonly string CST_PAY_STATUS_FAILED = "Failed";
 
         // Payment method
         public static readonly string CST_PAYMENT_METHOD_VNPAY = "VnPay";
