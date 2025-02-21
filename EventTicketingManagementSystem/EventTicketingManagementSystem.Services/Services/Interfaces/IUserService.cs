@@ -18,7 +18,7 @@ namespace EventTicketingManagementSystem.Services.Services.Interfaces
         Task<CommonMessageResponse> UpdateUserProfileAsync(UpdateUserProfileRequest request);
         Task<CommonMessageResponse> ResetPasswordAsync(ResetPasswordRequest request);
         Task SendEmailToId(PaymentResponse response,int userId);
-        Task<UserInfoDto> GetUserByIdAsync(int id);
+        Task<UserInfoDto?> GetUserByIdAsync(int id);
         Task<IEnumerable<UserInfoDto>> GetFilteredPagedUsersAsync(string search);
         Task<int> CreateUser(AddUpdateUserRequest userItem);
         Task<bool> UpdateUser(AddUpdateUserRequest userItem);

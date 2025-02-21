@@ -363,7 +363,7 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
                     true // Set isHtml to true
                 );
         }
-        public async Task<UserInfoDto> GetUserByIdAsync(int id)
+        public async Task<UserInfoDto?> GetUserByIdAsync(int id)
         {
             var user = await _userRepository.GetByIdAsync(id);
             if (user == null) return null;
