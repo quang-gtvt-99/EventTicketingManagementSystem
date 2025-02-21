@@ -4,10 +4,13 @@ using EventTicketingManagementSystem.Response;
 using EventTicketingManagementSystem.Services.Services.Interfaces;
 using EventTicketingMananagementSystem.Core.Constants;
 using EventTicketingMananagementSystem.Core.Dtos;
+using EventTicketingMananagementSystem.Core.Hubs;
 using EventTicketingMananagementSystem.Core.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using System.Security.Claims;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace EventTicketingManagementSystem.API.Controllers
 {
@@ -18,10 +21,13 @@ namespace EventTicketingManagementSystem.API.Controllers
     {
         private readonly IUserService _userService;
         private readonly IVNPayService _vnPayService;
-        public UserController(IUserService userService, IVNPayService vnPayService)
+        private readonly IHubContext<NotificationHub> _hubContext;
+
+        public UserController(IUserService userService, IVNPayService vnPayService, IHubContext<NotificationHub> hubContext)
         {
             _userService = userService;
             _vnPayService = vnPayService;
+            _hubContext = hubContext;
         }
 
         [HttpGet]
@@ -36,6 +42,8 @@ namespace EventTicketingManagementSystem.API.Controllers
         public async Task<IActionResult> UpdateUserProfile([FromBody] UpdateUserProfileRequest request)
         {
             var response = await _userService.UpdateUserProfileAsync(request);
+           
+
             return Ok(response);
         }
 
@@ -201,6 +209,14 @@ namespace EventTicketingManagementSystem.API.Controllers
 
             var updated = await _userService.UpdateUser(userItem);
             if (!updated) return NotFound();
+
+
+            if (userItem.IsActive == false)
+            {
+                var user = await _userService.GetUserByIdAsync(id);
+                var userEmail = user.Email;
+                await _hubContext.Clients.Group(userEmail).SendAsync("ReceiveMessage", "Tài khoản của bạn đã bị khóa, Vui lòng liên hệ với admin để được hỗ trợ.", userItem.Email);
+            }
 
             return Ok(true);
         }

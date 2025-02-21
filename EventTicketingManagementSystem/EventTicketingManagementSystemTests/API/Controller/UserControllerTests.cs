@@ -5,9 +5,11 @@ using EventTicketingManagementSystem.Response;
 using EventTicketingManagementSystem.Services.Services.Interfaces;
 using EventTicketingMananagementSystem.Core.Constants;
 using EventTicketingMananagementSystem.Core.Dtos;
+using EventTicketingMananagementSystem.Core.Hubs;
 using EventTicketingMananagementSystem.Core.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Moq;
 using System.Security.Claims;
 using Xunit;
@@ -18,13 +20,15 @@ namespace EventTicketingManagementSystemTests.API.Controller
     {
         private readonly Mock<IUserService> _mockUserService;
         private readonly Mock<IVNPayService> _mockVnPayService;
+        private readonly Mock<IHubContext<NotificationHub>> _mockHubContext;
         private readonly UserController _userController;
 
         public UserControllerTests()
         {
             _mockUserService = new Mock<IUserService>();
             _mockVnPayService = new Mock<IVNPayService>();
-            _userController = new UserController(_mockUserService.Object, _mockVnPayService.Object);
+            _mockHubContext = new Mock<IHubContext<NotificationHub>>();
+            _userController = new UserController(_mockUserService.Object, _mockVnPayService.Object, _mockHubContext.Object);
 
             // Setup default user claims
             var claims = new List<Claim>
