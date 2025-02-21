@@ -35,6 +35,9 @@
 
         public static readonly string CST_PAY_STATUS_CANCEL = "Cancel payment";
 
+        // Payment method
+        public static readonly string CST_PAYMENT_METHOD_VNPAY = "VnPay";
+
         ///
 
         ///S3 constants
@@ -42,5 +45,9 @@
         public static readonly string S3_BUCKET_NAME = "event-ticketing-management-system";
 
         ///
+
+        // User Status
+        public static readonly string CST_USER_STATUS_ACTIVE = "Active";
+        public static readonly string CST_USER_STATUS_INACTIVE = "Inactive";
     }
 }

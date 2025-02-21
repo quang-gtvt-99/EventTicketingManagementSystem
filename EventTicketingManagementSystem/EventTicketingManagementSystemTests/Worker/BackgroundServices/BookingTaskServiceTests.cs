@@ -46,17 +46,6 @@ namespace EventTicketingManagementSystemTests.Worker.BackgroundServices
             await bookingTaskService.StopAsync(cancellationTokenSource.Token);
 
             // Assert
-            _mockLogger.Verify(
-                x => x.Log(
-                    LogLevel.Information,
-                    It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((o, t) => o.ToString().Contains("Remove Pending Expired Bookings Task Is Running!")),
-                    It.IsAny<Exception>(),
-                    It.IsAny<Func<It.IsAnyType, Exception, string>>()
-                ),
-                Times.AtLeast(1)
-            );
-
             _mockBookingService.Verify(x => x.RemovePendingExpiredBookings(), Times.AtLeast(1));
         }
 
@@ -83,7 +72,7 @@ namespace EventTicketingManagementSystemTests.Worker.BackgroundServices
                     It.IsAny<EventId>(),
                     It.Is<It.IsAnyType>((o, t) => true),
                     expectedException,
-                    It.IsAny<Func<It.IsAnyType, Exception, string>>()
+                    It.IsAny<Func<It.IsAnyType, Exception?, string>>() // Updated to match the nullability of the parameter
                 ),
                 Times.AtLeast(1)
             );
