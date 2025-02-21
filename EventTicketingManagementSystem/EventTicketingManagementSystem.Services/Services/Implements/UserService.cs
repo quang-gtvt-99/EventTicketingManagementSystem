@@ -379,7 +379,7 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
             };
         }
 
-        public async Task<IEnumerable<UserInfoDto>> GetFilteredPagedUsersAsync(string search)
+        public async Task<IEnumerable<UserInfoDto>> GetFilteredPagedUsersAsync(string? search)
         {
             var userList = await _userRepository.GetFilteredPagedAsync(search);
 
