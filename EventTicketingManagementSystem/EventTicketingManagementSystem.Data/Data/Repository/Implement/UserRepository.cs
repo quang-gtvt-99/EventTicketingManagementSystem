@@ -63,7 +63,7 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
             return email;
         }
 
-        public async Task<IEnumerable<User>> GetFilteredPagedAsync(string search)
+        public async Task<IEnumerable<User>> GetFilteredPagedAsync(string? search)
         {
             var query = _context.Users.AsQueryable();
 

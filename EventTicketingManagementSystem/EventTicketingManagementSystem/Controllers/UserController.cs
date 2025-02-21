@@ -214,6 +214,7 @@ namespace EventTicketingManagementSystem.API.Controllers
             if (userItem.IsActive == false)
             {
                 var user = await _userService.GetUserByIdAsync(id);
+                if (user == null || user?.Email == null) return NotFound();
                 var userEmail = user.Email;
                 await _hubContext.Clients.Group(userEmail).SendAsync("ReceiveMessage", "Tài khoản của bạn đã bị khóa, Vui lòng liên hệ với admin để được hỗ trợ.", userItem.Email);
             }
