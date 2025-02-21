@@ -65,6 +65,64 @@ namespace EventTicketingManagementSystem.Data.Data
                 .WithOne(s => s.Ticket)
                 .HasForeignKey<Ticket>(t => t.SeatId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // Indexes for User model
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Email)
+                .IsUnique()
+                .HasDatabaseName("IX_Users_Email");
+
+            // Indexes for Booking model
+            modelBuilder.Entity<Booking>()
+                .HasIndex(b => b.Status)
+                .HasDatabaseName("IX_Bookings_Status");
+
+            modelBuilder.Entity<Booking>()
+                .HasIndex(b => b.ExpiryDate)
+                .HasDatabaseName("IX_Bookings_ExpiryDate");
+
+            // Indexes for Event model
+            modelBuilder.Entity<Event>()
+                .HasIndex(e => e.Name)
+                .HasDatabaseName("IX_Events_Name");
+
+            modelBuilder.Entity<Event>()
+                .HasIndex(e => e.Category)
+                .HasDatabaseName("IX_Events_Category");
+
+            modelBuilder.Entity<Event>()
+                .HasIndex(e => e.Status)
+                .HasDatabaseName("IX_Events_Status");
+
+            modelBuilder.Entity<Event>()
+                .HasIndex(e => e.StartDate)
+                .HasDatabaseName("IX_Events_StartDate");
+
+            // Indexes for Payment model
+            modelBuilder.Entity<Payment>()
+                .HasIndex(p => p.TransactionId)
+                .IsUnique()
+                .HasDatabaseName("IX_Payments_TransactionId");
+
+            // Indexes for Seat model
+            modelBuilder.Entity<Seat>()
+                .HasIndex(s => s.Status)
+                .HasDatabaseName("IX_Seats_Status");
+
+            modelBuilder.Entity<Seat>()
+                .HasIndex(s => s.Row)
+                .HasDatabaseName("IX_Seats_Row");
+
+            // Indexes for Ticket model
+            modelBuilder.Entity<Ticket>()
+                .HasIndex(t => t.TicketNumber)
+                .IsUnique()
+                .HasDatabaseName("IX_Tickets_TicketNumber");
+
+            // Indexes for UserRole model
+            modelBuilder.Entity<UserRole>()
+                .HasIndex(ur => ur.UserId)
+                .HasDatabaseName("IX_UserRoles_UserId");
         }
 
         public override int SaveChanges()
