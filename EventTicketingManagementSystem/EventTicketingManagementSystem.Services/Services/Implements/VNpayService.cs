@@ -79,7 +79,7 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
                     }
                 }
 
-                long bookingId = Convert.ToInt64(vnpay.GetResponseData("vnp_TxnRef"));
+                int bookingId = Convert.ToInt32(vnpay.GetResponseData("vnp_TxnRef"));
                 long vnpayTranId = Convert.ToInt64(vnpay.GetResponseData("vnp_TransactionNo"));
                 string vnp_ResponseCode = vnpay.GetResponseData("vnp_ResponseCode");
                 string vnp_TransactionStatus = vnpay.GetResponseData("vnp_TransactionStatus");
@@ -95,7 +95,7 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
                 {
                     var model = new PaymentResponse
                     {
-                        BookingId = (int)bookingId,
+                        BookingId = bookingId,
                         VnPayTranId = vnpayTranId,
                         ResponseCode = vnp_ResponseCode,
                         TransactionStatus = vnp_TransactionStatus,
