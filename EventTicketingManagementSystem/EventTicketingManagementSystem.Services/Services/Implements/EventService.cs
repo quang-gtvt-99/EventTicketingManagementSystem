@@ -75,6 +75,8 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
                     EventId = eventCreated.Id,
                     Price = eventItem?.SeatPrice ?? 0,
                 };
+                // todo: invalid cache 
+
                 await _eventRepository.RegisterSeatsForEventAsync(seatDto);
 
                 return eventCreated.Id;
