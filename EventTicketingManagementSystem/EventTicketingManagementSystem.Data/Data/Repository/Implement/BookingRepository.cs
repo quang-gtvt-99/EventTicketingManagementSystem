@@ -68,7 +68,7 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
                     EventId = bookingRequestDto.EventId,
                     Subtotal = bookingRequestDto.SeatedInfos.Sum(s => s.Price),
                     Quantity = bookingRequestDto.SeatedInfos.Count,
-                    TotalAmount = bookingRequestDto.SeatedInfos.Sum(s => s.Price) * 1.05m, //include tax 5%
+                    TotalAmount = bookingRequestDto.SeatedInfos.Sum(s => s.Price),
                     BookingDate = DateTime.UtcNow,
                     ExpiryDate = DateTime.UtcNow.AddMinutes(15), //expriy after 15 minutes
                 };
