@@ -69,6 +69,8 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
                 };
                 var eventCreated = await _eventRepository.AddAsync(eventObj);
                 await _eventRepository.SaveChangeAsync();
+                // Invalid cache
+                await _cacheService.InvalidCacheAsync(CacheKeyConsts.UPCOMING_EVENTS);
 
                 var seatDto = new CreateSeatDto
                 {
@@ -140,6 +142,8 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
 
             _eventRepository.Update(eventObj);
             var isUpdated = await _eventRepository.SaveChangeAsync() > 0;
+            // Invalid cache
+            await _cacheService.InvalidCacheAsync(CacheKeyConsts.UPCOMING_EVENTS);
 
             return isUpdated;
         }

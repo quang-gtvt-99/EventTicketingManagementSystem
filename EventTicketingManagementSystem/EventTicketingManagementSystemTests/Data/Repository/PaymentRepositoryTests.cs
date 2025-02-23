@@ -25,7 +25,6 @@ namespace EventTicketingManagementSystemTests.Data.Repository
                 UserId = 1,
                 BookingDate = DateTime.UtcNow,
                 ExpiryDate = DateTime.UtcNow.AddHours(1),
-                Status = "Pending"
             };
 
             var payment = new Payment
@@ -95,7 +94,6 @@ namespace EventTicketingManagementSystemTests.Data.Repository
                 UserId = 1,
                 BookingDate = DateTime.UtcNow,
                 ExpiryDate = DateTime.UtcNow.AddHours(-1), // Expired booking
-                Status = "Pending",
                 TotalAmount = 100000,
                 Quantity = 1,
                 Subtotal = 100000

@@ -117,7 +117,7 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
                         Row = row.ToString(),
                         Number = number,
                         Type = isVip ? CommConstants.CST_SEAT_TYPE_VIP : CommConstants.CST_SEAT_TYPE_NOR,
-                        Price = isVip ? createSeatDto.Price * 1.2m : createSeatDto.Price,
+                        Price = isVip ? (int)Math.Ceiling(createSeatDto.Price * 1.2m) : createSeatDto.Price,
                         Status = CommConstants.CST_SEAT_STATUS_DEFAULT
                     };
                     seats.Add(seat);

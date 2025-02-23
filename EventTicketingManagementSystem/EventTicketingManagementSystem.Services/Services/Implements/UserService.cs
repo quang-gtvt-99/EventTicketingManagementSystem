@@ -103,7 +103,6 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
         }
         public async Task<Booking> CreateBookingAsync(CreateBookingDto bookingRequestDto, int loggedInUserId)
         {
-            await _cacheService.InvalidCacheAsync(CacheKeyConsts.UPCOMING_EVENTS);
             return await _bookingRepository.CreateBookingAsync(bookingRequestDto, loggedInUserId);
         }
         public async Task<Payment> UpdatePaymentStatusAsync(int paymentId, UpdatePaymentDto requestDto)
@@ -363,7 +362,7 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
                     true // Set isHtml to true
                 );
         }
-        public async Task<UserInfoDto> GetUserByIdAsync(int id)
+        public async Task<UserInfoDto?> GetUserByIdAsync(int id)
         {
             var user = await _userRepository.GetByIdAsync(id);
             if (user == null) return null;
@@ -379,7 +378,7 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
             };
         }
 
-        public async Task<IEnumerable<UserInfoDto>> GetFilteredPagedUsersAsync(string search)
+        public async Task<IEnumerable<UserInfoDto>> GetFilteredPagedUsersAsync(string? search)
         {
             var userList = await _userRepository.GetFilteredPagedAsync(search);
 

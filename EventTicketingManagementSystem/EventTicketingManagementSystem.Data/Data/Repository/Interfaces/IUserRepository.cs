@@ -11,6 +11,6 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Interfaces
         Task AssignRoleAsync(int userId, string roleName);
         Task<bool> UserEmailExisted(string email);
         string? GetEmailByIdAsync(int userId);
-        Task<IEnumerable<User>> GetFilteredPagedAsync(string search);
+        Task<IEnumerable<User>> GetFilteredPagedAsync(string? search);
     }
 }

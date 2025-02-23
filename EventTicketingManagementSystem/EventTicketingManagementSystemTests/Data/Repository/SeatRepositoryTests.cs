@@ -32,7 +32,6 @@ namespace EventTicketingManagementSystemTests.Data.Repository
                 EventId = 1,
                 UserId = 1,
                 BookingDate = DateTime.UtcNow,
-                Status = CommConstants.CST_PAY_STATUS_PENDING
             };
 
             var seats = new List<Seat>
