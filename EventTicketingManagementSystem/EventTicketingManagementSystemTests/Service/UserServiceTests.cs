@@ -9,6 +9,7 @@ using EventTicketingMananagementSystem.Core.Dtos;
 using Moq;
 using System.Text;
 using EventTicketingManagementSystem.Response;
+using EventTicketingMananagementSystem.Core.Enums;
 
 namespace EventTicketingManagementSystemTests.Service
 {
@@ -317,6 +318,215 @@ namespace EventTicketingManagementSystemTests.Service
                 It.IsAny<string>(),
                 It.IsAny<bool>()
             ), Times.Never);
+        }
+
+        [Fact]
+        public async Task GetAllUsersAsync_ShouldReturnAllUsers()
+        {
+            // Arrange
+            var expectedUsers = new List<User>
+    {
+        new User { Id = 1, Email = "user1@test.com" },
+        new User { Id = 2, Email = "user2@test.com" }
+    };
+            _mockUserRepository.Setup(x => x.GetAllAsync()).ReturnsAsync(expectedUsers);
+
+            // Act
+            var result = await _userService.GetAllUsersAsync();
+
+            // Assert
+            var users = result.ToList();
+            Assert.Equal(expectedUsers.Count, users.Count);
+            Assert.Equal(expectedUsers[0].Email, users[0].Email);
+            Assert.Equal(expectedUsers[1].Email, users[1].Email);
+        }
+
+        [Fact]
+        public async Task GetUserByIdAsync_ShouldReturnUserInfo_WhenUserExists()
+        {
+            // Arrange
+            var userId = 1;
+            var user = new User
+            {
+                Id = userId,
+                Email = "test@test.com",
+                FullName = "Test User",
+                PhoneNumber = "1234567890",
+                Status = "Active"
+            };
+            var roles = new List<string> { RoleConsts.Admin };
+
+            _mockUserRepository.Setup(x => x.GetByIdAsync(userId)).ReturnsAsync(user);
+            _mockUserRepository.Setup(x => x.GetUserRolesAsync(userId)).ReturnsAsync(roles);
+
+            // Act
+            var result = await _userService.GetUserByIdAsync(userId);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(user.Email, result.Email);
+            Assert.Equal(user.FullName, result.FullName);
+            Assert.Equal(user.PhoneNumber, result.PhoneNumber);
+            Assert.True(result.IsActive);
+            Assert.Equal(UserRoles.ADMIN, result.Role);
+        }
+
+        [Fact]
+        public async Task GetUserByIdAsync_ShouldReturnNull_WhenUserDoesNotExist()
+        {
+            // Arrange
+            var userId = 999;
+            _mockUserRepository.Setup(x => x.GetByIdAsync(userId)).ReturnsAsync((User?)null);
+
+            // Act
+            var result = await _userService.GetUserByIdAsync(userId);
+
+            // Assert
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public async Task GetFilteredPagedUsersAsync_ShouldReturnFilteredUsers()
+        {
+            // Arrange
+            var search = "test";
+            var users = new List<User>
+    {
+        new User { Id = 1, Email = "test1@test.com", FullName = "Test User 1", Status = "Active" },
+        new User { Id = 2, Email = "test2@test.com", FullName = "Test User 2", Status = "Inactive" }
+    };
+            _mockUserRepository.Setup(x => x.GetFilteredPagedAsync(search)).ReturnsAsync(users);
+
+            // Act
+            var result = await _userService.GetFilteredPagedUsersAsync(search);
+
+            // Assert
+            var userList = result.ToList();
+            Assert.Equal(2, userList.Count);
+            Assert.True(userList[0].IsActive);
+            Assert.False(userList[1].IsActive);
+            Assert.Equal(users[0].Email, userList[0].Email);
+            Assert.Equal(users[1].Email, userList[1].Email);
+        }
+
+        [Fact]
+        public async Task CreateUser_ShouldCreateUserAndAssignRole()
+        {
+            // Arrange
+            var userRequest = new AddUpdateUserRequest
+            {
+                Email = "new@test.com",
+                FullName = "New User",
+                PhoneNumber = "1234567890",
+                Password = "password123",
+                Role = UserRoles.ADMIN
+            };
+
+            var createdUser = new User { Id = 1, Email = userRequest.Email };
+            _mockUserRepository.Setup(x => x.UserEmailExisted(userRequest.Email)).ReturnsAsync(false);
+            _mockUserRepository.Setup(x => x.FindByEmailAsync(userRequest.Email)).ReturnsAsync(createdUser);
+
+            // Act
+            var result = await _userService.CreateUser(userRequest);
+
+            // Assert
+            Assert.Equal(createdUser.Id, result);
+            _mockUserRepository.Verify(x => x.AddAsync(It.IsAny<User>()), Times.Once);
+            _mockUserRepository.Verify(x => x.AssignRoleAsync(createdUser.Id, RoleConsts.Admin), Times.Once);
+        }
+
+        [Fact]
+        public async Task CreateUser_ShouldThrowException_WhenEmailExists()
+        {
+            // Arrange
+            var userRequest = new AddUpdateUserRequest { Email = "existing@test.com" };
+            _mockUserRepository.Setup(x => x.UserEmailExisted(userRequest.Email)).ReturnsAsync(true);
+
+            // Act & Assert
+            var exception = await Assert.ThrowsAsync<Exception>(
+                async () => await _userService.CreateUser(userRequest)
+            );
+            Assert.Equal("Email already exists.", exception.Message);
+        }
+
+        [Fact]
+        public async Task UpdateUser_ShouldUpdateUserAndRole_WhenUserExists()
+        {
+            // Arrange
+            var userId = 1;
+            var userRequest = new AddUpdateUserRequest
+            {
+                ID = userId,
+                Email = "update@test.com",
+                FullName = "Updated User",
+                PhoneNumber = "0987654321",
+                IsActive = true,
+                Role = UserRoles.ADMIN
+            };
+
+            var existingUser = new User { Id = userId };
+            _mockUserRepository.Setup(x => x.GetByIdAsync(userId)).ReturnsAsync(existingUser);
+            _mockUserRepository.Setup(x => x.SaveChangeAsync()).ReturnsAsync(1);
+
+            // Act
+            var result = await _userService.UpdateUser(userRequest);
+
+            // Assert
+            Assert.True(result);
+            _mockUserRepository.Verify(x => x.Update(It.Is<User>(u =>
+                u.Email == userRequest.Email &&
+                u.FullName == userRequest.FullName &&
+                u.PhoneNumber == userRequest.PhoneNumber &&
+                u.Status == "Active"
+            )), Times.Once);
+            _mockUserRepository.Verify(x => x.AssignRoleAsync(userId, RoleConsts.Admin), Times.Once);
+        }
+
+        [Fact]
+        public async Task UpdateUser_ShouldReturnFalse_WhenUserDoesNotExist()
+        {
+            // Arrange
+            var userRequest = new AddUpdateUserRequest { ID = 999 };
+            _mockUserRepository.Setup(x => x.GetByIdAsync(999)).ReturnsAsync((User?)null);
+
+            // Act
+            var result = await _userService.UpdateUser(userRequest);
+
+            // Assert
+            Assert.False(result);
+            _mockUserRepository.Verify(x => x.Update(It.IsAny<User>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task DeleteUser_ShouldDeleteUser_WhenUserExists()
+        {
+            // Arrange
+            var userId = 1;
+            var user = new User { Id = userId };
+            _mockUserRepository.Setup(x => x.GetByIdAsync(userId)).ReturnsAsync(user);
+            _mockUserRepository.Setup(x => x.SaveChangeAsync()).ReturnsAsync(1);
+
+            // Act
+            var result = await _userService.DeleteUser(userId);
+
+            // Assert
+            Assert.True(result);
+            _mockUserRepository.Verify(x => x.Delete(user), Times.Once);
+        }
+
+        [Fact]
+        public async Task DeleteUser_ShouldReturnFalse_WhenUserDoesNotExist()
+        {
+            // Arrange
+            var userId = 999;
+            _mockUserRepository.Setup(x => x.GetByIdAsync(userId)).ReturnsAsync((User?)null);
+
+            // Act
+            var result = await _userService.DeleteUser(userId);
+
+            // Assert
+            Assert.False(result);
+            _mockUserRepository.Verify(x => x.Delete(It.IsAny<User>()), Times.Never);
         }
     }
 }

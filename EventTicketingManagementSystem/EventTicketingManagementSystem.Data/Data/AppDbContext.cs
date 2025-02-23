@@ -2,9 +2,11 @@
 using EventTicketingMananagementSystem.Core.Models;
 using EventTicketingMananagementSystem.Core.Models.BaseModels;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.CodeAnalysis;
 
 namespace EventTicketingManagementSystem.Data.Data
 {
+    [ExcludeFromCodeCoverage]
     public class AppDbContext : DbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
