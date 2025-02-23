@@ -285,7 +285,7 @@ namespace EventTicketingManagementSystemTests.Service
             // Assert
             _mockSendMailService.Verify(x => x.SendEmailAsync(
                 userEmail,
-                $"Finiko - Đơn hàng mới: {paymentResponse.BookingId}",
+                $"Event Ticketing System - Đơn hàng mới: {paymentResponse.BookingId}",
                 It.Is<string>(body =>
                     body.Contains(paymentResponse.BookingId.ToString()) &&
                     body.Contains(paymentResponse.VnPayTranId.ToString()) &&

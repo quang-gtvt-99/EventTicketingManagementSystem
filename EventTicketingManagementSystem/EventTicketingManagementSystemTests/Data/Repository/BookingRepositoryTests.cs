@@ -18,15 +18,6 @@ namespace EventTicketingManagementSystemTests.Data.Repository
 
         private void SeedData()
         {
-            var user = new User
-            {
-                Id = 1,
-                Email = "test@example.com",
-                FullName = "Test User",
-                PasswordHash = "hashedpassword123", // Required property
-                PhoneNumber = "1234567890",        // Required property
-                Status = "Active"
-            };
 
             var event1 = new Event
             {
@@ -103,7 +94,6 @@ namespace EventTicketingManagementSystemTests.Data.Repository
                 }
             };
 
-            Context.Users.Add(user);
             Context.Events.Add(event1);
             Context.Bookings.Add(booking);
             Context.Tickets.AddRange(tickets);
