@@ -194,6 +194,7 @@ namespace EventTicketingManagementSystem.API.Controllers
 
         //// POST: api/users
         [HttpPost]
+        [Authorize(Roles = $"{RoleConsts.Admin}")]
         public async Task<ActionResult<int>> CreateUser([FromBody] AddUpdateUserRequest userItem)
         {
             var newUserID = await _userService.CreateUser(userItem);
@@ -202,6 +203,7 @@ namespace EventTicketingManagementSystem.API.Controllers
 
         // PUT: api/users/{id}
         [HttpPut("{id}")]
+        [Authorize(Roles = $"{RoleConsts.Admin}")]
         public async Task<IActionResult> UpdateUser(int id, [FromBody] AddUpdateUserRequest userItem)
         {
             if (id != userItem.ID) return BadRequest();
@@ -223,6 +225,7 @@ namespace EventTicketingManagementSystem.API.Controllers
 
         // DELETE: api/users/{id}
         [HttpDelete("{id}")]
+        [Authorize(Roles = $"{RoleConsts.Admin}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
             var deleted = await _userService.DeleteUser(id);

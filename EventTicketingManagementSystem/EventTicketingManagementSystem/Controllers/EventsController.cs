@@ -1,7 +1,9 @@
 ﻿using EventTicketingManagementSystem.API.Request;
 using EventTicketingManagementSystem.Services.Services.Interfaces;
+using EventTicketingMananagementSystem.Core.Constants;
 using EventTicketingMananagementSystem.Core.Dtos;
 using EventTicketingMananagementSystem.Core.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventTicketingManagementSystem.API.Controllers
@@ -61,6 +63,7 @@ namespace EventTicketingManagementSystem.API.Controllers
 
         // POST: api/events
         [HttpPost]
+        [Authorize(Roles = $"{RoleConsts.Admin}")]
         public async Task<ActionResult<int>> CreateEvent([FromForm] AddUpdateEventRequest eventItem)
         {
             var newEventID = await _eventService.CreateEvent(eventItem);
@@ -69,6 +72,7 @@ namespace EventTicketingManagementSystem.API.Controllers
 
         // PUT: api/events/{id}
         [HttpPut("{id}")]
+        [Authorize(Roles = $"{RoleConsts.Admin}")]
         public async Task<IActionResult> UpdateEvent(int id, [FromForm] AddUpdateEventRequest eventItem)
         {
             if (id != eventItem.ID) return BadRequest();
@@ -81,6 +85,7 @@ namespace EventTicketingManagementSystem.API.Controllers
 
         // DELETE: api/events/{id}
         [HttpDelete("{id}")]
+        [Authorize(Roles = $"{RoleConsts.Admin}")]
         public async Task<IActionResult> DeleteEvent(int id)
         {
             var deleted = await _eventService.DeleteEvent(id);
