@@ -12,5 +12,7 @@
         public string? Status { get; set; }
         public DateTime BookedAt { get; set; }
         public List<TicketInfoDto> Tickets { get; set; } = new List<TicketInfoDto>();
+        public string? QRCode { get; set; }
+        public string? BookingCode { get; set; }
     }
 }
