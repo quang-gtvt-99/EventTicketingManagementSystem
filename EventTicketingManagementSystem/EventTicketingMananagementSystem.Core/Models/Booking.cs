@@ -11,6 +11,7 @@ namespace EventTicketingMananagementSystem.Core.Models
         public DateTime? ExpiryDate { get; set; }
         public int Quantity { get; set; }
         public decimal Subtotal { get; set; }
+        public string? BookingCode { get; set; }
 
         // Navigation properties
         public User User { get; set; } = default!;
