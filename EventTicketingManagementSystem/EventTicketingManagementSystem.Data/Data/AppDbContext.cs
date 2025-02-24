@@ -1,9 +1,12 @@
-﻿using EventTicketingMananagementSystem.Core.Models;
+﻿using BCrypt.Net;
+using EventTicketingMananagementSystem.Core.Models;
 using EventTicketingMananagementSystem.Core.Models.BaseModels;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.CodeAnalysis;
 
 namespace EventTicketingManagementSystem.Data.Data
 {
+    [ExcludeFromCodeCoverage]
     public class AppDbContext : DbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
@@ -122,6 +125,30 @@ namespace EventTicketingManagementSystem.Data.Data
             modelBuilder.Entity<UserRole>()
                 .HasIndex(ur => ur.UserId)
                 .HasDatabaseName("IX_UserRoles_UserId");
+
+            // Seed data for Role table
+            modelBuilder.Entity<Role>().HasData(
+                new Role { Id = 1, Name = "Admin", Description = "Administrator role", CreatedAt = DateTime.Parse("2025-02-11 17:02:59.34226+00").ToUniversalTime() },
+                new Role { Id = 2, Name = "User", Description = "Regular user role", CreatedAt = DateTime.Parse("2025-02-11 17:02:59.34226+00").ToUniversalTime() }
+            );
+
+            // Seed data for User table
+            var adminUser = new User
+            {
+                Id = 1,
+                Email = "admin@example.com",
+                FullName = "Admin User",
+                PhoneNumber = "1234567890",
+                Status = "Active",
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("Password123"),
+                CreatedAt = DateTime.Parse("2025-02-11 17:02:59.34226+00").ToUniversalTime()
+            };
+            modelBuilder.Entity<User>().HasData(adminUser);
+
+            // Seed data for UserRole table
+            modelBuilder.Entity<UserRole>().HasData(
+                new UserRole { UserId = adminUser.Id, RoleId = 1, AssignedAt = DateTime.Parse("2025-02-11 17:02:59.34226+00").ToUniversalTime() }
+            );
         }
 
         public override int SaveChanges()

@@ -20,24 +20,7 @@ namespace EventTicketingManagementSystemTests.Data.Repository
 
         private void SeedData()
         {
-            var roles = new List<Role>
-            {
-                new Role 
-                { 
-                    Id = 1, 
-                    Name = "Admin", 
-                    Description = "Administrator role" 
-                },
-                new Role 
-                { 
-                    Id = 2, 
-                    Name = "User", 
-                    Description = "Regular user role" 
-                }
-            };
-
-            Context.Roles.AddRange(roles);
-            Context.SaveChanges();
+            
         }
 
         [Fact]

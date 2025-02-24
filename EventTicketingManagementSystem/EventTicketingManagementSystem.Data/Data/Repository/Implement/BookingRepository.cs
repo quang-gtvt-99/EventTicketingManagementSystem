@@ -34,6 +34,7 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
                     Status = b.Payments.Any()
                         ? b.Payments.First().Status 
                         : CommConstants.CST_PAY_STATUS_PENDING,
+                    BookingCode = b.BookingCode,
                     Tickets = b.Tickets.Select(t => new TicketInfoDto
                     {
                         TicketId = t.Id,
@@ -71,6 +72,7 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
                     TotalAmount = bookingRequestDto.SeatedInfos.Sum(s => s.Price),
                     BookingDate = DateTime.UtcNow,
                     ExpiryDate = DateTime.UtcNow.AddMinutes(15), //expriy after 15 minutes
+                    BookingCode = Guid.NewGuid().ToString(),
                 };
 
                 _context.Bookings.Add(newBooking);

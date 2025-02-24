@@ -23,8 +23,8 @@ namespace EventTicketingManagementSystemTests.Data.Repository
         {
             var users = new List<User>
             {
-                new User { Id = 1, Email = "user1@example.com", FullName = "User One", PasswordHash = "hash1", PhoneNumber = "1234567890" },
-                new User { Id = 2, Email = "user2@example.com", FullName = "User Two", PasswordHash = "hash2", PhoneNumber = "0987654321" }
+                new User { Id = 2, Email = "user1@example.com", FullName = "User One", PasswordHash = "hash1", PhoneNumber = "1234567890" },
+                new User { Id = 3, Email = "user2@example.com", FullName = "User Two", PasswordHash = "hash2", PhoneNumber = "0987654321" }
             };
 
             Context.Users.AddRange(users);
@@ -96,13 +96,6 @@ namespace EventTicketingManagementSystemTests.Data.Repository
                 new Role { Id = 2, Name = "User" }
             };
 
-            Context.UserRoles.AddRange(new List<UserRole>
-            {
-                new UserRole { UserId = userId, RoleId = 1 },
-                new UserRole { UserId = userId, RoleId = 2 }
-            });
-            Context.SaveChanges();
-
             _mockRoleRepository.Setup(r => r.GetRoleByIds(It.IsAny<List<int>>()))
                 .ReturnsAsync(roles.Select(role => new RoleDto { Id = role.Id, Name = role.Name }).ToList());
             // Act
@@ -118,7 +111,7 @@ namespace EventTicketingManagementSystemTests.Data.Repository
         public async Task AssignRoleAsync_ShouldAssignRoleToUser()
         {
             // Arrange
-            var userId = 1;
+            var userId = 2;
             var roleName = "Admin";
             var role = new Role { Id = 1, Name = roleName };
 
@@ -139,7 +132,7 @@ namespace EventTicketingManagementSystemTests.Data.Repository
         public void GetEmailByIdAsync_ShouldReturnEmail_WhenUserExists()
         {
             // Arrange
-            var userId = 1;
+            var userId = 2;
             var expectedEmail = "user1@example.com";
 
             // Act

@@ -235,5 +235,180 @@ namespace EventTicketingManagementSystemTests.API.Controller
             var okResult = Assert.IsType<OkObjectResult>(result);
             _mockUserService.Verify(x => x.ProcessFailBookingAndSeatsAsync(request.BookingId), Times.Once);
         }
+
+        [Fact]
+        public async Task GetUserById_ShouldReturnOk_WhenUserExists()
+        {
+            // Arrange
+            var userId = 1;
+            var expectedUser = new UserInfoDto
+            {
+                Id = userId,
+                Email = "test@test.com",
+                FullName = "Test User"
+            };
+            _mockUserService.Setup(x => x.GetUserByIdAsync(userId))
+                .ReturnsAsync(expectedUser);
+
+            // Act
+            var result = await _userController.GetUserById(userId);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result.Result);
+            var returnedUser = Assert.IsType<UserInfoDto>(okResult.Value);
+            Assert.Equal(expectedUser.Email, returnedUser.Email);
+            Assert.Equal(expectedUser.FullName, returnedUser.FullName);
+        }
+
+        [Fact]
+        public async Task GetUserById_ShouldReturnNotFound_WhenUserDoesNotExist()
+        {
+            // Arrange
+            var userId = 999;
+            _mockUserService.Setup(x => x.GetUserByIdAsync(userId))
+                .ReturnsAsync((UserInfoDto?)null);
+
+            // Act
+            var result = await _userController.GetUserById(userId);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result.Result);
+        }
+
+        [Fact]
+        public async Task GetUsersByFilter_ShouldReturnOk_WithFilteredUsers()
+        {
+            // Arrange
+            var search = "test";
+            var users = new List<UserInfoDto>
+            {
+                new UserInfoDto { Email = "test1@test.com", FullName = "Test User 1" },
+                new UserInfoDto { Email = "test2@test.com", FullName = "Test User 2" }
+            };
+            _mockUserService.Setup(x => x.GetFilteredPagedUsersAsync(search))
+                .ReturnsAsync(users);
+
+            // Act
+            var result = await _userController.GetUsersByFilter(search);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var returnedUsers = Assert.IsType<List<UserInfoDto>>(okResult.Value);
+            Assert.Equal(2, returnedUsers.Count);
+        }
+
+        [Fact]
+        public async Task CreateUser_ShouldReturnOk_WhenCreationSucceeds()
+        {
+            // Arrange
+            var userRequest = new AddUpdateUserRequest
+            {
+                Email = "new@test.com",
+                FullName = "New User"
+            };
+            var newUserId = 1;
+            _mockUserService.Setup(x => x.CreateUser(userRequest))
+                .ReturnsAsync(newUserId);
+
+            // Act
+            var result = await _userController.CreateUser(userRequest);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result.Result);
+            Assert.Equal(newUserId, okResult.Value);
+        }
+
+        [Fact]
+        public async Task UpdateUser_ShouldReturnBadRequest_WhenIdMismatch()
+        {
+            // Arrange
+            var id = 1;
+            var userRequest = new AddUpdateUserRequest { ID = 2 };
+
+            // Act
+            var result = await _userController.UpdateUser(id, userRequest);
+
+            // Assert
+            Assert.IsType<BadRequestResult>(result);
+        }
+
+        [Fact]
+        public async Task UpdateUser_ShouldReturnOk_WhenUpdateSucceeds()
+        {
+            // Arrange
+            var id = 1;
+            var userRequest = new AddUpdateUserRequest
+            {
+                ID = id,
+                Email = "updated@test.com",
+                FullName = "Updated User",
+                IsActive = true
+            };
+            _mockUserService.Setup(x => x.UpdateUser(userRequest))
+                .ReturnsAsync(true);
+
+            // Act
+            var result = await _userController.UpdateUser(id, userRequest);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task UpdateUser_ShouldSendNotification_WhenUserDeactivated()
+        {
+            // Arrange
+            var id = 1;
+            var userRequest = new AddUpdateUserRequest
+            {
+                ID = id,
+                Email = "user@test.com",
+                IsActive = false
+            };
+            var userInfo = new UserInfoDto { Email = "user@test.com" };
+
+            _mockUserService.Setup(x => x.UpdateUser(userRequest))
+                .ReturnsAsync(true);
+            _mockUserService.Setup(x => x.GetUserByIdAsync(id))
+                .ReturnsAsync(userInfo);
+            _mockHubContext.Setup(x => x.Clients.Group(userInfo.Email))
+                .Returns(new Mock<IClientProxy>().Object);
+
+            // Act
+            var result = await _userController.UpdateUser(id, userRequest);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task DeleteUser_ShouldReturnOk_WhenDeletionSucceeds()
+        {
+            // Arrange
+            var userId = 1;
+            _mockUserService.Setup(x => x.DeleteUser(userId))
+                .ReturnsAsync(true);
+
+            // Act
+            var result = await _userController.DeleteUser(userId);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task DeleteUser_ShouldReturnNotFound_WhenUserDoesNotExist()
+        {
+            // Arrange
+            var userId = 999;
+            _mockUserService.Setup(x => x.DeleteUser(userId))
+                .ReturnsAsync(false);
+
+            // Act
+            var result = await _userController.DeleteUser(userId);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result);
+        }
     }
 }

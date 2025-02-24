@@ -9,6 +9,8 @@ using EventTicketingMananagementSystem.Core.Dtos;
 using EventTicketingMananagementSystem.Core.Enums;
 using EventTicketingMananagementSystem.Core.Models;
 using Org.BouncyCastle.Asn1.Ocsp;
+using QRCoder;
+using System.Drawing.Imaging;
 using System.Globalization;
 using System.Text;
 
@@ -58,6 +60,14 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
 
             var bookings = await _bookingRepository.GetBookingInfosByUserIdAsync(user.Id);
 
+            var qrCodeGenerator = new QRCodeGenerator();
+
+            foreach (var item in bookings)
+            {
+                if (!string.IsNullOrEmpty(item.BookingCode))
+                    item.QRCode = GenerateQrCode(item.BookingCode);
+            }
+
             return new UserInfoDto()
             {
                 Bookings = bookings,
@@ -65,6 +75,17 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
                 PhoneNumber = user.PhoneNumber,
                 FullName = user.FullName,
             };
+        }
+
+        private string GenerateQrCode(string data)
+        {
+            var qrCodeGenerator = new QRCodeGenerator();
+            var qrCodeData = qrCodeGenerator.CreateQrCode(data, QRCodeGenerator.ECCLevel.Q);
+            var qrCode = new QRCode(qrCodeData);
+            using var bitmap = qrCode.GetGraphic(20);
+            using var memoryStream = new System.IO.MemoryStream();
+            bitmap.Save(memoryStream, ImageFormat.Png);
+            return Convert.ToBase64String(memoryStream.ToArray());
         }
 
         public async Task<RegisterResponse> RegisterAsync(RegisterRequest request)
@@ -357,7 +378,7 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
 
             await _sendEmailService.SendEmailAsync(
                     toEmail,
-                    $"Finiko - Đơn hàng mới: {response.BookingId}",
+                    $"Event Ticketing System - Đơn hàng mới: {response.BookingId}",
                     body,
                     true // Set isHtml to true
                 );
