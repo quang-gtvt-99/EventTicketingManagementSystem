@@ -4,6 +4,7 @@ using EventTicketingManagementSystem.Services.Services.Interfaces;
 using EventTicketingMananagementSystem.Core.Constants;
 using EventTicketingMananagementSystem.Core.Dtos;
 using EventTicketingMananagementSystem.Core.Models;
+using Microsoft.Extensions.Logging;
 
 namespace EventTicketingManagementSystem.Services.Services.Implements
 {
@@ -128,7 +129,7 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
             {
                 return false;
             }
-
+            var isChangePrice = eventObj.SeatPrice != eventItem.SeatPrice.GetValueOrDefault();
             eventObj.Name = eventItem.Name ?? string.Empty;
             eventObj.Description = eventItem.Description ?? string.Empty;
             eventObj.StartDate = eventItem.StartDate.GetValueOrDefault();
@@ -141,6 +142,15 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
             eventObj.TrailerUrls = eventItem.TrailerUrls ?? string.Empty;
 
             _eventRepository.Update(eventObj);
+            if (isChangePrice)
+            {
+                var seatDto = new CreateSeatDto
+                {
+                    EventId = eventObj.Id,
+                    Price = eventItem?.SeatPrice ?? 0,
+                };
+                _ = await _eventRepository.UpdateSeatsPriceForEventAsync(seatDto);
+            }
             var isUpdated = await _eventRepository.SaveChangeAsync() > 0;
             // Invalid cache
             await _cacheService.InvalidCacheAsync(CacheKeyConsts.UPCOMING_EVENTS);

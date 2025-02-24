@@ -4,6 +4,7 @@ using EventTicketingMananagementSystem.Core.Constants;
 using EventTicketingMananagementSystem.Core.Dtos;
 using EventTicketingMananagementSystem.Core.Models;
 using Microsoft.EntityFrameworkCore;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
 {
@@ -127,6 +128,23 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
             await _context.SaveChangesAsync();
 
             return ("registed successfully.", seats.Count);
+        }
+
+        public async Task<bool> UpdateSeatsPriceForEventAsync(CreateSeatDto updateSeatDto)
+        {
+            var seats = await _context.Seats.Where(seat => seat.EventId == updateSeatDto.EventId).ToListAsync();
+            seats.ForEach(seat =>
+            {
+                bool isVip = "CDEFGH".Contains(seat.Row)
+                    && seat.Number >= CommConstants.CST_SEAT_NUM_START + 2
+                    && seat.Number <= CommConstants.CST_SEAT_NUM_END - 2;
+                seat.Price = isVip ? (int)Math.Ceiling(updateSeatDto.Price * 1.2m) : updateSeatDto.Price;
+
+            });
+            _context.Seats.UpdateRange(seats);
+            var res = await _context.SaveChangesAsync() == seats.Count();
+
+            return res;
         }
 
         public async Task<List<Event>> GetUpcomingEventsAsync()
