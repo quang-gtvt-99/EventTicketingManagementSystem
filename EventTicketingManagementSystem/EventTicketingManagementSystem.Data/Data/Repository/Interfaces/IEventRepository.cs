@@ -11,7 +11,7 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Interfaces
         Task<int> CountSearch(string search);
         Task<EventBookingInfoDto?> GetEventInfoWithSeatsByEventIDAsync(int Id);
         Task<(string Message, int TotalSeats)> RegisterSeatsForEventAsync(CreateSeatDto createSeatDto);
-        Task<bool> UpdateSeatsPriceForEventAsync(CreateSeatDto updateSeatDto);
+        Task UpdateSeatsPriceForEventAsync(CreateSeatDto updateSeatDto);
         Task<List<Event>> GetUpcomingEventsAsync();
     }
 }

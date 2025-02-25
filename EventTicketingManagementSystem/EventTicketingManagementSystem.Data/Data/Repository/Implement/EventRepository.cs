@@ -4,7 +4,6 @@ using EventTicketingMananagementSystem.Core.Constants;
 using EventTicketingMananagementSystem.Core.Dtos;
 using EventTicketingMananagementSystem.Core.Models;
 using Microsoft.EntityFrameworkCore;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
 {
@@ -130,7 +129,7 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
             return ("registed successfully.", seats.Count);
         }
 
-        public async Task<bool> UpdateSeatsPriceForEventAsync(CreateSeatDto updateSeatDto)
+        public async Task UpdateSeatsPriceForEventAsync(CreateSeatDto updateSeatDto)
         {
             var seats = await _context.Seats.Where(seat => seat.EventId == updateSeatDto.EventId).ToListAsync();
             seats.ForEach(seat =>
@@ -142,9 +141,6 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
 
             });
             _context.Seats.UpdateRange(seats);
-            var res = await _context.SaveChangesAsync() == seats.Count();
-
-            return res;
         }
 
         public async Task<List<Event>> GetUpcomingEventsAsync()

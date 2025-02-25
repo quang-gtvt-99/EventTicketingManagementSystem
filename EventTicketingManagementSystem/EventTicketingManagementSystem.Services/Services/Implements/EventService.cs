@@ -4,7 +4,6 @@ using EventTicketingManagementSystem.Services.Services.Interfaces;
 using EventTicketingMananagementSystem.Core.Constants;
 using EventTicketingMananagementSystem.Core.Dtos;
 using EventTicketingMananagementSystem.Core.Models;
-using Microsoft.Extensions.Logging;
 
 namespace EventTicketingManagementSystem.Services.Services.Implements
 {
@@ -78,7 +77,6 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
                     EventId = eventCreated.Id,
                     Price = eventItem?.SeatPrice ?? 0,
                 };
-                // todo: invalid cache 
 
                 await _eventRepository.RegisterSeatsForEventAsync(seatDto);
 
@@ -149,7 +147,7 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
                     EventId = eventObj.Id,
                     Price = eventItem?.SeatPrice ?? 0,
                 };
-                _ = await _eventRepository.UpdateSeatsPriceForEventAsync(seatDto);
+                await _eventRepository.UpdateSeatsPriceForEventAsync(seatDto);
             }
             var isUpdated = await _eventRepository.SaveChangeAsync() > 0;
             // Invalid cache
