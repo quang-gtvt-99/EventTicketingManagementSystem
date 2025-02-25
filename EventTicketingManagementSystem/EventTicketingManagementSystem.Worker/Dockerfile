@@ -25,6 +25,14 @@ RUN dotnet publish "EventTicketingManagementSystem/EventTicketingManagementSyste
 
 # Stage 3: Run stage
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
+
+# Install dependencies for SkiaSharp
+RUN apt-get update && apt-get install -y \
+    libc6-dev \
+    libfontconfig1 \
+    libgdiplus \
+    && rm -rf /var/lib/apt/lists/*
+
 ENV ASPNETCORE_HTTP_PORTS=5002
 EXPOSE 5002
 WORKDIR /app
