@@ -129,6 +129,20 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
             return ("registed successfully.", seats.Count);
         }
 
+        public async Task UpdateSeatsPriceForEventAsync(CreateSeatDto updateSeatDto)
+        {
+            var seats = await _context.Seats.Where(seat => seat.EventId == updateSeatDto.EventId).ToListAsync();
+            seats.ForEach(seat =>
+            {
+                bool isVip = "CDEFGH".Contains(seat.Row)
+                    && seat.Number >= CommConstants.CST_SEAT_NUM_START + 2
+                    && seat.Number <= CommConstants.CST_SEAT_NUM_END - 2;
+                seat.Price = isVip ? (int)Math.Ceiling(updateSeatDto.Price * 1.2m) : updateSeatDto.Price;
+
+            });
+            _context.Seats.UpdateRange(seats);
+        }
+
         public async Task<List<Event>> GetUpcomingEventsAsync()
         {
             return await _context.Events

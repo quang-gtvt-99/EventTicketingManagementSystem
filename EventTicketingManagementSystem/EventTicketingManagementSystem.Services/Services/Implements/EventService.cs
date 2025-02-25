@@ -77,7 +77,6 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
                     EventId = eventCreated.Id,
                     Price = eventItem?.SeatPrice ?? 0,
                 };
-                // todo: invalid cache 
 
                 await _eventRepository.RegisterSeatsForEventAsync(seatDto);
 
@@ -128,7 +127,7 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
             {
                 return false;
             }
-
+            var isChangePrice = eventObj.SeatPrice != eventItem.SeatPrice.GetValueOrDefault();
             eventObj.Name = eventItem.Name ?? string.Empty;
             eventObj.Description = eventItem.Description ?? string.Empty;
             eventObj.StartDate = eventItem.StartDate.GetValueOrDefault();
@@ -141,6 +140,15 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
             eventObj.TrailerUrls = eventItem.TrailerUrls ?? string.Empty;
 
             _eventRepository.Update(eventObj);
+            if (isChangePrice)
+            {
+                var seatDto = new CreateSeatDto
+                {
+                    EventId = eventObj.Id,
+                    Price = eventItem?.SeatPrice ?? 0,
+                };
+                await _eventRepository.UpdateSeatsPriceForEventAsync(seatDto);
+            }
             var isUpdated = await _eventRepository.SaveChangeAsync() > 0;
             // Invalid cache
             await _cacheService.InvalidCacheAsync(CacheKeyConsts.UPCOMING_EVENTS);
