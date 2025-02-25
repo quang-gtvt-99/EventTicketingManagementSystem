@@ -1,6 +1,5 @@
 ﻿using EventTicketingManagementSystem.API.Request;
 using EventTicketingManagementSystem.API.Response;
-using EventTicketingManagementSystem.Data.Data.Repository.Implement;
 using EventTicketingManagementSystem.Data.Data.Repository.Interfaces;
 using EventTicketingManagementSystem.Response;
 using EventTicketingManagementSystem.Services.Services.Interfaces;
@@ -8,9 +7,8 @@ using EventTicketingMananagementSystem.Core.Constants;
 using EventTicketingMananagementSystem.Core.Dtos;
 using EventTicketingMananagementSystem.Core.Enums;
 using EventTicketingMananagementSystem.Core.Models;
-using Org.BouncyCastle.Asn1.Ocsp;
 using QRCoder;
-using System.Drawing.Imaging;
+using SkiaSharp;
 using System.Globalization;
 using System.Text;
 
@@ -82,10 +80,43 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
             var qrCodeGenerator = new QRCodeGenerator();
             var qrCodeData = qrCodeGenerator.CreateQrCode(data, QRCodeGenerator.ECCLevel.Q);
             var qrCode = new QRCode(qrCodeData);
-            using var bitmap = qrCode.GetGraphic(20);
-            using var memoryStream = new System.IO.MemoryStream();
-            bitmap.Save(memoryStream, ImageFormat.Png);
-            return Convert.ToBase64String(memoryStream.ToArray());
+            // Convert QR code to bitmap using SkiaSharp
+            var info = new SKImageInfo(400, 400); // Size of QR code image
+            using var surface = SKSurface.Create(info);
+            var canvas = surface.Canvas;
+
+            // Clear background to white
+            canvas.Clear(SKColors.White);
+
+            // Draw QR code
+            var moduleSize = info.Width / qrCodeData.ModuleMatrix.Count;
+
+            using var paint = new SKPaint
+            {
+                Color = SKColors.Black,
+                Style = SKPaintStyle.Fill
+            };
+
+            for (int row = 0; row < qrCodeData.ModuleMatrix.Count; row++)
+            {
+                for (int col = 0; col < qrCodeData.ModuleMatrix.Count; col++)
+                {
+                    if (qrCodeData.ModuleMatrix[row][col])
+                    {
+                        var rect = SKRect.Create(
+                            col * moduleSize,
+                            row * moduleSize,
+                            moduleSize,
+                            moduleSize);
+                        canvas.DrawRect(rect, paint);
+                    }
+                }
+            }
+
+            // Convert to base64
+            using var image = surface.Snapshot();
+            using var outputData = image.Encode(SKEncodedImageFormat.Png, 100);
+            return Convert.ToBase64String(outputData.ToArray());
         }
 
         public async Task<RegisterResponse> RegisterAsync(RegisterRequest request)
@@ -470,7 +501,7 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
             user.Email = userItem.Email ?? string.Empty;
             user.PhoneNumber = userItem.PhoneNumber ?? string.Empty;
             user.Status = userItem.IsActive == true ? "Active" : "Inactive";
-            
+
             _userRepository.Update(user);
             var isUpdated = await _userRepository.SaveChangeAsync() > 0;
             await _userRepository.AssignRoleAsync(user.Id, userItem.Role == UserRoles.ADMIN ? RoleConsts.Admin : RoleConsts.User);
