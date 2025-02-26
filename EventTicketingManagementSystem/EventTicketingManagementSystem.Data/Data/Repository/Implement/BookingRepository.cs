@@ -46,6 +46,7 @@ namespace EventTicketingManagementSystem.Data.Data.Repository.Implement
                         TicketPrice = t.Seat.Price,
                     }).ToList()
                 })
+                .OrderByDescending(b => b.BookedAt)
                 .ToListAsync();
 
             return bookingInfos ?? new List<BookingInfoDto>();

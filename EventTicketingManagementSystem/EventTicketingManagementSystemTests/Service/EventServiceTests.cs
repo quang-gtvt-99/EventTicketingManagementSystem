@@ -5,9 +5,8 @@ using EventTicketingManagementSystem.Services.Services.Interfaces;
 using EventTicketingMananagementSystem.Core.Constants;
 using EventTicketingMananagementSystem.Core.Dtos;
 using EventTicketingMananagementSystem.Core.Models;
-using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Moq;
-using Xunit;
 
 namespace EventTicketingManagementSystemTests.Service
 {
@@ -16,6 +15,7 @@ namespace EventTicketingManagementSystemTests.Service
         private readonly Mock<IEventRepository> _mockEventRepository;
         private readonly Mock<IObjectStorageService> _mockObjectStorageService;
         private readonly Mock<ICacheService> _mockCacheService;
+        private readonly Mock<ILogger<EventService>> _mockLogger;
         private readonly EventService _eventService;
 
         public EventServiceTests()
@@ -23,7 +23,8 @@ namespace EventTicketingManagementSystemTests.Service
             _mockEventRepository = new Mock<IEventRepository>();
             _mockObjectStorageService = new Mock<IObjectStorageService>();
             _mockCacheService = new Mock<ICacheService>();
-            _eventService = new EventService(_mockEventRepository.Object, _mockObjectStorageService.Object, _mockCacheService.Object);
+            _mockLogger = new Mock<ILogger<EventService>>();
+            _eventService = new EventService(_mockEventRepository.Object, _mockObjectStorageService.Object, _mockCacheService.Object, _mockLogger.Object);
         }
 
         [Fact]

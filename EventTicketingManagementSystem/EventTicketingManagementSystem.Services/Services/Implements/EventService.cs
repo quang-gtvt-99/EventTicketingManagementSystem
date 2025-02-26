@@ -1,9 +1,11 @@
-﻿using EventTicketingManagementSystem.API.Request;
+﻿using Amazon.Runtime.Internal.Util;
+using EventTicketingManagementSystem.API.Request;
 using EventTicketingManagementSystem.Data.Data.Repository.Interfaces;
 using EventTicketingManagementSystem.Services.Services.Interfaces;
 using EventTicketingMananagementSystem.Core.Constants;
 using EventTicketingMananagementSystem.Core.Dtos;
 using EventTicketingMananagementSystem.Core.Models;
+using Microsoft.Extensions.Logging;
 
 namespace EventTicketingManagementSystem.Services.Services.Implements
 {
@@ -13,12 +15,14 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
         private readonly IEventRepository _eventRepository;
         private readonly IObjectStorageService _objectStorageService;
         private readonly ICacheService _cacheService;
+        private readonly ILogger<EventService> _logger;
 
-        public EventService(IEventRepository eventRepository, IObjectStorageService objectStorageService, ICacheService cacheService)
+        public EventService(IEventRepository eventRepository, IObjectStorageService objectStorageService, ICacheService cacheService, ILogger<EventService> logger)
         {
             _eventRepository = eventRepository;
             _objectStorageService = objectStorageService;
             _cacheService = cacheService;
+            _logger = logger;
         }
 
         #region Admin Event
@@ -173,6 +177,7 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
         {
             if (eventFilter.IsUpcoming)
             {
+                _logger.LogInformation("Get upcoming events in cache!");
                 return await GetUpcommingEvents();
             }
 
