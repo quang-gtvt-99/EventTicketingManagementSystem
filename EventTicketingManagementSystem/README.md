@@ -4,3 +4,4 @@ dotnet ef database update
   "ConnectionStrings": {
     "DefaultConnection": "Server=LocalServer;Database=LocalDB;Trusted_Connection=True;TrustServerCertificate=True;"
   },
+  
