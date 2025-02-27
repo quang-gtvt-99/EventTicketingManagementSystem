@@ -9,6 +9,7 @@ namespace EventTicketingManagementSystem.API.Middlewares
         private readonly RequestDelegate _next;
         private readonly ILogger<RequestTimingMiddleware> _logger;
         private const int ThresholdInSeconds = 2;
+        private readonly List<string> ExcludedPaths = new List<string> { "/notificationHub" };
 
         public RequestTimingMiddleware(RequestDelegate next, ILogger<RequestTimingMiddleware> logger)
         {
@@ -24,9 +25,10 @@ namespace EventTicketingManagementSystem.API.Middlewares
 
             if (stopwatch.Elapsed.TotalSeconds > ThresholdInSeconds)
             {
-                var request = context.Request;
-                _logger.LogError("Request {Method} {Path} took too long: {ElapsedSeconds} seconds",
-                    request.Method, request.Path, stopwatch.Elapsed.TotalSeconds);
+                HttpRequest request = context.Request;
+                if (!ExcludedPaths.Contains(request.Path))
+                    _logger.LogError("Request {Method} {Path} took too long: {ElapsedSeconds} seconds",
+                        request.Method, request.Path, stopwatch.Elapsed.TotalSeconds);
             }
         }
     }

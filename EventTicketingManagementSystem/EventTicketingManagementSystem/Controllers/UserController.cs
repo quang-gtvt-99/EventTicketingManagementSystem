@@ -1,5 +1,4 @@
 ﻿using EventTicketingManagementSystem.API.Request;
-using EventTicketingManagementSystem.Services.Services.Implements;
 using EventTicketingManagementSystem.Response;
 using EventTicketingManagementSystem.Services.Services.Interfaces;
 using EventTicketingMananagementSystem.Core.Constants;
@@ -10,7 +9,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using System.Security.Claims;
-using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace EventTicketingManagementSystem.API.Controllers
 {
