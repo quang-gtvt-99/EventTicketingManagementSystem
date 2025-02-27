@@ -74,6 +74,7 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
                 var eventCreated = await _eventRepository.AddAsync(eventObj);
                 await _eventRepository.SaveChangeAsync();
                 // Invalid cache
+                _logger.LogInformation("Invalid cache for upcoming events!");
                 await _cacheService.InvalidCacheAsync(CacheKeyConsts.UPCOMING_EVENTS);
 
                 var seatDto = new CreateSeatDto
@@ -155,7 +156,9 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
             }
             var isUpdated = await _eventRepository.SaveChangeAsync() > 0;
             // Invalid cache
+            _logger.LogInformation($"Invalid cache for upcoming events and event detail {currentEventItem.Id}!");
             await _cacheService.InvalidCacheAsync(CacheKeyConsts.UPCOMING_EVENTS);
+            await _cacheService.InvalidCacheAsync(CacheKeyConsts.EVENT_DETAIL + currentEventItem.Id);
 
             return isUpdated;
         }
@@ -168,6 +171,10 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
             {
                 return false;
             }
+            // Invalid cache
+            _logger.LogInformation($"Invalid cache for upcoming events and event detail {id}!");
+            await _cacheService.InvalidCacheAsync(CacheKeyConsts.UPCOMING_EVENTS);
+            await _cacheService.InvalidCacheAsync(CacheKeyConsts.EVENT_DETAIL + id);
 
             _eventRepository.Delete(eventItem);
             return await _eventRepository.SaveChangeAsync() > 0;
@@ -177,7 +184,6 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
         {
             if (eventFilter.IsUpcoming)
             {
-                _logger.LogInformation("Get upcoming events in cache!");
                 return await GetUpcommingEvents();
             }
 
@@ -190,12 +196,14 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
         {
             List<Event> upcomingEvents = await _cacheService.GetAsync<List<Event>>(CacheKeyConsts.UPCOMING_EVENTS) ?? new List<Event>();
 
-            if (upcomingEvents.Count == 0)
+            if (upcomingEvents.Count != 0)
             {
-                upcomingEvents = await _eventRepository.GetUpcomingEventsAsync();
-                await _cacheService.SetAsync(CacheKeyConsts.UPCOMING_EVENTS, upcomingEvents);
+                _logger.LogInformation("Get upcoming events in cache!");
+                return upcomingEvents;
             }
 
+            upcomingEvents = await _eventRepository.GetUpcomingEventsAsync();
+            await _cacheService.SetAsync(CacheKeyConsts.UPCOMING_EVENTS, upcomingEvents, 60 * 10);
             return upcomingEvents;
         }
         #endregion
@@ -211,7 +219,15 @@ namespace EventTicketingManagementSystem.Services.Services.Implements
         }
         public async Task<Event?> GetEventDetailByIdAsync(int id)
         {
-            return await _eventRepository.GetByIdAsync(id);
+            var eventItem = await _cacheService.GetAsync<Event>(CacheKeyConsts.EVENT_DETAIL + id);
+            if (eventItem != null)
+            {
+                _logger.LogInformation($"Get detail for event {id} in cache!");
+                return eventItem;
+            }
+            var eventDetail = await _eventRepository.GetByIdAsync(id);
+            await _cacheService.SetAsync(CacheKeyConsts.EVENT_DETAIL + id, eventDetail);
+            return eventDetail;
         }
         public async Task<EventBookingInfoDto?> GetEventInfoWithSeatAsync(int id)
         {
