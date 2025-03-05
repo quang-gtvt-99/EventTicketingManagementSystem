@@ -1,6 +1,8 @@
 ﻿using EventTicketingManagementSystem.API.Request;
 using EventTicketingManagementSystem.Services.Services.Interfaces;
+using EventTicketingMananagementSystem.Core.Constants;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace EventTicketingManagementSystem.API.Controllers
 {
@@ -18,6 +20,7 @@ namespace EventTicketingManagementSystem.API.Controllers
         }
 
         [HttpPost("register")]
+        [EnableRateLimiting(RateLimitConst.FixedRateLimit)]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
             try
@@ -32,6 +35,7 @@ namespace EventTicketingManagementSystem.API.Controllers
         }
 
         [HttpPost("login")]
+        [EnableRateLimiting(RateLimitConst.FixedRateLimit)]
         public async Task<IActionResult> Login([FromBody] LoginRequest model)
         {
             var authResult = await _jwtAuth.Authentication(model.Email, model.Password);
@@ -45,6 +49,7 @@ namespace EventTicketingManagementSystem.API.Controllers
         }
 
         [HttpPost("forgot-password")]
+        [EnableRateLimiting(RateLimitConst.FixedRateLimit)]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
         {
             var response = await _userService.ResetPasswordAsync(request);

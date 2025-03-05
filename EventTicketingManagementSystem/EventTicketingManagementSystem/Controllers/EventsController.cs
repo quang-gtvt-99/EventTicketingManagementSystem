@@ -5,6 +5,7 @@ using EventTicketingMananagementSystem.Core.Dtos;
 using EventTicketingMananagementSystem.Core.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace EventTicketingManagementSystem.API.Controllers
 {
@@ -38,6 +39,7 @@ namespace EventTicketingManagementSystem.API.Controllers
 
         // GET: api/events/filter?search=music&category=Concert&status=Active&pageNumber=1&pageSize=10
         [HttpGet("filter")]
+        [EnableRateLimiting(RateLimitConst.FixedRateLimit)]
         public async Task<IActionResult> GetEventsByFilter([FromQuery] EventSearchParamsRequest filterRequest)
         {
             var events = await _eventService.GetFilteredPagedEventsAsync(filterRequest);
@@ -105,6 +107,7 @@ namespace EventTicketingManagementSystem.API.Controllers
         }
 
         [HttpGet("event-detail/{id}")]
+        [EnableRateLimiting(RateLimitConst.FixedRateLimit)]
         public async Task<IActionResult> GetEventDetail(int id)
         {
             var result = await _eventService.GetEventDetailByIdAsync(id);

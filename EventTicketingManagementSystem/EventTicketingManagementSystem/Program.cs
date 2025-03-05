@@ -10,6 +10,10 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
+using Microsoft.AspNetCore.RateLimiting;
+using System.Threading.RateLimiting;
+using EventTicketingMananagementSystem.Core.Constants;
+
 [ExcludeFromCodeCoverage]
 public class Program
 {
@@ -54,6 +58,38 @@ public class Program
                       .AllowAnyHeader()                   // Allow any header
                       .AllowCredentials();                // Allow credentials (cookies, authorization headers)
             });
+        });
+
+        // Add rate limiting services
+        builder.Services.AddRateLimiter(options =>
+        {
+            options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    
+            options.OnRejected = async (context, _) =>
+            {  
+                await context.HttpContext.Response.WriteAsJsonAsync(new
+                {
+                    message = "Too many requests. Please try again later.",
+                });
+            };
+            
+            options.AddFixedWindowLimiter(RateLimitConst.FixedRateLimit, opt =>
+            {
+                opt.PermitLimit = 50; 
+                opt.Window = TimeSpan.FromMinutes(1);
+                opt.QueueLimit = 0; 
+            });
+
+            // Global rate limit configuration
+            options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
+                RateLimitPartition.GetFixedWindowLimiter(
+                    partitionKey: context.User?.Identity?.Name ?? context.Request.Headers.Host.ToString(),
+                    factory: partition => new FixedWindowRateLimiterOptions
+                    {
+                        AutoReplenishment = true,
+                        PermitLimit = 300,
+                        Window = TimeSpan.FromMinutes(1)
+                    }));
         });
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -104,8 +140,8 @@ public class Program
 
         builder.Services.AddAuthorization(options =>
         {
-            options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
-            options.AddPolicy("User", policy => policy.RequireRole("User"));
+            options.AddPolicy(RoleConsts.Admin, policy => policy.RequireRole(RoleConsts.Admin));
+            options.AddPolicy(RoleConsts.User, policy => policy.RequireRole(RoleConsts.User));
         });
 
         var app = builder.Build();
@@ -125,6 +161,8 @@ public class Program
         }
 
         app.UseCors("AllowFrontend");
+
+        app.UseRateLimiter();
 
         app.UseHttpsRedirection();
 
