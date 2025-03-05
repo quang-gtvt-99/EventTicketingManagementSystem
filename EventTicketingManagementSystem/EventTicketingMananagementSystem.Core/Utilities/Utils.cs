@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography;
 using System.Text;
@@ -28,6 +29,16 @@ namespace EventTicketingMananagementSystem.Core.Utilities
         {
             var ipAddress = context?.Connection.RemoteIpAddress?.ToString();
             return string.IsNullOrEmpty(ipAddress) ? "Unknown IP" : ipAddress;
+        }
+
+        public static string GetConfigurationValue(IConfiguration configuration, string key)
+        {
+            var value = configuration[key];
+            if (string.IsNullOrEmpty(value))
+            {
+                throw new ArgumentException($"Configuration value for '{key}' is missing or empty.");
+            }
+            return value;
         }
     }
 }

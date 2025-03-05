@@ -13,6 +13,11 @@ using System.Text;
 using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
 using EventTicketingMananagementSystem.Core.Constants;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using EventTicketingManagementSystem.HealthChecks;
+using EventTicketingMananagementSystem.Core.Utilities;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using HealthChecks.UI.Client;
 
 [ExcludeFromCodeCoverage]
 public class Program
@@ -37,7 +42,6 @@ public class Program
 
         // Add SignalR
         builder.Services.AddSignalR();
-
 
         // Add FluentValidation
         builder.Services
@@ -64,27 +68,44 @@ public class Program
         builder.Services.AddRateLimiter(options =>
         {
             options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
-    
+
             options.OnRejected = async (context, _) =>
-            {  
+            {
                 await context.HttpContext.Response.WriteAsJsonAsync(new
                 {
                     message = "Too many requests. Please try again later.",
                 });
             };
-            
-            options.AddFixedWindowLimiter(RateLimitConst.FixedRateLimit, opt =>
-            {
-                opt.PermitLimit = 50; 
-                opt.Window = TimeSpan.FromMinutes(1);
-                opt.QueueLimit = 0; 
-            });
 
-            // Global rate limit configuration
+            // Fixed Rate Limit (Per-Client)
+            options.AddPolicy(RateLimitConst.FixedRateLimit, context =>
+                RateLimitPartition.GetFixedWindowLimiter(
+                    partitionKey: GetClientKey(context),
+                    factory: _ => new FixedWindowRateLimiterOptions
+                    {
+                        AutoReplenishment = true,
+                        PermitLimit = 50,
+                        Window = TimeSpan.FromMinutes(1),
+                        QueueLimit = 0
+                    }));
+
+            // Health Check Rate Limit (Per-Client)
+            options.AddPolicy(RateLimitConst.HealthCheckRateLimit, context =>
+                RateLimitPartition.GetFixedWindowLimiter(
+                    partitionKey: GetClientKey(context),
+                    factory: _ => new FixedWindowRateLimiterOptions
+                    {
+                        AutoReplenishment = true,
+                        PermitLimit = 5,
+                        Window = TimeSpan.FromSeconds(10),
+                        QueueLimit = 0
+                    }));
+
+            // Global Rate Limit (Per-Client)
             options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
                 RateLimitPartition.GetFixedWindowLimiter(
-                    partitionKey: context.User?.Identity?.Name ?? context.Request.Headers.Host.ToString(),
-                    factory: partition => new FixedWindowRateLimiterOptions
+                    partitionKey: GetClientKey(context),
+                    factory: _ => new FixedWindowRateLimiterOptions
                     {
                         AutoReplenishment = true,
                         PermitLimit = 300,
@@ -113,9 +134,7 @@ public class Program
 
             x.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
             x.AddSecurityRequirement(new OpenApiSecurityRequirement
-            {
-        { jwtSecurityScheme, Array.Empty<string>() }
-            });
+                {{ jwtSecurityScheme, Array.Empty<string>() }});
         });
 
         // Token-based authentication configuration
@@ -143,6 +162,33 @@ public class Program
             options.AddPolicy(RoleConsts.Admin, policy => policy.RequireRole(RoleConsts.Admin));
             options.AddPolicy(RoleConsts.User, policy => policy.RequireRole(RoleConsts.User));
         });
+
+        // Add health checks
+        builder.Services.AddHealthChecks()
+            // PostgreSQL Health Check
+            .AddNpgSql(
+                Utils.GetConfigurationValue(builder.Configuration, "ConnectionString"),
+                name: "Database",
+                failureStatus: HealthStatus.Degraded,
+                tags: new[] { "db", "postgres", "core" })
+
+            // Redis Health Check
+            .AddCheck<RedisHealthCheck>(
+                "Redis Cache",
+                failureStatus: HealthStatus.Degraded,
+                tags: new[] { "cache", "redis" })
+
+            // AWS S3 Health Check 
+            .AddCheck<AWSS3HealthCheck>(
+                "AWS S3",
+                failureStatus: HealthStatus.Degraded,
+                tags: new[] { "storage", "aws" })
+
+            // Email Service Health Check
+            .AddCheck<EmailHealthCheck>(
+                "Email Service",
+                failureStatus: HealthStatus.Degraded,
+                tags: new[] { "email", "smtp" });
 
         var app = builder.Build();
 
@@ -172,6 +218,20 @@ public class Program
 
         app.UseAuthorization();
 
+        // Add health check endpoints
+        app.MapHealthChecks("/health", new HealthCheckOptions
+        {
+            ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse,
+            Predicate = _ => true,
+            ResultStatusCodes =
+            {
+                [HealthStatus.Healthy] = StatusCodes.Status200OK,
+                [HealthStatus.Degraded] = StatusCodes.Status200OK,
+                [HealthStatus.Unhealthy] = StatusCodes.Status503ServiceUnavailable
+            }
+        })
+        .RequireRateLimiting(RateLimitConst.HealthCheckRateLimit);
+
         app.UseMiddleware<CurrentUserMiddleware>();
 
         app.MapHub<NotificationHub>("/notificationHub");
@@ -179,5 +239,18 @@ public class Program
         app.MapControllers();
 
         app.Run();
+    }
+
+    // Helper method to get client key
+    private static string GetClientKey(HttpContext context)
+    {
+        // Priority: 
+        // 1. Authenticated User
+        // 2. API Key from header
+        // 3. Client IP Address
+        return context.User?.Identity?.Name
+            ?? context.Request.Headers["X-API-Key"].ToString()
+            ?? context.Connection.RemoteIpAddress?.ToString()
+            ?? context.Request.Headers.Host.ToString();
     }
 }
