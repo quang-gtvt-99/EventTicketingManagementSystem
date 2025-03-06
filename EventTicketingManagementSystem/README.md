@@ -1,7 +1,8 @@
 # Execute the following command to apply Migration to the database
-dotnet ef database update
-# Add connectString to file appsettings.json
-  "ConnectionStrings": {
-    "DefaultConnection": "Server=LocalServer;Database=LocalDB;Trusted_Connection=True;TrustServerCertificate=True;"
-  },
+Add-Migration -Name <MigrationName> -OutputDir Migrations -Project EventTicketingManagementSystem.Data
+Update-Database -Migration <MigrationName> -Project EventTicketingManagementSystem.Data
+Update-Database -Project EventTicketingManagementSystem.Data
+Remove-Migration -Project EventTicketingManagementSystem.Data
+Drop-Database -Project EventTicketingManagementSystem.Data
+
   

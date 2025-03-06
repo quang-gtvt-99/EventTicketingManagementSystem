@@ -1,9 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
 using Amazon.S3;
 using EventTicketingMananagementSystem.Core.Utilities;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace EventTicketingManagementSystem.HealthChecks
 {
+    [ExcludeFromCodeCoverage]
     public class AWSS3HealthCheck : IHealthCheck
     {
         private readonly AmazonS3Client _s3Client;
