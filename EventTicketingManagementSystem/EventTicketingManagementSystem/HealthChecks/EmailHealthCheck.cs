@@ -1,13 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Diagnostics.CodeAnalysis;
 using EventTicketingMananagementSystem.Core.Utilities;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace EventTicketingManagementSystem.HealthChecks
 {
+    [ExcludeFromCodeCoverage]
     public class EmailHealthCheck : IHealthCheck
     {
         private readonly string _smtpServer;

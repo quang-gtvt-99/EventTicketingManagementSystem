@@ -1,9 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
 using EventTicketingMananagementSystem.Core.Utilities;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using StackExchange.Redis;
 
 namespace EventTicketingManagementSystem.HealthChecks
 {
+    [ExcludeFromCodeCoverage]
     public class RedisHealthCheck : IHealthCheck, IDisposable
     {
         private readonly ConnectionMultiplexer _redis;
