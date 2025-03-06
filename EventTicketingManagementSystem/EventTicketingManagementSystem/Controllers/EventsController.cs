@@ -107,7 +107,7 @@ namespace EventTicketingManagementSystem.API.Controllers
         }
 
         [HttpGet("event-detail/{id}")]
-        [EnableRateLimiting(RateLimitConst.FixedRateLimit)]
+        // [EnableRateLimiting(RateLimitConst.FixedRateLimit)]
         public async Task<IActionResult> GetEventDetail(int id)
         {
             var result = await _eventService.GetEventDetailByIdAsync(id);

@@ -65,53 +65,53 @@ public class Program
         });
 
         // Add rate limiting services
-        builder.Services.AddRateLimiter(options =>
-        {
-            options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+        // builder.Services.AddRateLimiter(options =>
+        // {
+        //     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
 
-            options.OnRejected = async (context, _) =>
-            {
-                await context.HttpContext.Response.WriteAsJsonAsync(new
-                {
-                    message = "Too many requests. Please try again later.",
-                });
-            };
+        //     options.OnRejected = async (context, _) =>
+        //     {
+        //         await context.HttpContext.Response.WriteAsJsonAsync(new
+        //         {
+        //             message = "Too many requests. Please try again later.",
+        //         });
+        //     };
 
-            // Fixed Rate Limit (Per-Client)
-            options.AddPolicy(RateLimitConst.FixedRateLimit, context =>
-                RateLimitPartition.GetFixedWindowLimiter(
-                    partitionKey: GetClientKey(context),
-                    factory: _ => new FixedWindowRateLimiterOptions
-                    {
-                        AutoReplenishment = true,
-                        PermitLimit = 50,
-                        Window = TimeSpan.FromMinutes(1),
-                        QueueLimit = 0
-                    }));
+        //     // Fixed Rate Limit (Per-Client)
+        //     options.AddPolicy(RateLimitConst.FixedRateLimit, context =>
+        //         RateLimitPartition.GetFixedWindowLimiter(
+        //             partitionKey: GetClientKey(context),
+        //             factory: _ => new FixedWindowRateLimiterOptions
+        //             {
+        //                 AutoReplenishment = true,
+        //                 PermitLimit = 50,
+        //                 Window = TimeSpan.FromMinutes(1),
+        //                 QueueLimit = 0
+        //             }));
 
-            // Health Check Rate Limit (Per-Client)
-            options.AddPolicy(RateLimitConst.HealthCheckRateLimit, context =>
-                RateLimitPartition.GetFixedWindowLimiter(
-                    partitionKey: GetClientKey(context),
-                    factory: _ => new FixedWindowRateLimiterOptions
-                    {
-                        AutoReplenishment = true,
-                        PermitLimit = 5,
-                        Window = TimeSpan.FromSeconds(10),
-                        QueueLimit = 0
-                    }));
+        //     // Health Check Rate Limit (Per-Client)
+        //     options.AddPolicy(RateLimitConst.HealthCheckRateLimit, context =>
+        //         RateLimitPartition.GetFixedWindowLimiter(
+        //             partitionKey: GetClientKey(context),
+        //             factory: _ => new FixedWindowRateLimiterOptions
+        //             {
+        //                 AutoReplenishment = true,
+        //                 PermitLimit = 5,
+        //                 Window = TimeSpan.FromSeconds(10),
+        //                 QueueLimit = 0
+        //             }));
 
-            // Global Rate Limit (Per-Client)
-            options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
-                RateLimitPartition.GetFixedWindowLimiter(
-                    partitionKey: GetClientKey(context),
-                    factory: _ => new FixedWindowRateLimiterOptions
-                    {
-                        AutoReplenishment = true,
-                        PermitLimit = 300,
-                        Window = TimeSpan.FromMinutes(1)
-                    }));
-        });
+        //     // Global Rate Limit (Per-Client)
+        //     options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
+        //         RateLimitPartition.GetFixedWindowLimiter(
+        //             partitionKey: GetClientKey(context),
+        //             factory: _ => new FixedWindowRateLimiterOptions
+        //             {
+        //                 AutoReplenishment = true,
+        //                 PermitLimit = 300,
+        //                 Window = TimeSpan.FromMinutes(1)
+        //             }));
+        // });
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
@@ -208,7 +208,7 @@ public class Program
 
         app.UseCors("AllowFrontend");
 
-        app.UseRateLimiter();
+        // app.UseRateLimiter();
 
         app.UseHttpsRedirection();
 
