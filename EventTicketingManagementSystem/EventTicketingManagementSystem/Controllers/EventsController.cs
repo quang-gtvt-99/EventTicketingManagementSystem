@@ -39,7 +39,7 @@ namespace EventTicketingManagementSystem.API.Controllers
 
         // GET: api/events/filter?search=music&category=Concert&status=Active&pageNumber=1&pageSize=10
         [HttpGet("filter")]
-        [EnableRateLimiting(RateLimitConst.FixedRateLimit)]
+        // [EnableRateLimiting(RateLimitConst.FixedRateLimit)]
         public async Task<IActionResult> GetEventsByFilter([FromQuery] EventSearchParamsRequest filterRequest)
         {
             var events = await _eventService.GetFilteredPagedEventsAsync(filterRequest);
